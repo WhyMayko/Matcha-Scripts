@@ -241,7 +241,7 @@
             "MoveDirection": 344,
             "RigType": 460,
             "Jump": 486,
-            "Sit": 489,
+            "Sit": 490,
             "PlatformStand": 488,
             "UseJumpPower": 492,
             "AutomaticScalingEnabled": 482,
