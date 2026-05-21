@@ -1,9 +1,9 @@
 {
     "Source": "https://imtheo.lol/Offsets",
-    "Roblox Version": "version-3b42a15a305e47ec",
+    "Roblox Version": "version-4b6315bf1f0a4dbb",
     "Dumper Version": "2.1.6",
     "Dumped By": "theo (https://imtheo.lol)",
-    "Dumped At": "21:39 19/05/2026",
+    "Dumped At": "20:49 21/05/2026",
     "Discord": "https://discord.gg/rbxoffsets",
     "Total Offsets": 381,
     "Offsets": {
@@ -41,11 +41,11 @@
             "IsCoreScript": 0,
             "GUID": 232,
             "Hash": 352,
-            "ByteCode": 0
+            "ByteCode": 336
         },
         "RenderView": {
-            "LightingValid": 0,
-            "SkyValid": 0,
+            "LightingValid": 336,
+            "SkyValid": 653,
             "VisualEngine": 16,
             "DeviceD3D11": 8
         },
@@ -152,7 +152,7 @@
             "Looped": 341
         },
         "SpawnLocation": {
-            "AllowTeamChangeOnTouch": 69,
+            "AllowTeamChangeOnTouch": 504,
             "Enabled": 505,
             "Neutral": 506,
             "ForcefieldDuration": 496,
@@ -509,7 +509,7 @@
         "LocalScript": {
             "GUID": 232,
             "Hash": 440,
-            "ByteCode": 0
+            "ByteCode": 424
         },
         "ByteCode": {
             "Size": 32,
@@ -518,7 +518,7 @@
         "Script": {
             "GUID": 232,
             "Hash": 440,
-            "ByteCode": 0
+            "ByteCode": 424
         }
     }
 }
