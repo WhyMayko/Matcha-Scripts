@@ -5,7 +5,7 @@
     ██║   ██║██╔══██║██║     ██╔══██║ ██╔██╗     ██╔══██║██║   ██║██╔══██╗
     ╚██████╔╝██║  ██║███████╗██║  ██║██╔╝ ██╗    ██║  ██║╚██████╔╝██████╔╝
      ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ 
-Hello! If you want the source code, just dm me! ❤️
+Hello! This was vibecoded then don´t judge me! 😭
 ]]
 
 local Players = game:GetService("Players")
