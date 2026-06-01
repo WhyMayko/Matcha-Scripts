@@ -6,6 +6,7 @@
     ╚██████╔╝██║  ██║███████╗██║  ██║██╔╝ ██╗    ██║  ██║╚██████╔╝██████╔╝
      ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ 
 Hello! This was vibecoded then don´t judge me! 😭
+Gimme credits! 🥺
 ]]
 
 local Players = game:GetService("Players")
