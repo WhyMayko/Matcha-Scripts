@@ -343,6 +343,7 @@ local Theme = {
     Text = Color3.fromRGB(235, 235, 240),
     SubText = Color3.fromRGB(120, 120, 135),
     Accent = Color3.fromRGB(10, 132, 255),
+    AccentHover = Color3.fromRGB(80, 160, 255),
     Danger = Color3.fromRGB(255, 69, 58),
     Success = Color3.fromRGB(48, 209, 88),
     Red = Color3.fromRGB(255, 95, 86),
@@ -354,6 +355,42 @@ local Theme = {
     GlassSubtle = 0.68,
     GlassTopbar = 0.42,
 }
+
+local ThemeAccent = { H = 0.58, S = 0.96, V = 1 }
+
+local function LerpColor(a, b, t)
+    return Color3.new(
+        a.R + (b.R - a.R) * t,
+        a.G + (b.G - a.G) * t,
+        a.B + (b.B - a.B) * t
+    )
+end
+
+local function HSVToColor3(h, s, v)
+    h = (h % 1) * 6
+    s = math.clamp(s or 0, 0, 1)
+    v = math.clamp(v or 0, 0, 1)
+
+    local i = math.floor(h)
+    local f = h - i
+    local p = v * (1 - s)
+    local q = v * (1 - f * s)
+    local t = v * (1 - (1 - f) * s)
+
+    if i == 0 then return Color3.new(v, t, p) end
+    if i == 1 then return Color3.new(q, v, p) end
+    if i == 2 then return Color3.new(p, v, t) end
+    if i == 3 then return Color3.new(p, q, v) end
+    if i == 4 then return Color3.new(t, p, v) end
+    return Color3.new(v, p, q)
+end
+
+local function ApplyThemeAccent()
+    Theme.Accent = HSVToColor3(ThemeAccent.H, ThemeAccent.S, ThemeAccent.V)
+    Theme.AccentHover = LerpColor(Theme.Accent, Theme.White, 0.28)
+end
+
+ApplyThemeAccent()
 
 local SelectedEsp = {
     Enabled = true,
@@ -377,9 +414,8 @@ local BoxEdges = {
 local DrawingPool = _G.GalaxDex.pool
 local PoolIndex = { sq = 0, tx = 0, ln = 0, ci = 0 }
 local DrawingTypeMap = { sq = 'Square', tx = 'Text', ln = 'Line', ci = 'Circle' }
-local ClassIconBaseUrl = "https://raw.githubusercontent.com/WhyMayko/Matcha-Scripts/refs/heads/main/Debug/Galax-Dex/Icons/"
+local ClassIconBaseUrl = "https://raw.githubusercontent.com/WhyMayko/Matcha-Scripts/refs/heads/main/Debug/Galax-Dex/"
 local ClassIconCache = {}
-local ClassIconCatalog = {}
 local ClassIconQueue = {}
 local ClassIconWorkerRunning = false
 local ClassIconDrawingPool = _G.GalaxDex.iconPool
@@ -601,9 +637,12 @@ local GalaxyState = {
     SearchScrollY = 0,
     SearchMaxScrollY = 0,
     PropertyScroll = 0,
+    PropertyScrollY = 0,
     IsDraggingScroll = false,
     IsDraggingSearchScroll = false,
     IsDraggingPropertyScroll = false,
+    IsDraggingLayoutSplit = false,
+    LayoutSplitRatio = 340 / 592,
     ScrollKeyHold = {},
     CustomNames = {},
     CustomNamesByAddress = {},
@@ -628,13 +667,19 @@ local GalaxyState = {
     SpectateTarget = nil,
     SpectateSubject = nil,
     LastSelectedCheck = 0,
-    SelectedPhysicalPart = nil
+    SelectedPhysicalPart = nil,
+    SelectedVisualCache = {},
+    InactiveSince = nil
 }
 
 local CurrentTab = "Explorer"
 
 local function InvalidateResolvedTarget()
     GalaxyState.ResolvedTarget = nil
+end
+
+local function ClearSelectedVisualCache()
+    GalaxyState.SelectedVisualCache = {}
 end
 
 local InputKeys = {
@@ -833,24 +878,14 @@ local function ResolveObjectTarget(target)
 
     if class == "Model" then
         local humanoid = ExecuteSafely(function() return target:FindFirstChildOfClass("Humanoid") end)
-        local root = ExecuteSafely(function() return target:FindFirstChild("HumanoidRootPart") end)
         local modelName = ExecuteSafely(function() return target.Name end)
         local matchedPlayer = modelName and ExecuteSafely(function() return Players:FindFirstChild(modelName) end) or nil
         local kind = humanoid and "NPC" or "Model"
         if matchedPlayer then kind = matchedPlayer == LocalPlayer and "LocalPlayer" or "Player" end
 
-        if root and IsBasePart(root) then
-            return { Kind = kind, Part = root, Humanoid = humanoid, Player = matchedPlayer, Source = target, ClassName = class }
-        end
-
         local primary = ExecuteSafely(function() return target.PrimaryPart end)
         if primary and IsBasePart(primary) then
             return { Kind = kind, Part = primary, Humanoid = humanoid, Player = matchedPlayer, Source = target, ClassName = class }
-        end
-
-        local firstPart = ExecuteSafely(function() return target:FindFirstChildWhichIsA("BasePart") end)
-        if firstPart and IsBasePart(firstPart) then
-            return { Kind = kind, Part = firstPart, Humanoid = humanoid, Player = matchedPlayer, Source = target, ClassName = class }
         end
 
         return humanoid and { Kind = kind, Humanoid = humanoid, Player = matchedPlayer, Source = target, ClassName = class } or nil
@@ -893,12 +928,14 @@ local function ClearSelectedState()
     GalaxyState.Selected = nil
     GalaxyState.SelectedNode = nil
     GalaxyState.SelectedPhysicalPart = nil
+    ClearSelectedVisualCache()
     GalaxyState.PropLines = {}
     InvalidateResolvedTarget()
 end
 
 local function MarkSelectedChanged()
     GalaxyState.SelectedPhysicalPart = nil
+    ClearSelectedVisualCache()
     GalaxyState.LastSelectedCheck = 0
     InvalidateResolvedTarget()
 end
@@ -907,6 +944,7 @@ local function UpdateSelectedState(forceRefresh)
     local selected = GalaxyState.Selected
     if not selected then
         GalaxyState.SelectedPhysicalPart = nil
+        ClearSelectedVisualCache()
         if GalaxyState.ResolvedTarget then InvalidateResolvedTarget() end
         return nil
     end
@@ -1429,6 +1467,7 @@ local function RefreshExplorer()
     ClearSelectedState()
     GalaxyState.ScrollY = 0
     GalaxyState.PropertyScroll = 0
+    GalaxyState.PropertyScrollY = 0
     UpdatePropertyPanel()
     ShowNotification("Refreshed")
 end
@@ -1450,6 +1489,7 @@ local function HideUnusedDrawings()
 end
 
 local WindowWidth, WindowHeight = 500, 700
+local MinWindowWidth, MinWindowHeight = 360, 460
 local HeaderHeight = 34
 local WindowPosition = Vector2.new(150, 80)
 local IsVisible = true
@@ -1470,6 +1510,61 @@ local PreviousRightMouseState = false
 local PreviousMenuKey = false
 local IsDragging = false
 local DragOffset = Vector2.new(0, 0)
+GalaxyState.ResizeMode = nil
+GalaxyState.ResizeStartMouse = Vector2.new(0, 0)
+GalaxyState.ResizeStart = { X = 0, Y = 0, W = WindowWidth, H = WindowHeight }
+
+GalaxyState.SnapToStep = function(value, step)
+    return math.floor((value or 0) / step + 0.5) * step
+end
+
+GalaxyState.GetWindowResizeMode = function(x, y, w, h)
+    local edge, corner = 10, 18
+    local mx, my = Mouse.X, Mouse.Y
+    local topLeft = mx >= x - edge and mx <= x + corner and my >= y - edge and my <= y + corner
+    local topRight = mx >= x + w - corner and mx <= x + w + edge and my >= y - edge and my <= y + corner
+    local bottomLeft = mx >= x - edge and mx <= x + corner and my >= y + h - corner and my <= y + h + edge
+    local bottomRight = mx >= x + w - corner and mx <= x + w + edge and my >= y + h - corner and my <= y + h + edge
+    local left = mx >= x - edge / 2 and mx <= x + edge / 2 and my >= y and my <= y + h
+    local right = mx >= x + w - edge / 2 and mx <= x + w + edge / 2 and my >= y and my <= y + h
+    local top = mx >= x and mx <= x + w and my >= y - edge / 2 and my <= y + edge / 2
+    local bottom = mx >= x and mx <= x + w and my >= y + h - edge / 2 and my <= y + h + edge / 2
+
+    if topLeft then return "TopLeft" end
+    if topRight then return "TopRight" end
+    if bottomLeft then return "BottomLeft" end
+    if bottomRight then return "BottomRight" end
+    if left then return "Left" end
+    if right then return "Right" end
+    if top then return "Top" end
+    if bottom then return "Bottom" end
+    return nil
+end
+
+GalaxyState.ApplyWindowResize = function(mode)
+    local startMouse = GalaxyState.ResizeStartMouse
+    local start = GalaxyState.ResizeStart
+    local dx = Mouse.X - startMouse.X
+    local dy = Mouse.Y - startMouse.Y
+    local x, y, w, h = start.X, start.Y, start.W, start.H
+
+    if mode:find("Right") then
+        w = math.max(MinWindowWidth, start.W + dx)
+    elseif mode:find("Left") then
+        w = math.max(MinWindowWidth, start.W - dx)
+        x = start.X + (start.W - w)
+    end
+
+    if mode:find("Bottom") then
+        h = math.max(MinWindowHeight, start.H + dy)
+    elseif mode:find("Top") then
+        h = math.max(MinWindowHeight, start.H - dy)
+        y = start.Y + (start.H - h)
+    end
+
+    WindowWidth, WindowHeight = math.floor(w + 0.5), math.floor(h + 0.5)
+    WindowPosition = Vector2.new(math.floor(x + 0.5), math.floor(y + 0.5))
+end
 
 local function GetDrawingFromPool(type)
     local drawingType = DrawingTypeMap[type]
@@ -1490,7 +1585,6 @@ local function GetDrawingFromPool(type)
         list[PoolIndex[type]] = drawing
     end
 
-    drawing.Visible = true
     return drawing
 end
 
@@ -1518,6 +1612,7 @@ local function RenderSquare(x, y, w, h, color, filled, cornerRadius, zIndex, tra
     end
     drawing.Corner = cornerRadius or 0
     drawing.ZIndex = (zIndex or 1) + GUI_BASE_ZINDEX
+    drawing.Visible = true
 end
 
 local function RenderText(content, x, y, color, size, font, zIndex, centered)
@@ -1530,6 +1625,7 @@ local function RenderText(content, x, y, color, size, font, zIndex, centered)
     drawing.Outline = false
     drawing.ZIndex = (zIndex or 1) + 5 + GUI_BASE_ZINDEX
     drawing.Center = centered == true
+    drawing.Visible = true
 end
 
 local function EstimateTextWidth(text, size)
@@ -1557,6 +1653,25 @@ local function EstimateTextWidth(text, size)
     return units * scale
 end
 
+local function FitTextToWidth(text, maxWidth, size)
+    text = tostring(text or "")
+    if maxWidth <= 0 then return "" end
+    if EstimateTextWidth(text, size) <= maxWidth then return text end
+
+    local suffix = "..."
+    local suffixWidth = EstimateTextWidth(suffix, size)
+    local available = maxWidth - suffixWidth
+    if available <= 0 then return suffix end
+
+    local result = ""
+    for i = 1, #text do
+        local nextText = text:sub(1, i)
+        if EstimateTextWidth(nextText, size) > available then break end
+        result = nextText
+    end
+    return result .. suffix
+end
+
 local function RenderLine(startX, startY, endX, endY, color, zIndex, thickness, transparency)
     local drawing = GetDrawingFromPool('ln')
     drawing.From = Vector2.new(startX, startY)
@@ -1565,6 +1680,7 @@ local function RenderLine(startX, startY, endX, endY, color, zIndex, thickness, 
     drawing.Thickness = thickness or 1
     drawing.Transparency = transparency or 1
     drawing.ZIndex = (zIndex or 1) + GUI_BASE_ZINDEX
+    drawing.Visible = true
 end
 
 local function RemoveDrawingPool(pool)
@@ -1600,18 +1716,19 @@ local function RenderCircle(x, y, radius, color, zIndex, filled, thickness, tran
     drawing.Thickness = thickness or 1
     drawing.Transparency = transparency or 1
     drawing.ZIndex = (zIndex or 1) + GUI_BASE_ZINDEX
+    drawing.Visible = true
 end
 
 local RenderClassIcon
 
 local function RenderTreeArrow(x, y, expanded, hovered)
     local iconName = expanded and "Collapse" or "Expand"
-    RenderClassIcon(iconName, x - 4, y - 4, 8, 8, 8, hovered and 1 or 0.92)
+    RenderClassIcon(iconName, x - 8, y - 8, 16, 16, 8, hovered and 1 or 0.92)
 end
 
 local function GetClassIconName(className, kind)
     if kind == "LocalPlayer" or kind == "Player" then return "Player" end
-    if kind == "NPC" then return "Humanoid" end
+    if kind == "NPC" then return "Player" end
     if className and className ~= "" then return className end
     return "Folder"
 end
@@ -1663,8 +1780,44 @@ local ClassIconWarmSlots = {
     Search = 8,
     Clear = 8,
     Refresh = 8,
-    Settings = 4
+    Settings = 4,
+    ColorPicker = 4,
+    Reference = 12,
+    Warning = 12,
+    Lock = 12,
+    Modified = 12
 }
+
+local ClassIconAliases = {
+    Expand = "ui/Expand.png",
+    Collapse = "ui/Collapse.png",
+    Search = "general/FindAll.png",
+    Clear = "ui/CloseWidget.png",
+    Refresh = "ui/Recent.png",
+    Settings = "general/Settings.png",
+    ColorPicker = "general/ColorPicker.png",
+    Info = "general/Help.png",
+    Player = "general/Player.png",
+    Copy = "general/Copy.png",
+    Delete = "general/Delete.png",
+    Struct = "general/Struct.png",
+    Move = "general/Move.png",
+    UIOn = "general/UIOn.png",
+    UIOff = "general/UIOff.png",
+    Warning = "general/Warning.png",
+    Reference = "general/Reference.png",
+    Lock = "general/Lock.png",
+    Modified = "general/Modified.png",
+    TeleportService = "instance/TeleportService.png",
+    Camera = "instance/Camera.png",
+    Path = "instance/Path.png",
+    ScriptDocument = "instance/ScriptDocument.png",
+    Instance = "instance/Instance.png"
+}
+
+local function GetClassIconPath(iconName)
+    return ClassIconAliases[iconName] or ("instance/" .. iconName .. ".png")
+end
 
 local function WarmClassIcon(iconName, data)
     local list = ClassIconDrawingPool[iconName]
@@ -1697,7 +1850,7 @@ local function StartClassIconWorker()
             local icon = ClassIconCache[iconName]
             if icon and icon.Loading and not icon.Failed and not icon.Data then
                 local ok, data = pcall(function()
-                    return game:HttpGet(ClassIconBaseUrl .. iconName .. ".png")
+                    return game:HttpGet(ClassIconBaseUrl .. GetClassIconPath(iconName))
                 end)
                 if not (_G.GalaxDex and _G.GalaxDex.alive) then break end
                 if ok and IsPngData(data) then
@@ -1717,11 +1870,12 @@ end
 
 local function RequestClassIcon(iconName)
     if not iconName or iconName == "" then return nil end
-    if ClassIconCatalog and not ClassIconCatalog[iconName] then
-        iconName = "Instance"
-    end
     local icon = ClassIconCache[iconName]
-    if icon then return icon.Data end
+    if icon then
+        if icon.Data then return icon.Data end
+        if icon.Failed and iconName ~= "Instance" then return RequestClassIcon("Instance") end
+        return nil
+    end
 
     icon = { Data = nil, Loading = true, Failed = false }
     ClassIconCache[iconName] = icon
@@ -1748,733 +1902,31 @@ RenderClassIcon = function(iconName, x, y, w, h, zIndex, transparency, rounding)
         list[ClassIconDrawingIndex[iconName]] = drawing
     end
 
-    drawing.Visible = true
     drawing.Position = Vector2.new(x, y)
     drawing.Size = Vector2.new(w, h)
     drawing.Transparency = transparency or 1
     drawing.Rounding = rounding or 0
     drawing.ZIndex = (zIndex or 1) + GUI_BASE_ZINDEX
+    drawing.Visible = true
     return true
 end
 
-local PriorityClassIconNames = {
-    "Workspace",
-    "Folder",
-    "Model",
-    "Part",
-    "MeshPart",
-    "SpawnLocation",
-    "Seat",
-    "WedgePart",
-    "CornerWedgePart",
-    "TrussPart",
-    "UnionOperation",
-    "Player",
-    "Players",
-    "PlayerGui",
-    "Humanoid",
-    "Tool",
-    "Backpack",
-    "Camera",
-    "Lighting",
-    "ReplicatedStorage",
-    "ReplicatedFirst",
-    "StarterGui",
-    "StarterPack",
-    "StarterPlayer",
-    "ServerStorage",
-    "ServerScriptService",
-    "Script",
-    "LocalScript",
-    "ModuleScript",
-    "ScreenGui",
-    "Frame",
-    "ScrollingFrame",
-    "TextLabel",
-    "TextButton",
-    "TextBox",
-    "ImageLabel",
-    "ImageButton",
-    "BoolValue",
-    "StringValue",
-    "NumberValue",
-    "IntValue",
-    "ObjectValue",
-    "Vector3Value",
-    "CFrameValue",
-    "RemoteEvent",
-    "RemoteFunction",
-    "BindableEvent",
-    "BindableFunction",
-    "Sound",
-    "ParticleEmitter",
-    "Beam",
-    "Attachment",
-    "Decal",
-    "Texture",
-    "SurfaceGui",
-    "BillboardGui",
-    "ProximityPrompt",
-    "TeleportService",
-    "Path",
-    "Debris",
-    "ScriptDocument",
-    "AlignPosition",
-    "Instance",
+local StartupIconNames = {
     "Expand",
     "Collapse",
     "Search",
     "Clear",
     "Refresh",
-    "Settings"
+    "Settings",
+    "ColorPicker"
 }
 
-local ClassIconNames = {}
-
--- Generated full icon manifest from Classic Roblox Studio UI pack.
-local ClassIconNamesSource = [[
-Accessory
-Accoutrement
-Actor
-AdGui
-AdPortal
-AdService
-AdvancedDragger
-AirController
-AlignOrientation
-AlignPosition
-AnalysticsService
-AnalysticsSettings
-AnalyticsService
-AngularVelocity
-Animation
-AnimationClip
-AnimationClipProvider
-AnimationController
-AnimationFromVideoCreatorService
-AnimationFromVideoCreatorStudioService
-AnimationRigData
-AnimationStreamTrack
-AnimationTrack
-Animator
-AppStorageService
-AppUpdateService
-ArcHandles
-AssetCounterService
-AssetDeliveryProxy
-AssetImportService
-AssetImportSession
-AssetManagerService
-AssetService
-AssetSoundEffect
-Atmosphere
-Attachment
-AvatarEditorService
-AvatarImportService
-Backpack
-BackpackItem
-BadgeService
-BallSocketConstraint
-BasePart
-BasePlayerGui
-BaseScript
-BaseWrap
-Beam
-BevelMesh
-BillboardGui
-BinaryStringValue
-BindableEvent
-BindableFunction
-BlockMesh
-BloomEffect
-BlurEffect
-BodyAngularVelocity
-BodyColor
-BodyColors
-BodyForce
-BodyGyro
-BodyMover
-BodyPosition
-BodyThrust
-BodyVelocity
-Bone
-BoolValue
-BoxHandleAdornment
-Breakpoint
-BreakpointManager
-BrickColor
-BrickColorValue
-BrowserService
-BubbleChatConfiguration
-BulkImportService
-CacheableContentProvider
-CalloutService
-Camera
-CanvasGroup
-CatalogPages
-CFrameValue
-ChangeHistoryService
-ChannelSelectorSoundEffect
-CharacterAppearance
-CharacterMesh
-Chat
-ChatInputBarConfiguration
-ChatWindowConfiguration
-ChorusSoundEffect
-ClickDetector
-ClientReplicator
-ClimbController
-Clothing
-Clouds
-ClusterPacketCache
-CollectionService
-Color3Value
-ColorCorrectionEffect
-CommandInstance
-CommandService
-CompressorSoundEffect
-ConeHandleAdornment
-Configuration
-ConfigureServerService
-Constraint
-ContentProvider
-ContextActionService
-Controller
-ControllerBase
-ControllerManager
-ControllerService
-CookiesService
-CoreGui
-CorePackages
-CoreScript
-CoreScriptSyncService
-CornerWedgePart
-CrossDMScriptChangeListener
-CSGDictionaryService
-CurveAnimation
-CustomEvent
-CustomEventReceiver
-CustomSoundEffect
-CylinderHandleAdornment
-CylinderMesh
-CylindricalConstraint
-DataModel
-DataModelMesh
-DataModelPatchService
-DataModelSession
-DataStore
-DataStoreIncrementOptions
-DataStoreInfo
-DataStoreKey
-DataStoreKeyInfo
-DataStoreKeyPages
-DataStoreListingPages
-DataStoreObjectVersionInfo
-DataStoreOptions
-DataStorePages
-DataStoreService
-DataStoreSetOptions
-DataStoreVersionPages
-Debris
-DebuggablePluginWatcher
-DebuggerBreakpoint
-DebuggerConnection
-DebuggerConnectionManager
-DebuggerLuaResponse
-DebuggerManager
-DebuggerUIService
-DebuggerVariable
-DebuggerWatch
-DebugSettings
-Decal
-DepthOfFieldEffect
-DeviceIdService
-Dialog
-DialogChoice
-DistortionSoundEffect
-DockWidgetPluginGui
-DoubleConstrainedValue
-DraftsService
-Dragger
-DraggerService
-DynamicRotate
-EchoSoundEffect
-EmotesPages
-EqualizerSoundEffect
-EulerRotationCurve
-EventIngestService
-Explosion
-FaceAnimatorService
-FaceControls
-FaceInstance
-FacialAnimationRecordingService
-FacialAnimationStreamingService
-Feature
-File
-FileMesh
-Fire
-Flag
-FlagStand
-FlagStandService
-FlangeSoundEffect
-FloatCurve
-FloorWire
-FlyweightService
-Folder
-ForceField
-FormFactorPart
-Frame
-FriendPages
-FriendService
-FunctionalTest
-GamepadService
-GamePassService
-GenericSettings
-Geometry
-GetTextBoundsParams
-GlobalDataStore
-GlobalSettings
-Glue
-GoogleAnalyticsConfiguration
-GroundController
-GroupService
-GuiBase
-GuiBase2d
-GuiBase3d
-GuiButton
-GuidRegistryService
-GuiLabel
-GuiMain
-GuiObject
-GuiService
-HandleAdornment
-Handles
-HandlesBase
-HapticService
-Hat
-HeightmapImporterService
-HiddenSurfaceRemovalAsset
-Highlight
-HingeConstraint
-Hint
-Hole
-Hopper
-HopperBin
-HSRDataContentProvider
-HttpRbxApiService
-HttpRequest
-HttpService
-Humanoid
-HumanoidController
-HumanoidDescription
-IKControl
-ILegacyStudioBridge
-ImageButton
-ImageHandleAdornment
-ImageLabel
-ImporterAnimationSettings
-ImporterBaseSettings
-ImporterFacsSettings
-ImporterGroupSettings
-ImporterJointSettings
-ImporterMaterialSettings
-ImporterMeshSettings
-ImporterRootSettings
-IncrementalPatchBuilder
-InputObject
-InsertService
-Instance
-InstanceAdornment
-IntConstrainedValue
-IntValue
-InventoryPages
-IXPService
-JointInstance
-JointsService
-KeyboardService
-Keyframe
-KeyframeMarker
-KeyframeSequence
-KeyframeSequenceProvider
-LanguageService
-LayerCollector
-LegacyStudioBridge
-Light
-Lighting
-LinearVelocity
-LineForce
-LineHandleAdornment
-LocalDebuggerConnection
-LocalizationService
-LocalizationTable
-LocalScript
-LocalStorageService
-LodDataEntity
-LodDataService
-LoginService
-LogService
-LSPFileSyncService
-LuaSettings
-LuaSourceContainer
-LuauScriptAnalyzerService
-LuaWebService
-ManualGlue
-ManualSurfaceJointInstance
-ManualWeld
-MarkerCurve
-MarketplaceService
-MaterialService
-MaterialVariant
-MemoryStoreQueue
-MemoryStoreService
-MemoryStoreSortedMap
-MemStorageConnection
-MemStorageService
-MeshContentProvider
-MeshPart
-Message
-MessageBusConnection
-MessageBusService
-MessagingService
-MetaBreakpoint
-MetaBreakpointContext
-MetaBreakpointManager
-Model
-ModuleScript
-Motor
-Motor6D
-MotorFeature
-Mouse
-MouseService
-MultipleDocumentInterfaceInstance
-NegateOperation
-NetworkClient
-NetworkMarker
-NetworkPeer
-NetworkReplicator
-NetworkServer
-NetworkSettings
-NoCollisionConstraint
-NonReplicatedCSGDictionaryService
-NotificationService
-NumberPose
-NumberValue
-ObjectValue
-OrderedDataStore
-OutfitPages
-PackageLink
-PackageService
-PackageUIService
-Pages
-Pants
-ParabolaAdornment
-Part
-PartAdornment
-ParticleEmitter
-PartOperation
-PartOperationAsset
-PatchMapping
-Path
-PathfindingLink
-PathfindingModifier
-PathfindingService
-PausedState
-PausedStateBreakpoint
-PausedStateException
-PermissionsService
-PhysicsService
-PhysicsSettings
-PitchShiftSoundEffect
-Plane
-PlaneConstraint
-Platform
-Player
-PlayerEmulatorService
-PlayerGui
-PlayerMouse
-Players
-PlayerScripts
-Plugin
-PluginAction
-PluginDebugService
-PluginDragEvent
-PluginGui
-PluginGuiService
-PluginManagementService
-PluginManager
-PluginManagerInterface
-PluginMenu
-PluginMouse
-PluginPolicyService
-PluginToolbar
-PluginToolbarButton
-PointLight
-PointsService
-PolicyService
-Pose
-PoseBase
-PostEffect
-PrismaticConstraint
-ProcessInstancePhysicsService
-ProximityPrompt
-ProximityPromptService
-PublishService
-PVAdornment
-PVInstance
-QWidgetPluginGui
-RayValue
-RbxAnalyticsService
-ReflectionMetadata
-ReflectionMetadataCallbacks
-ReflectionMetadataClass
-ReflectionMetadataClasses
-ReflectionMetadataEnum
-ReflectionMetadataEnumItem
-ReflectionMetadataEnums
-ReflectionMetadataEvents
-ReflectionMetadataFunctions
-ReflectionMetadataItem
-ReflectionMetadataMember
-ReflectionMetadataProperties
-ReflectionMetadataYieldFunctions
-RemoteDebuggerServer
-RemoteEvent
-RemoteFunction
-RenderingTest
-RenderSettings
-ReplicatedFirst
-ReplicatedStorage
-ReverbSoundEffect
-RigidConstraint
-RobloxPluginGuiService
-RobloxReplicatedStorage
-RocketPropulsion
-RodConstraint
-RopeConstraint
-RotationCurve
-RtMessagingService
-RunningAverageItemDouble
-RunningAverageItemInt
-RunningAverageTimeIntervalItem
-RunService
-RuntimeScriptService
-ScreenGui
-ScreenshotHud
-Script
-ScriptChangeService
-ScriptCloneWatcher
-ScriptCloneWatcherHelper
-ScriptContext
-ScriptDebugger
-ScriptDocument
-ScriptEditorService
-ScriptRegistrationService
-ScriptService
-ScrollingFrame
-Seat
-Selection
-SelectionBox
-SelectionLasso
-SelectionPartLasso
-SelectionPointLasso
-SelectionSphere
-ServerReplicator
-ServerScriptService
-ServerStorage
-ServiceProvider
-SessionService
-Shirt
-ShirtGraphic
-SkateboardController
-SkateboardPlatform
-Skin
-Sky
-SlidingBallConstraint
-Smoke
-Snap
-SnippetService
-SocialService
-SolidModelContentProvider
-Sound
-SoundEffect
-SoundGroup
-SoundService
-Sparkles
-SpawnerService
-SpawnLocation
-Speaker
-SpecialMesh
-SphereHandleAdornment
-SpotLight
-SpringConstraint
-StackFrame
-StandalonePluginScripts
-StandardPages
-StarterCharacterScripts
-StarterGear
-StarterGui
-StarterPack
-StarterPlayer
-StarterPlayerScripts
-Stats
-StatsItem
-Status
-StopWatchReporter
-StringValue
-Studio
-StudioAssetService
-StudioData
-StudioDeviceEmulatorService
-StudioHighDpiService
-StudioPublishService
-StudioScriptDebugEventListener
-StudioService
-StudioTheme
-SunRaysEffect
-SurfaceAppearance
-SurfaceGui
-SurfaceGuiBase
-SurfaceLight
-SurfaceSelection
-SwimController
-Team
-TeamCreateService
-Teams
-TeleportAsyncResult
-TeleportOptions
-TeleportService
-TemporaryCageMeshProvider
-TemporaryScriptService
-Terrain
-TerrainDetail
-TerrainRegion
-TestService
-TextBox
-TextBoxService
-TextButton
-TextChannel
-TextChatCommand
-TextChatConfigurations
-TextChatMessage
-TextChatMessageProperties
-TextChatService
-TextFilterResult
-TextLabel
-TextService
-TextSource
-Texture
-ThirdPartyUserService
-ThreadState
-TimerService
-ToastNotificationService
-Tool
-ToolboxService
-ToolScript
-Torque
-TorsionSpringConstraint
-TotalCountTimeIntervalItem
-TouchInputService
-TouchTransmitter
-TracerService
-TrackerStreamAnimation
-Trail
-Translator
-TremoloSoundEffect
-TriangleMeshPart
-TrussPart
-Tween
-TweenBase
-TweenService
-UGCValidationService
-UIAspectRatioConstraint
-UIBase
-UIComponent
-UIConstraint
-UICorner
-UIGradient
-UIGridLayout
-UIGridStyleLayout
-UILayout
-UIListLayout
-UIPadding
-UIPageLayout
-UIScale
-UISizeConstraint
-UIStroke
-UITableLayout
-UITextSizeConstraint
-UnionOperation
-UniversalConstraint
-UnvalidatedAssetService
-UserGameSettings
-UserInputService
-UserService
-UserSettings
-UserStorageService
-ValueBase
-Vector3Curve
-Vector3Value
-VectorForce
-VehicleController
-VehicleSeat
-VelocityMotor
-VersionControlService
-VideoCaptureService
-VideoFrame
-ViewportFrame
-VirtualInputManager
-VirtualUser
-VisibilityService
-Visit
-VoiceChannel
-VoiceChatInternal
-VoiceChatService
-VoiceSource
-VRService
-WedgePart
-Weld
-WeldConstraint
-WireframeHandleAdornment
-Workspace
-WorldModel
-WorldRoot
-WrapLayer
-WrapLayerYellowWarning
-WrapTarget
-WrapTargetYellowWarning
-]]
-ClassIconNames = {}
-local classIconSeen = {}
-for iconName in ClassIconNamesSource:gmatch("%S+") do
-    if not classIconSeen[iconName] then
-        classIconSeen[iconName] = true
-        ClassIconCatalog[iconName] = true
-        table.insert(ClassIconNames, iconName)
-    end
-end
-ClassIconNamesSource = nil
-classIconSeen = nil
-ClassIconCatalog.Expand = true
-ClassIconCatalog.Collapse = true
-ClassIconCatalog.Search = true
-ClassIconCatalog.Clear = true
-ClassIconCatalog.Refresh = true
-ClassIconCatalog.Settings = true
-ClassIconCatalog.Info = true
-
-local PriorityClassIconsStarted = false
-local function StartPriorityClassIcons()
-    if PriorityClassIconsStarted then return end
-    PriorityClassIconsStarted = true
-    local requested = {}
-    for _, iconName in ipairs(PriorityClassIconNames) do
-        requested[iconName] = true
+local StartupIconsStarted = false
+local function StartStartupIcons()
+    if StartupIconsStarted then return end
+    StartupIconsStarted = true
+    for _, iconName in ipairs(StartupIconNames) do
         RequestClassIcon(iconName)
-    end
-    for _, iconName in ipairs(ClassIconNames) do
-        if not requested[iconName] then
-            RequestClassIcon(iconName)
-        end
     end
 end
 
@@ -2506,6 +1958,9 @@ local function IsMouseOver(x, y, w, h)
 end
 
 local function IsMouseAllowedFor(owner, id)
+    if GalaxyState.IsDraggingLayoutSplit then
+        return owner == "LayoutSplit"
+    end
     if GalaxyState.ContextMenu then
         return owner == "ContextMenu"
     end
@@ -2550,7 +2005,7 @@ local function CreateInteractiveButton(x, y, w, h, label, accentColor, symbol, z
 
     if hovered then
         background = Color3.fromRGB(25, 40, 65)
-        border = Color3.fromRGB(80, 160, 255)
+        border = Theme.AccentHover
     end
 
     RenderSquare(x, y, w, h, background, true, 4, z)
@@ -2562,10 +2017,11 @@ local function CreateInteractiveButton(x, y, w, h, label, accentColor, symbol, z
     elseif symbol == "Reset" then
         RenderCircle(x + 9, y + 9, 4, Theme.White, z + 4, false, 1)
     elseif iconName and RenderClassIcon(iconName, x + 7, y + math.floor((h - 16) / 2), 16, 16, z + 3, hovered and 1 or 0.92) then
-        RenderText(label, x + 29, y + math.floor((h - 12) / 2), hovered and Theme.White or Theme.Text, 11, Drawing.Fonts.System, z + 2)
+        RenderText(FitTextToWidth(label, w - 36, 11), x + 29, y + math.floor((h - 12) / 2),
+            hovered and Theme.White or Theme.Text, 11, Drawing.Fonts.System, z + 2)
     elseif label then
-        RenderText(label, x + w / 2, y + h / 2 - 1, hovered and Theme.White or Theme.Text, 11, Drawing.Fonts.System, z + 2,
-            true)
+        RenderText(FitTextToWidth(label, w - 10, 11), x + w / 2, y + h / 2 - 1,
+            hovered and Theme.White or Theme.Text, 11, Drawing.Fonts.System, z + 2, true)
     end
 
     if GalaxyState.IsMouseClicked and hovered then
@@ -2579,7 +2035,7 @@ local function CreateToolbarIconButton(x, y, size, iconName, zIndex, owner, focu
     local hovered = IsMouseAllowedFor(owner, focusId) and IsMouseOver(x, y, size, size)
     local z = zIndex or 8
     local bg = hovered and Color3.fromRGB(25, 40, 65) or Color3.fromRGB(21, 21, 31)
-    local border = hovered and Color3.fromRGB(80, 160, 255) or Theme.Border
+    local border = hovered and Theme.AccentHover or Theme.Border
     local drawBg = drawBackground ~= false
 
     if drawBg then
@@ -2597,6 +2053,61 @@ local function CreateToolbarIconButton(x, y, size, iconName, zIndex, owner, focu
         return true
     end
     return false
+end
+
+local function RenderAccentColorPicker(x, y, w, zIndex)
+    local z = zIndex or 84
+    local pad = 8
+    local areaX, areaY = x + pad, y + pad
+    local areaW, areaH = w - pad * 2, 76
+    local barY, barH = areaY + areaH + 8, 10
+    local mouseDown = ismouse1pressed()
+
+    if GalaxyState.IsMouseClicked and IsMouseOver(areaX, areaY, areaW, areaH) then
+        GalaxyState.ColorPickerDrag = "SV"
+    elseif GalaxyState.IsMouseClicked and IsMouseOver(areaX, barY, areaW, barH) then
+        GalaxyState.ColorPickerDrag = "Hue"
+    end
+    if not mouseDown then GalaxyState.ColorPickerDrag = nil end
+
+    if GalaxyState.ColorPickerDrag == "SV" then
+        ThemeAccent.S = math.clamp((Mouse.X - areaX) / areaW, 0, 1)
+        ThemeAccent.V = math.clamp(1 - ((Mouse.Y - areaY) / areaH), 0, 1)
+        ApplyThemeAccent()
+    elseif GalaxyState.ColorPickerDrag == "Hue" then
+        ThemeAccent.H = math.clamp((Mouse.X - areaX) / areaW, 0, 1)
+        ApplyThemeAccent()
+    end
+
+    RenderSquare(x, y, w, areaH + barH + pad * 3, Theme.Background, true, 6, z, Theme.GlassStrong)
+    RenderSquare(x, y, w, areaH + barH + pad * 3, Theme.BorderBright, false, 6, z + 1)
+
+    local cols, rows = 18, 10
+    local cellW, cellH = areaW / cols, areaH / rows
+    for row = 0, rows - 1 do
+        local value = 1 - (row / (rows - 1))
+        for col = 0, cols - 1 do
+            local sat = col / (cols - 1)
+            RenderSquare(areaX + col * cellW, areaY + row * cellH, cellW + 1, cellH + 1,
+                HSVToColor3(ThemeAccent.H, sat, value), true, 0, z + 2, 1)
+        end
+    end
+    RenderSquare(areaX, areaY, areaW, areaH, Theme.Border, false, 4, z + 3)
+
+    local cursorX = areaX + ThemeAccent.S * areaW
+    local cursorY = areaY + (1 - ThemeAccent.V) * areaH
+    RenderCircle(cursorX, cursorY, 4, Theme.White, z + 5, false, 1.5, 1)
+
+    local segments = 36
+    local segW = areaW / segments
+    for i = 0, segments - 1 do
+        RenderSquare(areaX + i * segW, barY, segW + 1, barH, HSVToColor3(i / segments, 1, 1), true, 0, z + 2, 1)
+    end
+    RenderSquare(areaX, barY, areaW, barH, Theme.Border, false, 3, z + 3)
+    local hueX = areaX + ThemeAccent.H * areaW
+    RenderLine(hueX, barY - 2, hueX, barY + barH + 2, Theme.White, z + 5, 1.5, 1)
+
+    return y + areaH + barH + pad * 3
 end
 
 local function RenderSelectedChams(baseCFrame, basePos, size)
@@ -2621,6 +2132,7 @@ local function RenderSelectedChams(baseCFrame, basePos, size)
 
     local screenCorners = {}
     local minX, minY, maxX = math.huge, math.huge, -math.huge
+    local lines = {}
     for i = 1, 8 do
         local screen, onScreen = WorldToScreen(worldCorners[i])
         if onScreen then
@@ -2634,39 +2146,75 @@ local function RenderSelectedChams(baseCFrame, basePos, size)
     for _, edge in ipairs(BoxEdges) do
         local a, b = screenCorners[edge[1]], screenCorners[edge[2]]
         if a and b then
-            RenderLine(a.X, a.Y, b.X, b.Y, Theme.Accent, 81, 1, SelectedEsp.ChamsAlpha)
+            lines[#lines + 1] = { a.X, a.Y, b.X, b.Y }
         end
     end
 
     if minX < math.huge and maxX > minX then
-        return (minX + maxX) / 2, minY
+        return (minX + maxX) / 2, minY, lines
     end
     return nil, nil
 end
 
+local function RenderSelectedEspFrame(frame)
+    if not frame then return false end
+    for _, line in ipairs(frame.Lines or {}) do
+        RenderLine(line[1], line[2], line[3], line[4], Theme.Accent, 81, 1, SelectedEsp.ChamsAlpha)
+    end
+
+    RenderSquare(frame.LabelX, frame.Y, frame.LabelW, frame.H, Theme.Section, true, 5, 82, Theme.Glass)
+    RenderSquare(frame.LabelX, frame.Y, frame.LabelW, frame.H, Theme.BorderBright, false, 5, 83, Theme.GlassStrong)
+    RenderText(frame.Label, frame.LabelX + (frame.LabelW / 2), frame.TextY, Theme.White, frame.TextSize,
+        Drawing.Fonts.System, 84, true)
+
+    RenderSquare(frame.DistanceX, frame.Y, frame.DistanceW, frame.H, Theme.Section, true, 5, 82, Theme.Glass)
+    RenderSquare(frame.DistanceX, frame.Y, frame.DistanceW, frame.H, Theme.Border, false, 5, 83, Theme.GlassStrong)
+    RenderText(frame.Distance, frame.DistanceX + (frame.DistanceW / 2), frame.TextY, Theme.SubText, frame.TextSize,
+        Drawing.Fonts.System, 84, true)
+    return true
+end
+
 local function RenderSelectedEsp(target, espPart)
-    if not SelectedEsp.Enabled or not IsInstanceValid(target) then return end
+    if not SelectedEsp.Enabled or not IsInstanceValid(target) then
+        GalaxyState.SelectedVisualCache.Esp = nil
+        return
+    end
     espPart = espPart or GetSelectedPhysicalPart(target)
-    if not espPart then return end
+    if not espPart then
+        RenderSelectedEspFrame(GalaxyState.SelectedVisualCache.Esp)
+        return
+    end
 
     local basePos = ExecuteSafely(function() return espPart.Position end)
     local cameraPos = GetCameraPosition()
-    if not basePos or not cameraPos then return end
+    if not basePos or not cameraPos then
+        RenderSelectedEspFrame(GalaxyState.SelectedVisualCache.Esp)
+        return
+    end
 
     local distance = (cameraPos - basePos).Magnitude
-    if distance < SelectedEsp.MinDistance then return end
+    if distance < SelectedEsp.MinDistance then
+        GalaxyState.SelectedVisualCache.Esp = nil
+        return
+    end
 
     local size = ExecuteSafely(function() return espPart.Size end)
     local baseCFrame = ExecuteSafely(function() return espPart.CFrame end)
-    if not baseCFrame or typeof(baseCFrame) ~= "CFrame" then return end
-    local boxCenterX, boxTopY = RenderSelectedChams(baseCFrame, basePos, size)
+    if not baseCFrame or typeof(baseCFrame) ~= "CFrame" then
+        RenderSelectedEspFrame(GalaxyState.SelectedVisualCache.Esp)
+        return
+    end
+    local boxCenterX, boxTopY, lines = RenderSelectedChams(baseCFrame, basePos, size)
 
     local targetHeight = (size and typeof(size) == "Vector3") and math.max(size.Y, 1) or 2
     local tipWorld = basePos + Vector3.new(0, targetHeight * SelectedEsp.TipHeightScale, 0)
     local tipScreen, tipVisible = WorldToScreen(tipWorld)
     if not tipVisible then
         tipScreen, tipVisible = WorldToScreen(basePos)
-        if not tipVisible then return end
+        if not tipVisible then
+            RenderSelectedEspFrame(GalaxyState.SelectedVisualCache.Esp)
+            return
+        end
     end
 
     local labelSize = math.floor(math.clamp(
@@ -2691,13 +2239,53 @@ local function RenderSelectedEsp(target, espPart)
     local distanceBgX = labelBgX + labelWidth + sectionGap
     local textY = bgY + (labelHeight / 2) - 1
 
-    RenderSquare(labelBgX, bgY, labelWidth, labelHeight, Theme.Section, true, 5, 82, Theme.Glass)
-    RenderSquare(labelBgX, bgY, labelWidth, labelHeight, Theme.BorderBright, false, 5, 83, Theme.GlassStrong)
-    RenderText(label, labelBgX + (labelWidth / 2), textY, Theme.White, labelSize, Drawing.Fonts.System, 84, true)
+    GalaxyState.SelectedVisualCache.Esp = {
+        Lines = lines,
+        Label = label,
+        Distance = distanceLabel,
+        LabelX = labelBgX,
+        DistanceX = distanceBgX,
+        Y = bgY,
+        LabelW = labelWidth,
+        DistanceW = distanceWidth,
+        H = labelHeight,
+        TextY = textY,
+        TextSize = labelSize
+    }
+    RenderSelectedEspFrame(GalaxyState.SelectedVisualCache.Esp)
+end
 
-    RenderSquare(distanceBgX, bgY, distanceWidth, labelHeight, Theme.Section, true, 5, 82, Theme.Glass)
-    RenderSquare(distanceBgX, bgY, distanceWidth, labelHeight, Theme.Border, false, 5, 83, Theme.GlassStrong)
-    RenderText(distanceLabel, distanceBgX + (distanceWidth / 2), textY, Theme.SubText, labelSize, Drawing.Fonts.System, 84, true)
+local function RenderSelectedUiFrame(frame)
+    if not frame then return false end
+    RenderSquare(frame.X, frame.Y, frame.W, frame.H, Color3.fromRGB(25, 40, 65), true, 0, -100, 0.5)
+    RenderSquare(frame.X, frame.Y, frame.W, frame.H, Theme.Accent, false, 0, -99, 1)
+    return true
+end
+
+local function RenderSelectedUi(target)
+    if not IsInstanceValid(target) then
+        GalaxyState.SelectedVisualCache.Ui = nil
+        return
+    end
+
+    local absPos = ExecuteSafely(function() return target.AbsolutePosition end)
+    local absSize = ExecuteSafely(function() return target.AbsoluteSize end)
+    if absPos and absSize and typeof(absPos) == "Vector2" and typeof(absSize) == "Vector2" and
+        absSize.X > 0 and absSize.Y > 0 then
+        GalaxyState.SelectedVisualCache.Ui = {
+            X = absPos.X,
+            Y = absPos.Y,
+            W = absSize.X,
+            H = absSize.Y
+        }
+    end
+
+    RenderSelectedUiFrame(GalaxyState.SelectedVisualCache.Ui)
+end
+
+local function RenderSelectedVisualCache()
+    RenderSelectedUiFrame(GalaxyState.SelectedVisualCache.Ui)
+    RenderSelectedEspFrame(GalaxyState.SelectedVisualCache.Esp)
 end
 
 local function HandleKeyboardScroll(id, currentValue, maxValue, step, isActive)
@@ -2948,6 +2536,28 @@ local function GetDirectSpecsForClass(className)
     return directSpecs, directNames
 end
 
+local function BuildPropertyLines(props)
+    local directProps, memoryProps = {}, {}
+    for _, prop in ipairs(props or {}) do
+        if prop.Memory then
+            memoryProps[#memoryProps + 1] = prop
+        else
+            directProps[#directProps + 1] = prop
+        end
+    end
+
+    local lines = {}
+    if #directProps > 0 then
+        lines[#lines + 1] = { IsHeader = true, Name = "Properties", Icon = "Reference" }
+        for _, prop in ipairs(directProps) do lines[#lines + 1] = prop end
+    end
+    if #memoryProps > 0 then
+        lines[#lines + 1] = { IsHeader = true, Name = "Memory", Icon = "Warning" }
+        for _, prop in ipairs(memoryProps) do lines[#lines + 1] = prop end
+    end
+    return lines
+end
+
 UpdatePropertyPanel = function()
     local props = {}
     local target = GalaxyState.Selected
@@ -3102,7 +2712,7 @@ UpdatePropertyPanel = function()
         end
     end
 
-    GalaxyState.PropLines = props
+    GalaxyState.PropLines = BuildPropertyLines(props)
 end
 
 local function ApplyProp(foc)
@@ -3111,7 +2721,7 @@ local function ApplyProp(foc)
     for p in foc:gmatch("[^_]+") do table.insert(parts, p) end
     local idx = tonumber(parts[2])
     local pData = idx and GalaxyState.PropLines[idx]
-    if not pData or not GalaxyState.Selected then
+    if not pData or pData.IsHeader or not GalaxyState.Selected then
         return ReportGalaxError("Property apply failed", BuildDiagnosticContext({
             Action = "Apply Property",
             Reason = "Property data or selected target is missing",
@@ -3333,33 +2943,34 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
 
     local spectateSubject = ResolveSpectateSubject(GalaxyState.Selected)
     if spectateSubject then
+        local isSpectating = IsSpectatingTarget(GalaxyState.Selected)
         table.insert(buttons, {
-            n = IsSpectatingTarget(GalaxyState.Selected) and "Unspectate" or "Spectate",
-            i = "Camera",
+            n = isSpectating and "Unspectate" or "Spectate",
+            i = isSpectating and "UIOff" or "UIOn",
             f = function() ToggleSpectate(GalaxyState.Selected) end
         })
     end
 
     if selectedPart then
         table.insert(buttons, { n = "Teleport", i = "TeleportService", f = function() TeleportPlayer(GalaxyState.Selected, selectedPart) end })
-        table.insert(buttons, { n = "Bring", i = "AlignPosition", f = function() BringObject(GalaxyState.Selected) end })
-        table.insert(buttons, { n = "Delete", i = "Debris", f = function() DeleteObject(GalaxyState.Selected) end })
+        table.insert(buttons, { n = "Bring", i = "Move", f = function() BringObject(GalaxyState.Selected) end })
+        table.insert(buttons, { n = "Delete", i = "Delete", f = function() DeleteObject(GalaxyState.Selected) end })
     end
 
     if includeGoto then
-        table.insert(buttons, { n = "Goto Path", i = "Path", f = function() NavigateToInstance(GalaxyState.Selected) end })
+        table.insert(buttons, { n = "Goto Path", i = "Struct", f = function() NavigateToInstance(GalaxyState.Selected) end })
     end
 
     table.insert(buttons, {
         n = "Copy Path",
-        i = "ScriptDocument",
+        i = "Copy",
         f = function()
             pcall(setclipboard, GetInstancePath(GalaxyState.Selected)); ShowNotification("Copied Path")
         end
     })
     table.insert(buttons, {
         n = "Copy Name",
-        i = "TextLabel",
+        i = "Copy",
         f = function()
             pcall(setclipboard, ExecuteSafely(function() return GalaxyState.Selected.Name end) or "")
             ShowNotification("Copied Name")
@@ -3374,6 +2985,8 @@ local function OpenSettingsMenu(x, y)
         Y = y
     }
     GalaxyState.FocusedElement = nil
+    GalaxyState.ColorPickerOpen = false
+    GalaxyState.ColorPickerDrag = nil
     GalaxyState.IsDraggingScroll = false
     GalaxyState.IsDraggingSearchScroll = false
     GalaxyState.IsDraggingPropertyScroll = false
@@ -3412,12 +3025,13 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
             local isSelected = IsSelectedNode(node)
             local mouseBlocked = IsMouseBlockedFor("Explorer")
             local hovered = (not mouseBlocked) and IsMouseOver(x, screenY, containerWidth, 20)
+            local rowX, rowW = x + 2, containerWidth - 2
 
             if isSelected then
-                RenderSquare(x, screenY, containerWidth, 20, Theme.Accent, true, 2, 5)
+                RenderSquare(rowX, screenY, rowW, 20, Theme.Accent, true, 2, 5)
             elseif hovered then
-                RenderSquare(x, screenY, containerWidth, 20, Color3.fromRGB(25, 40, 65), true, 2, 5)
-                RenderSquare(x, screenY, containerWidth, 20, Color3.fromRGB(80, 160, 255), false, 2, 6)
+                RenderSquare(rowX, screenY, rowW, 20, Color3.fromRGB(25, 40, 65), true, 2, 5)
+                RenderSquare(rowX, screenY, rowW, 20, Theme.AccentHover, false, 2, 6)
             end
 
             local arrowX = x + (node.Depth * 14) + 8
@@ -3466,6 +3080,7 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
                 GalaxyState.SelectedNode = isSelecting and node or nil
                 MarkSelectedChanged()
                 GalaxyState.PropertyScroll = 0
+                GalaxyState.PropertyScrollY = 0
                 GalaxyState.ContextMenu = nil
                 UpdatePropertyPanel(); GalaxyState.IsMouseClicked = false
             end
@@ -3475,6 +3090,7 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
                 GalaxyState.SelectedNode = node
                 MarkSelectedChanged()
                 GalaxyState.PropertyScroll = 0
+                GalaxyState.PropertyScrollY = 0
                 UpdatePropertyPanel()
                 GalaxyState.ContextMenu = {
                     X = Mouse.X,
@@ -3501,7 +3117,9 @@ local function RenderSettingsMenu()
     local menu = GalaxyState.ContextMenu
     if not menu or menu.Type ~= "Settings" then return false end
 
-    local width, height = 236, 218
+    local width = 236
+    local pickerOpen = GalaxyState.ColorPickerOpen == true
+    local height = pickerOpen and 372 or 252
     local viewport = GetViewportSize()
     local x = math.clamp(menu.X or Mouse.X, 8, math.max(8, viewport.X - width - 8))
     local y = math.clamp(menu.Y or Mouse.Y, 8, math.max(8, viewport.Y - height - 8))
@@ -3513,12 +3131,15 @@ local function RenderSettingsMenu()
     if (GalaxyState.IsMouseClicked or GalaxyState.IsRightMouseClicked) and not hoveredMenu then
         GalaxyState.ContextMenu = nil
         GalaxyState.CapturingKeybind = false
+        GalaxyState.ColorPickerOpen = false
+        GalaxyState.ColorPickerDrag = nil
         GalaxyState.IsMouseClicked = false
         GalaxyState.IsRightMouseClicked = false
         return true
     end
 
-    RenderText("Settings", x + 12, y + 10, Theme.Text, 12, Drawing.Fonts.System, 84)
+    RenderClassIcon("Settings", x + 12, y + 8, 16, 16, 84, 0.96)
+    RenderText("Settings", x + 34, y + 10, Theme.Text, 12, Drawing.Fonts.System, 84)
 
     local keyText = GalaxyState.CapturingKeybind and "Press key..." or ("Keybind: " .. (GalaxyState.MenuToggleName or "F1"))
     local keyW = math.min(width - 24, math.max(92, (#keyText * 7) + 22))
@@ -3527,24 +3148,45 @@ local function RenderSettingsMenu()
         GalaxyState.KeybindCaptureStarted = os.clock()
     end
 
-    RenderText("Quick Search", x + 12, y + 68, Theme.SubText, 10, Drawing.Fonts.System, 84)
-    local quickLabels = { "Workspace", "Replicated", "Character", "StarterGui", "LocalPlayer", "Players" }
     local pad, gap = 10, 8
+    local cursorY = y + 66
+    RenderText("Accent", x + 12, cursorY + 5, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    RenderSquare(x + width - 64, cursorY, 22, 22, Theme.Accent, true, 5, 84, 1)
+    RenderSquare(x + width - 64, cursorY, 22, 22, Theme.Border, false, 5, 85)
+    if CreateToolbarIconButton(x + width - 36, cursorY, 22, "ColorPicker", 84, "ContextMenu", nil, true, 14) then
+        GalaxyState.ColorPickerOpen = not GalaxyState.ColorPickerOpen
+    end
+
+    cursorY = cursorY + 33
+    if GalaxyState.ColorPickerOpen then
+        cursorY = RenderAccentColorPicker(x + pad, cursorY, width - pad * 2, 84) + 12
+    end
+
+    RenderText("Quick Search", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    local quickLabels = { "Workspace", "Replicated", "Character", "StarterGui", "LocalPlayer", "Players" }
+    local quickIcons = {
+        Workspace = "Workspace",
+        Replicated = "ReplicatedStorage",
+        Character = "Player",
+        StarterGui = "StarterGui",
+        LocalPlayer = "Player",
+        Players = "Players"
+    }
     local btnW = (width - pad * 2 - gap) / 2
     local btnH = 24
-    local startY = y + 84
+    local startY = cursorY + 16
     for i, label in ipairs(quickLabels) do
         local col = (i - 1) % 2
         local row = math.floor((i - 1) / 2)
         local bx = x + pad + col * (btnW + gap)
         local by = startY + row * 30
-        if CreateInteractiveButton(bx, by, btnW, btnH, label, Theme.Accent, nil, 84, "ContextMenu") then
+        if CreateInteractiveButton(bx, by, btnW, btnH, label, Theme.Accent, nil, 84, "ContextMenu", quickIcons[label]) then
             GalaxyState.ContextMenu = nil
             RunQuickSearch(label)
         end
     end
 
-    if CreateInteractiveButton(x + pad, y + height - 36, width - pad * 2, 26, "Unload", Theme.Danger, nil, 84, "ContextMenu") then
+    if CreateInteractiveButton(x + pad, y + height - 36, width - pad * 2, 26, "Unload", Theme.Danger, nil, 84, "ContextMenu", "Delete") then
         GalaxyState.ContextMenu = nil
         GalaxyState.PendingUnload = true
     end
@@ -3658,13 +3300,18 @@ task.spawn(function()
             PreviousMenuKey = MenuKeyPressed
         end
 
-        if not isrbxactive() then
+        local activeNow = isrbxactive()
+        if not activeNow then
+            GalaxyState.InactiveSince = GalaxyState.InactiveSince or os.clock()
             setrobloxinput(true)
             GalaxyState.LastRobloxInputBlocked = false
-            ClearDrawingPool()
-            HideUnusedDrawings()
+            if os.clock() - GalaxyState.InactiveSince > 0.15 then
+                ClearDrawingPool()
+                HideUnusedDrawings()
+            end
             continue
         end
+        GalaxyState.InactiveSince = nil
 
         local IsMousePressed = ismouse1pressed()
         GalaxyState.IsMouseClicked = IsMousePressed and not PreviousMouseState
@@ -3798,6 +3445,9 @@ task.spawn(function()
         end
 
         ClearDrawingPool()
+        if GalaxyState.Selected and IsInstanceValid(GalaxyState.Selected) then
+            RenderSelectedVisualCache()
+        end
 
         local RedDotX, DotY = PosX + 18, PosY + HeaderHeight / 2
         local YellowDotX = PosX + 32
@@ -3811,30 +3461,64 @@ task.spawn(function()
             or IsMouseOver(TopSettingsX, TopSettingsY, TopSettingsSize, TopSettingsSize)
             or IsMouseOver(RedDotX - 7, DotY - 7, 14, 14)
             or IsMouseOver(YellowDotX - 7, DotY - 7, 14, 14)
+        local hoveredResizeMode = GalaxyState.GetWindowResizeMode(PosX, PosY, WindowWidth, WindowHeight)
 
-        if not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and
+        if not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and hoveredResizeMode and not overTopbarControl then
+            GalaxyState.ResizeMode = hoveredResizeMode
+            GalaxyState.ResizeStartMouse = Vector2.new(Mouse.X, Mouse.Y)
+            GalaxyState.ResizeStart = { X = PosX, Y = PosY, W = WindowWidth, H = WindowHeight }
+            IsDragging = false
+            GalaxyState.IsMouseClicked = false
+        end
+
+        if not GalaxyState.ResizeMode and not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and
             IsMouseOver(PosX, PosY, WindowWidth, HeaderHeight) and not overTopbarControl then
             IsDragging = true; DragOffset = Vector2.new(Mouse.X - PosX, Mouse.Y - PosY)
         end
-        if not IsMousePressed then IsDragging = false end
-        if IsDragging then
+        if not IsMousePressed then
+            IsDragging = false
+            GalaxyState.ResizeMode = nil
+        end
+        if GalaxyState.ResizeMode then
+            GalaxyState.ApplyWindowResize(GalaxyState.ResizeMode)
+            PosX, PosY = WindowPosition.X, WindowPosition.Y
+        elseif IsDragging then
             WindowPosition = Vector2.new(Mouse.X - DragOffset.X, Mouse.Y - DragOffset.Y)
             PosX, PosY = WindowPosition.X, WindowPosition.Y
-            RedDotX, DotY = PosX + 18, PosY + HeaderHeight / 2
-            YellowDotX = PosX + 32
-            TopSettingsX = PosX + WindowWidth - 34
-            TopSettingsY = PosY + (HeaderHeight - TopSettingsSize) / 2
-            TopRefreshX = TopSettingsX - TopRefreshSize - 8
-            TopRefreshY = PosY + (HeaderHeight - TopRefreshSize) / 2
         end
+        RedDotX, DotY = PosX + 18, PosY + HeaderHeight / 2
+        YellowDotX = PosX + 32
+        TopSettingsX = PosX + WindowWidth - 34
+        TopSettingsY = PosY + (HeaderHeight - TopSettingsSize) / 2
+        TopRefreshX = TopSettingsX - TopRefreshSize - 8
+        TopRefreshY = PosY + (HeaderHeight - TopRefreshSize) / 2
 
         RenderSquare(PosX, PosY, WindowWidth, WindowHeight, Theme.Background, true, 13, 1, Theme.GlassSubtle)
         RenderSquare(PosX, PosY, WindowWidth, WindowHeight, Theme.BorderBright, false, 13, 2)
         RenderSquare(PosX, PosY, WindowWidth, HeaderHeight, Theme.Topbar, true, 13, 10, Theme.GlassTopbar)
         RenderCircle(RedDotX, DotY, 4, Theme.Red, 12)
         RenderCircle(YellowDotX, DotY, 4, Theme.Yellow, 12)
-        RenderCircle(PosX + 46, PosY + HeaderHeight / 2, 4, Theme.Green, 12)
-        RenderText("Galax Dex", PosX + 60, PosY + HeaderHeight / 2 - 6, Theme.Text, 12, Drawing.Fonts.System, 12)
+        RenderText("Galax Dex", PosX + 48, PosY + HeaderHeight / 2 - 6, Theme.Text, 12, Drawing.Fonts.System, 12)
+        local resizeGuideMode = GalaxyState.ResizeMode or hoveredResizeMode
+        if resizeGuideMode then
+            local guideColor = GalaxyState.ResizeMode and Theme.Accent or Theme.BorderBright
+            local guideAlpha = GalaxyState.ResizeMode and 1 or 0.72
+            local margin = 10
+            if resizeGuideMode:find("Left") then
+                RenderLine(PosX, PosY + margin, PosX, PosY + WindowHeight - margin, guideColor, 13, 1, guideAlpha)
+            end
+            if resizeGuideMode:find("Right") then
+                RenderLine(PosX + WindowWidth - 1, PosY + margin, PosX + WindowWidth - 1,
+                    PosY + WindowHeight - margin, guideColor, 13, 1, guideAlpha)
+            end
+            if resizeGuideMode:find("Top") then
+                RenderLine(PosX + margin, PosY, PosX + WindowWidth - margin, PosY, guideColor, 13, 1, guideAlpha)
+            end
+            if resizeGuideMode:find("Bottom") then
+                RenderLine(PosX + margin, PosY + WindowHeight - 1, PosX + WindowWidth - margin,
+                    PosY + WindowHeight - 1, guideColor, 13, 1, guideAlpha)
+            end
+        end
         if not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and IsMouseOver(RedDotX - 7, DotY - 7, 14, 14) then
             UnloadGalaxDex()
             break
@@ -3846,7 +3530,7 @@ task.spawn(function()
         if CreateToolbarIconButton(TopRefreshX, TopRefreshY, TopRefreshSize, "Refresh", 12, nil, nil, true, 14) then
             RunGalaxAction("Refresh", RefreshExplorer)
         end
-        if CreateToolbarIconButton(TopSettingsX, TopSettingsY, TopSettingsSize, "Settings", 12, nil, nil, false, 22) then
+        if CreateToolbarIconButton(TopSettingsX, TopSettingsY, TopSettingsSize, "Settings", 12, nil, nil, true, 14) then
             OpenSettingsMenu(TopSettingsX - 210, PosY + HeaderHeight + 6)
         end
 
@@ -3860,7 +3544,7 @@ task.spawn(function()
 
         RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, Theme.Section, true, 6, 4, Theme.GlassStrong)
         RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, searchFocused and Theme.Accent or Theme.BorderBright, false, 6, 5)
-        RenderText(GalaxyState.SearchQuery == "" and "Search..." or GalaxyState.SearchQuery,
+        RenderText(GalaxyState.SearchQuery == "" and "Search..." or FitTextToWidth(GalaxyState.SearchQuery, SearchBtnX - TextX - 8, 11),
             TextX, SearchY + SearchHeight / 2 - 6,
             GalaxyState.SearchQuery == "" and Theme.SubText or Theme.Text, 11, Drawing.Fonts.System, 6)
         RememberFocusRect("SearchInput", ContainerX, SearchY, SearchBtnX - ContainerX - 4, SearchHeight)
@@ -3883,17 +3567,49 @@ task.spawn(function()
         end
 
         local ContentY = SearchY + SearchHeight + 10
-        local TreeStartY, TreeHeight = ContentY, 340
-        local TreeEndY = TreeStartY + TreeHeight
-        local BottomY, PanelWidth = TreeEndY + 12, ListWidth
-        local PropertyHeight = WindowHeight - (BottomY - PosY) - 14
         local viewingSearch = CurrentTab == "Search"
         local treeNodes = viewingSearch and GalaxyState.SearchRoot.Children or GalaxyState.TreeRoot.Children
+        local TreeStartY, SplitterHeight, PanelWidth = ContentY, 10, ListWidth
+        local MinTreeHeight, MinPropertyHeight = 80, 96
+        local AvailableHeight = math.max(MinTreeHeight + SplitterHeight + MinPropertyHeight,
+            WindowHeight - (ContentY - PosY) - 14)
+        local SplitArea = AvailableHeight - SplitterHeight
+        local MaxTreeHeight = math.max(MinTreeHeight, SplitArea - MinPropertyHeight)
+        local TreeHeight = math.clamp(GalaxyState.SnapToStep(SplitArea * (GalaxyState.LayoutSplitRatio or (340 / 592)), 20),
+            MinTreeHeight, MaxTreeHeight)
+        local SplitterY = TreeStartY + TreeHeight
+        local splitHovered = IsMouseAllowedFor("LayoutSplit") and IsMouseOver(ContainerX, SplitterY, ListWidth, SplitterHeight)
+
+        if splitHovered and GalaxyState.IsMouseClicked then
+            GalaxyState.IsDraggingLayoutSplit = true
+            GalaxyState.IsMouseClicked = false
+        end
+        if not IsMousePressed then GalaxyState.IsDraggingLayoutSplit = false end
+        if GalaxyState.IsDraggingLayoutSplit then
+            TreeHeight = math.clamp(GalaxyState.SnapToStep(Mouse.Y - TreeStartY, 20), MinTreeHeight, MaxTreeHeight)
+            GalaxyState.LayoutSplitRatio = TreeHeight / SplitArea
+            SplitterY = TreeStartY + TreeHeight
+        end
+
+        local TreeEndY = SplitterY
+        local BottomY = SplitterY + SplitterHeight
+        local PropertyHeight = math.max(MinPropertyHeight, WindowHeight - (BottomY - PosY) - 14)
 
         RenderSquare(ContainerX, TreeStartY, ListWidth, TreeHeight, Theme.Section, true, 6, 4)
         RenderSquare(ContainerX, TreeStartY, ListWidth, TreeHeight, Theme.Border, false, 6, 5)
         RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Section, true, 6, 4)
         RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Border, false, 6, 5)
+        local SplitHandleW = math.min(86, ListWidth * 0.35)
+        local SplitHandleX = ContainerX + (ListWidth - SplitHandleW) / 2
+        RenderSquare(SplitHandleX, SplitterY + 2, SplitHandleW, SplitterHeight - 4,
+            Theme.Section, true, 4, 7, Theme.GlassSubtle)
+        RenderSquare(SplitHandleX, SplitterY + 2, SplitHandleW, SplitterHeight - 4,
+            GalaxyState.IsDraggingLayoutSplit and Theme.Accent or Theme.BorderBright, false, 4, 8,
+            GalaxyState.IsDraggingLayoutSplit and 0.85 or 0.55)
+        RenderLine(PosX + WindowWidth - 15, PosY + WindowHeight - 5, PosX + WindowWidth - 5,
+            PosY + WindowHeight - 15, GalaxyState.ResizeMode and Theme.AccentHover or Theme.BorderBright, 9, 1, 0.6)
+        RenderLine(PosX + WindowWidth - 10, PosY + WindowHeight - 5, PosX + WindowWidth - 5,
+            PosY + WindowHeight - 10, GalaxyState.ResizeMode and Theme.AccentHover or Theme.BorderBright, 9, 1, 0.5)
 
         local ScrollTrackX = ContainerX + ListWidth - 14
         local ScrollTrackY = TreeStartY + 6
@@ -3939,17 +3655,37 @@ task.spawn(function()
             (activeMaxScrollY > 0 and (activeScrollY / activeMaxScrollY) * (ScrollTrackHeight - ScrollThumbHeight) or 0)
 
         local TotalProperties = #GalaxyState.PropLines
-        local MaxPropertyLines = math.floor((PropertyHeight - 16) / 36)
-        GalaxyState.PropertyScroll = math.clamp(GalaxyState.PropertyScroll or 0, 0,
-            math.max(0, TotalProperties - MaxPropertyLines))
+        local PropertyTopPad, PropertyBottomPad = 10, 8
+        local PropertyRowHeight, PropertyHeaderHeight = 32, 32
+        local PropertyVisibleHeight = math.max(1, PropertyHeight - PropertyTopPad - PropertyBottomPad)
+        local PropertyHeights, PropertyContentHeight = {}, 0
+        for idx, item in ipairs(GalaxyState.PropLines) do
+            local lineHeight = (item and item.IsHeader) and PropertyHeaderHeight or PropertyRowHeight
+            PropertyHeights[idx] = lineHeight
+            PropertyContentHeight = PropertyContentHeight + lineHeight
+        end
+
+        local MaxScrollIndex = 0
+        if PropertyContentHeight > PropertyVisibleHeight then
+            local usedHeight = 0
+            for idx = TotalProperties, 1, -1 do
+                local lineHeight = PropertyHeights[idx] or PropertyRowHeight
+                if usedHeight + lineHeight > PropertyVisibleHeight then
+                    MaxScrollIndex = idx
+                    break
+                end
+                usedHeight = usedHeight + lineHeight
+            end
+        end
+        GalaxyState.PropertyScroll = math.clamp(math.floor((GalaxyState.PropertyScroll or 0) + 0.5), 0, MaxScrollIndex)
+        GalaxyState.PropertyScrollY = GalaxyState.PropertyScroll
 
         local PropertyScrollTrackX = ContainerX + PanelWidth - 14
-        local PropertyScrollTrackY = BottomY + 6
-        local PropertyScrollTrackHeight = PropertyHeight - 12
-        local MaxScrollIndex = math.max(0, TotalProperties - MaxPropertyLines)
+        local PropertyScrollTrackY = BottomY + 5
+        local PropertyScrollTrackHeight = PropertyHeight - 10
         local PropertyScrollThumbHeight = math.max(20,
-            (math.min(TotalProperties, MaxPropertyLines) / math.max(1, TotalProperties)) * PropertyScrollTrackHeight)
-        if TotalProperties <= MaxPropertyLines then PropertyScrollThumbHeight = PropertyScrollTrackHeight end
+            (PropertyVisibleHeight / math.max(1, PropertyContentHeight)) * PropertyScrollTrackHeight)
+        if PropertyContentHeight <= PropertyVisibleHeight then PropertyScrollThumbHeight = PropertyScrollTrackHeight end
 
         if not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and IsMouseOver(PropertyScrollTrackX - 3, PropertyScrollTrackY, 14, PropertyScrollTrackHeight) then
             GalaxyState.IsDraggingPropertyScroll = true
@@ -3965,31 +3701,46 @@ task.spawn(function()
 
         GalaxyState.PropertyScroll = HandleKeyboardScroll("Property", GalaxyState.PropertyScroll, MaxScrollIndex, 1,
             IsMouseOver(ContainerX, BottomY, PanelWidth, PropertyHeight))
+        GalaxyState.PropertyScrollY = GalaxyState.PropertyScroll
 
         local PropertyScrollThumbY = PropertyScrollTrackY +
             (MaxScrollIndex > 0 and (GalaxyState.PropertyScroll / MaxScrollIndex) * (PropertyScrollTrackHeight - PropertyScrollThumbHeight) or 0)
 
         RenderSquare(PropertyScrollTrackX, PropertyScrollTrackY, 9, PropertyScrollTrackHeight, Theme.Background, true, 4, 10)
         local propertyThumbBg = GalaxyState.IsDraggingPropertyScroll and Theme.Accent or Theme.BorderBright
-        local propertyThumbBorder = GalaxyState.IsDraggingPropertyScroll and Color3.fromRGB(100, 180, 255) or Color3.fromRGB(90, 90, 120)
+        local propertyThumbBorder = GalaxyState.IsDraggingPropertyScroll and Theme.AccentHover or Color3.fromRGB(90, 90, 120)
         RenderSquare(PropertyScrollTrackX, PropertyScrollThumbY, 9, PropertyScrollThumbHeight, propertyThumbBorder, true, 4, 11)
         RenderSquare(PropertyScrollTrackX + 1, PropertyScrollThumbY + 1, 7, PropertyScrollThumbHeight - 2, propertyThumbBg, true, 3, 12)
 
         RenderSquare(ScrollTrackX, ScrollTrackY, 9, ScrollTrackHeight, Theme.Background, true, 4, 10)
         local thumbBg = GalaxyState[dragFlag] and Theme.Accent or Theme.BorderBright
-        local thumbBorder = GalaxyState[dragFlag] and Color3.fromRGB(100, 180, 255) or Color3.fromRGB(90, 90, 120)
+        local thumbBorder = GalaxyState[dragFlag] and Theme.AccentHover or Color3.fromRGB(90, 90, 120)
         RenderSquare(ScrollTrackX, ScrollThumbY, 9, ScrollThumbHeight, thumbBorder, true, 4, 11)
         RenderSquare(ScrollTrackX + 1, ScrollThumbY + 1, 7, ScrollThumbHeight - 2, thumbBg, true, 3, 12)
 
-        local propY = BottomY + 20
-        for i = 1, MaxPropertyLines do
-            local pData = GalaxyState.PropLines[i + GalaxyState.PropertyScroll]
+        local propY = BottomY + PropertyTopPad
+        local propEndY = BottomY + PropertyHeight - PropertyBottomPad
+        local propIndex = GalaxyState.PropertyScroll + 1
+        local drawnProperties = 0
+        while propIndex <= TotalProperties and propY < propEndY and drawnProperties < TotalProperties do
+            local pData = GalaxyState.PropLines[propIndex]
             if pData then
-                RenderText(pData.Name, ContainerX + 10, propY, Theme.SubText, 10, Drawing.Fonts.System, 6)
+                local lineHeight = PropertyHeights[propIndex] or PropertyRowHeight
+                if propY + lineHeight > propEndY then break end
+                if pData.IsHeader then
+                    local headerY = propY + math.floor((lineHeight - 16) / 2)
+                    RenderClassIcon(pData.Icon, ContainerX + 10, headerY + 1, 14, 14, 7, 0.92)
+                    RenderText(pData.Name, ContainerX + 31, headerY + 3, Theme.Text, 11, Drawing.Fonts.System, 7)
+                    propY = propY + lineHeight
+                else
+                local inputX, inputY, inputW, inputH = ContainerX + 10, propY + 10, PanelWidth - 28, 18
+                local stateIcon = pData.IsReadOnly and "Lock" or "Modified"
+                local stateAlpha = pData.IsReadOnly and 0.78 or 0.92
 
-                local inputX, inputY, inputW, inputH = ContainerX + 10, propY + 11, PanelWidth - 28, 18
+                RenderText(FitTextToWidth(pData.Name, inputW, 10), inputX, propY, Theme.SubText, 10,
+                    Drawing.Fonts.System, 6)
 
-                local propKey = "Prop_" .. (i + GalaxyState.PropertyScroll)
+                local propKey = "Prop_" .. propIndex
                 local isFocused = GalaxyState.FocusedElement == propKey
                 local bgColor = pData.IsReadOnly and Color3.fromRGB(20, 20, 30) or
                     (isFocused and Color3.fromRGB(15, 15, 25) or Color3.fromRGB(25, 25, 35))
@@ -4002,7 +3753,9 @@ task.spawn(function()
 
                     RenderSquare(inputX, inputY, textBoxW, inputH, Color3.fromRGB(20, 20, 30), true, 4, 6, Theme.GlassStrong)
                     RenderSquare(inputX, inputY, textBoxW, inputH, Theme.Border, false, 4, 7)
-                    RenderText(pData.EditValue, inputX + 6, inputY + 3, Theme.SubText, 10, Drawing.Fonts.System, 8)
+                    RenderText(FitTextToWidth(pData.EditValue, textBoxW - 25, 10), inputX + 6, inputY + 3,
+                        Theme.SubText, 10, Drawing.Fonts.System, 8)
+                    RenderClassIcon(stateIcon, inputX + textBoxW - 15, inputY + 3, 12, 12, 8, stateAlpha)
 
                     local isTrue = (pData.EditValue == true or pData.EditValue == "true")
                     local toggleBg = isTrue and Theme.Accent or Color3.fromRGB(25, 25, 35)
@@ -4030,12 +3783,16 @@ task.spawn(function()
                         local subKey = propKey .. "_" .. subIdx
                         local isSubFocused = GalaxyState.FocusedElement == subKey
                         local subBg = isSubFocused and Color3.fromRGB(15, 15, 25) or Color3.fromRGB(25, 25, 35)
+                        local isLastComponent = subIdx == count - 1
 
                         RenderSquare(subX, inputY, subW, inputH, subBg, true, 4, 6, Theme.GlassStrong)
                         RenderSquare(subX, inputY, subW, inputH, isSubFocused and Theme.Accent or Theme.Border, false,
                             4, 7)
-                        RenderText(components[subIdx + 1] or "0", subX + 4, inputY + 3, Theme.Text, 10,
-                            Drawing.Fonts.System, 8)
+                        RenderText(FitTextToWidth(components[subIdx + 1] or "0", subW - (isLastComponent and 24 or 8), 10),
+                            subX + 4, inputY + 3, Theme.Text, 10, Drawing.Fonts.System, 8)
+                        if isLastComponent then
+                            RenderClassIcon(stateIcon, subX + subW - 15, inputY + 3, 12, 12, 8, stateAlpha)
+                        end
                         RememberFocusRect(subKey, subX, inputY, subW, inputH)
 
                         if IsMouseAllowedFor("TextInput", subKey) and GalaxyState.IsMouseClicked and IsMouseOver(subX, inputY, subW, inputH) then
@@ -4049,8 +3806,9 @@ task.spawn(function()
                     RenderSquare(inputX, inputY, inputW, inputH, bgColor, true, 4, 6, Theme.GlassStrong)
                     RenderSquare(inputX, inputY, inputW, inputH, isFocused and Theme.Accent or Theme.Border, false, 4,
                         7)
-                    RenderText(pData.EditValue, inputX + 6, inputY + 3,
+                    RenderText(FitTextToWidth(pData.EditValue, inputW - 30, 10), inputX + 6, inputY + 3,
                         pData.IsReadOnly and Theme.SubText or Theme.Text, 10, Drawing.Fonts.System, 8)
+                    RenderClassIcon(stateIcon, inputX + inputW - 15, inputY + 3, 12, 12, 8, stateAlpha)
                     RememberFocusRect(propKey, inputX, inputY, inputW, inputH)
 
                     if IsMouseAllowedFor("TextInput", propKey) and not pData.IsReadOnly and GalaxyState.IsMouseClicked and IsMouseOver(inputX, inputY, inputW, inputH) then
@@ -4061,25 +3819,21 @@ task.spawn(function()
                     end
                 end
 
-                propY = propY + 36
+                propY = propY + lineHeight
+                end
             end
+            propIndex = propIndex + 1
+            drawnProperties = drawnProperties + 1
         end
 
         DisplayExplorerTree(treeNodes, ContainerX, 0, TreeStartY + 1, TreeEndY - 1, ListWidth - 16, activeScrollY)
 
         if GalaxyState.Selected and IsInstanceValid(GalaxyState.Selected) then
-            local absPos = ExecuteSafely(function() return GalaxyState.Selected.AbsolutePosition end)
-            local absSize = ExecuteSafely(function() return GalaxyState.Selected.AbsoluteSize end)
-            if absPos and absSize and typeof(absPos) == "Vector2" and typeof(absSize) == "Vector2" then
-                -- Fundo azul escuro com 50% de transparência, ZIndex 0 (por baixo de toda a UI do Dex)
-                RenderSquare(absPos.X, absPos.Y, absSize.X, absSize.Y, Color3.fromRGB(25, 40, 65), true, 0, -100, 0.5)
-                -- Borda azul claro (Accent), ZIndex 1
-                RenderSquare(absPos.X, absPos.Y, absSize.X, absSize.Y, Theme.Accent, false, 0, -99, 1)
-            end
-            RenderSelectedEsp(GalaxyState.Selected, selectedPhysicalPart)
+            RenderSelectedUi(GalaxyState.Selected)
+            RenderSelectedEsp(GalaxyState.Selected, GalaxyState.SelectedPhysicalPart)
         end
 
-        RenderContextMenu(selectedPhysicalPart)
+        RenderContextMenu(GalaxyState.SelectedPhysicalPart)
         if GalaxyState.PendingUnload then
             UnloadGalaxDex()
             break
@@ -4105,7 +3859,8 @@ task.spawn(function()
             if isTyping then GalaxyState.LastInputTime = currentTime end
 
             local isCoolingDown = GalaxyState.LastEditTime and (currentTime - GalaxyState.LastEditTime < 0.5)
-            local isInteracting = IsDragging or GalaxyState.IsDraggingScroll or GalaxyState.IsDraggingSearchScroll or
+            local isInteracting = IsDragging or GalaxyState.ResizeMode or GalaxyState.IsDraggingLayoutSplit or
+                GalaxyState.IsDraggingScroll or GalaxyState.IsDraggingSearchScroll or
                 GalaxyState.IsDraggingPropertyScroll or IsMousePressed
             if isInteracting then
                 GalaxyState.LastInteractionTime = currentTime
@@ -4201,5 +3956,5 @@ end)
 
 task.spawn(function()
     task.wait()
-    StartPriorityClassIcons()
+    StartStartupIcons()
 end)
