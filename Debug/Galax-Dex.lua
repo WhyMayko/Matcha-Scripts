@@ -118,17 +118,30 @@ local function DirectProp(name, readOnly)
     return { Kind = "direct", Name = name, ReadOnly = readOnly }
 end
 
-local function DirectComputedProp(name, readOnly, reader)
-    return { Kind = "direct", Name = name, ReadOnly = readOnly, Reader = reader }
+local function DirectComputedProp(name, readOnly, reader, writer)
+    return { Kind = "direct", Name = name, ReadOnly = readOnly, Reader = reader, Writer = writer }
 end
 
 local DirectPropertySpecs = {
+    Player = {
+        DirectProp("Character", true),
+        DirectProp("Team", false)
+    },
+    Humanoid = {
+        DirectProp("Health", false),
+        DirectProp("MaxHealth", false)
+    },
     BasePart = {
         DirectProp("Position", false),
         DirectProp("Size", false),
-        DirectComputedProp("Rotation", true, function(target)
+        DirectComputedProp("LookVector", false, function(target)
             local cf = target.CFrame
             return cf and typeof(cf) == "CFrame" and cf.LookVector or nil
+        end, function(target, value)
+            if typeof(value) ~= "Vector3" or value.Magnitude <= 0.001 then return false end
+            local pos = target.Position
+            target.CFrame = CFrame.lookAt(pos, pos + value)
+            return true
         end),
         DirectProp("Color", false),
         DirectProp("Velocity", false),
@@ -141,6 +154,7 @@ local DirectPropertySpecs = {
     },
     Camera = {
         DirectProp("Position", false),
+        DirectProp("FieldOfView", false),
         DirectProp("ViewportSize", true)
     },
     GuiObject = {
@@ -173,7 +187,6 @@ local PropertyOffsetSpecs = {
         MemoryProp("MaxZoomDistance", "Player", "MaxZoomDistance", "float", false),
         MemoryProp("HealthDisplayDistance", "Player", "HealthDisplayDistance", "float", false),
         MemoryProp("NameDisplayDistance", "Player", "NameDisplayDistance", "float", false),
-        MemoryProp("Character / ModelInstance", "Player", "ModelInstance", "uintptr_t", true),
         MemoryProp("Mouse", "Player", "Mouse", "uintptr_t", true),
     },
     Humanoid = {
@@ -209,7 +222,6 @@ local PropertyOffsetSpecs = {
     },
     BasePart = {
         PrimitiveProp("Material", "Material", "int", false),
-        PrimitiveProp("AngularVelocity", "AssemblyAngularVelocity", "vector3", false),
         PrimitiveFlag("Anchored", "Anchored", false),
         PrimitiveFlag("CanTouch", "CanTouch", false),
         PrimitiveFlag("CanQuery", "CanQuery", false),
@@ -388,6 +400,7 @@ end
 local function ApplyThemeAccent()
     Theme.Accent = HSVToColor3(ThemeAccent.H, ThemeAccent.S, ThemeAccent.V)
     Theme.AccentHover = LerpColor(Theme.Accent, Theme.White, 0.28)
+    Theme.AccentSurface = LerpColor(Theme.Accent, Theme.Background, 0.78)
 end
 
 ApplyThemeAccent()
@@ -403,6 +416,15 @@ local SelectedEsp = {
     Height = 20,
     Gap = 5,
     ChamsAlpha = 0.92
+}
+
+local SelectedVisualZ = {
+    UiFill = -100,
+    UiBorder = -99,
+    Chams = -96,
+    LabelFill = -94,
+    LabelBorder = -93,
+    LabelText = -92
 }
 
 local BoxEdges = {
@@ -428,12 +450,14 @@ local function IsInstanceValid(inst)
 end
 
 local function ReadMemoryRaw(memType, address, offset, expectedType)
-    local ok, val = pcall(memory_read, memType, address + offset)
-    return ok and type(val) == expectedType and val or nil
+    if type(address) ~= "number" or type(offset) ~= "number" then return nil end
+    local val = memory_read(memType, address + offset)
+    return type(val) == expectedType and val or nil
 end
 
 local function WriteMemoryRaw(memType, address, offset, value)
-    pcall(memory_write, memType, address + offset, value)
+    if type(address) ~= "number" or type(offset) ~= "number" then return end
+    memory_write(memType, address + offset, value)
 end
 
 local function ReadMemoryByte(address, offset) return ReadMemoryRaw("byte", address, offset, "number") end
@@ -644,8 +668,6 @@ local GalaxyState = {
     IsDraggingLayoutSplit = false,
     LayoutSplitRatio = 340 / 592,
     ScrollKeyHold = {},
-    CustomNames = {},
-    CustomNamesByAddress = {},
     LastEditTime = 0,
     LastPropertyUpdate = 0,
     LastInputTime = 0,
@@ -658,14 +680,52 @@ local GalaxyState = {
     ContextMenu = nil,
     FocusRects = {},
     LastRobloxInputBlocked = false,
+    WindowSnapSide = nil,
+    WindowSnapPreview = nil,
+    WindowFreeWidth = nil,
+    WindowFreeHeight = nil,
+    ShowExplorer = true,
+    ShowProperties = true,
+    ShowVisuals = true,
+    DexControlOpen = false,
+    PropertiesDetached = false,
+    PropertiesWindowX = nil,
+    PropertiesWindowY = nil,
+    PropertiesWindowW = nil,
+    PropertiesWindowH = nil,
+    PropertiesFreeW = nil,
+    PropertiesFreeH = nil,
+    PropertiesSnapSide = nil,
+    PropertiesSnapPreview = nil,
+    PropertiesResizeMode = nil,
+    PropertiesResizeStartMouse = nil,
+    PropertiesResizeStart = nil,
+    IsDraggingPropertiesWindow = false,
+    PropertiesWindowDragOffset = nil,
+    MainBarOwner = nil,
+    MainBarRestore = nil,
     MenuToggleKey = 0x70,
     MenuToggleName = "F1",
+    HideServices = false,
     CapturingKeybind = false,
     KeybindCaptureStarted = 0,
     SuppressMenuToggleUntilRelease = false,
     PendingUnload = false,
     SpectateTarget = nil,
     SpectateSubject = nil,
+    TweenTarget = nil,
+    TweenTargetAddress = nil,
+    TweenTargetPart = nil,
+    TweenTargetPartAddress = nil,
+    TweenLocalPart = nil,
+    TweenLocalPartAddress = nil,
+    TweenSpeed = 320,
+    TweenSpeedText = "320",
+    TweenActive = false,
+    LastTweenUpdate = 0,
+    PendingRenameAddress = nil,
+    PendingRenameName = nil,
+    PendingRenameUntil = 0,
     LastSelectedCheck = 0,
     SelectedPhysicalPart = nil,
     SelectedVisualCache = {},
@@ -673,6 +733,112 @@ local GalaxyState = {
 }
 
 local CurrentTab = "Explorer"
+
+local DexSettings = {
+    Path = "Galax/Dex/Settings.json",
+    MainServiceOrder = {
+        "Workspace",
+        "Players",
+        "Lighting",
+        "MaterialService",
+        "ReplicatedFirst",
+        "ReplicatedStorage",
+        "ServerScriptService",
+        "ServerStorage",
+        "StarterGui",
+        "StarterPack",
+        "StarterPlayer",
+        "SoundService"
+    },
+    MainServices = {
+        Workspace = true,
+        Players = true,
+        Lighting = true,
+        MaterialService = true,
+        ReplicatedFirst = true,
+        ReplicatedStorage = true,
+        ServerScriptService = true,
+        ServerStorage = true,
+        StarterGui = true,
+        StarterPack = true,
+        StarterPlayer = true,
+        SoundService = true
+    }
+}
+
+function DexSettings.IsRootServiceContainer(inst)
+    if not inst then return false end
+    if inst == game then return true end
+
+    local fullName = ExecuteSafely(function() return inst:GetFullName() end) or ""
+    if fullName == "game" or fullName == "game.Ugc" then return true end
+
+    local name = ExecuteSafely(function() return inst.Name end) or ""
+    if name == "Ugc" then
+        local parent = ExecuteSafely(function() return inst.Parent end)
+        if parent == game then return true end
+        local parentFullName = ExecuteSafely(function() return parent:GetFullName() end) or ""
+        return parentFullName == "game"
+    end
+
+    return false
+end
+
+function DexSettings.GetRootServices()
+    local services = {}
+    for _, serviceName in ipairs(DexSettings.MainServiceOrder) do
+        local service = ExecuteSafely(function() return game:GetService(serviceName) end)
+        if service then services[#services + 1] = service end
+    end
+    return services
+end
+
+function DexSettings.GetChildren(inst)
+    if GalaxyState.HideServices and DexSettings.IsRootServiceContainer(inst) then
+        return DexSettings.GetRootServices()
+    end
+    return ExecuteSafely(function() return inst:GetChildren() end)
+end
+
+function DexSettings.Save()
+    pcall(function()
+        pcall(makefolder, "Galax")
+        pcall(makefolder, "Galax/Dex")
+        writefile(DexSettings.Path, HttpService:JSONEncode({
+            MenuToggleKey = GalaxyState.MenuToggleKey,
+            MenuToggleName = GalaxyState.MenuToggleName,
+            TweenSpeed = GalaxyState.TweenSpeed,
+            HideServices = GalaxyState.HideServices,
+            Accent = {
+                H = ThemeAccent.H,
+                S = ThemeAccent.S,
+                V = ThemeAccent.V
+            }
+        }))
+    end)
+end
+
+function DexSettings.Load()
+    local ok, raw = pcall(readfile, DexSettings.Path)
+    if not ok or type(raw) ~= "string" or raw == "" then return end
+
+    local decodedOk, data = pcall(function() return HttpService:JSONDecode(raw) end)
+    if not decodedOk or type(data) ~= "table" then return end
+
+    if tonumber(data.MenuToggleKey) then GalaxyState.MenuToggleKey = tonumber(data.MenuToggleKey) end
+    if type(data.MenuToggleName) == "string" then GalaxyState.MenuToggleName = data.MenuToggleName end
+    if tonumber(data.TweenSpeed) then
+        GalaxyState.TweenSpeed = math.clamp(tonumber(data.TweenSpeed), 1, 10000)
+        GalaxyState.TweenSpeedText = tostring(math.floor(GalaxyState.TweenSpeed + 0.5))
+    end
+    if type(data.HideServices) == "boolean" then GalaxyState.HideServices = data.HideServices end
+    if type(data.Accent) == "table" then
+        if tonumber(data.Accent.H) then ThemeAccent.H = math.clamp(tonumber(data.Accent.H), 0, 1) end
+        if tonumber(data.Accent.S) then ThemeAccent.S = math.clamp(tonumber(data.Accent.S), 0, 1) end
+        if tonumber(data.Accent.V) then ThemeAccent.V = math.clamp(tonumber(data.Accent.V), 0, 1) end
+        ApplyThemeAccent()
+    end
+end
 
 local function InvalidateResolvedTarget()
     GalaxyState.ResolvedTarget = nil
@@ -724,11 +890,15 @@ local function GetInstanceAddress(inst)
     return ExecuteSafely(function() return inst.Address end)
 end
 
+local function IsSameInstance(a, b)
+    if a == b then return true end
+    local aAddress = GetInstanceAddress(a)
+    local bAddress = GetInstanceAddress(b)
+    return aAddress and bAddress and aAddress ~= 0 and bAddress ~= 0 and tostring(aAddress) == tostring(bAddress)
+end
+
 local function GetDisplayName(inst)
-    local address = GetInstanceAddress(inst)
-    return (GalaxyState.CustomNames and GalaxyState.CustomNames[inst]) or
-        (GalaxyState.CustomNamesByAddress and address and GalaxyState.CustomNamesByAddress[address]) or
-        ExecuteSafely(function() return inst.Name end) or "???"
+    return ExecuteSafely(function() return inst.Name end) or "???"
 end
 
 local function DescribeInstance(inst)
@@ -820,6 +990,7 @@ local function RefreshNodeIdentity(node, inst)
     node.Name = GetDisplayName(inst)
     node.ClassName = ExecuteSafely(function() return inst.ClassName end) or "???"
     node.TargetKind = nil
+    node.TargetPlayer = nil
     node.TargetKindChecked = false
 end
 
@@ -862,33 +1033,48 @@ local function IsBasePart(inst)
     return typeof(pos) == "Vector3" and typeof(size) == "Vector3"
 end
 
+local function FindPlayerForCharacter(character)
+    if not character then return nil end
+    local players = ExecuteSafely(function() return Players:GetChildren() end) or {}
+    for _, player in ipairs(players) do
+        local playerCharacter = ExecuteSafely(function() return player.Character end)
+        if IsSameInstance(playerCharacter, character) then
+            return player
+        end
+    end
+    return nil
+end
+
 local function ResolveObjectTarget(target)
     if not IsInstanceValid(target) then return nil end
 
     local class = GetClassName(target)
     if class == "Player" then
         local character = ExecuteSafely(function() return target.Character end)
-        local info = character and ResolveObjectTarget(character) or nil
-        if not info then return { Kind = target == LocalPlayer and "LocalPlayer" or "Player", Source = target, ClassName = class } end
-        info.Kind = target == LocalPlayer and "LocalPlayer" or "Player"
-        info.Player = target
-        info.Source = target
-        return info
+        local primary = character and ExecuteSafely(function() return character:FindFirstChild("HumanoidRootPart") or character.PrimaryPart end) or nil
+        local humanoid = character and ExecuteSafely(function() return character:FindFirstChildOfClass("Humanoid") end) or nil
+        local kind = IsSameInstance(target, LocalPlayer) and "LocalPlayer" or "Player"
+        if primary and IsBasePart(primary) then
+            return { Kind = kind, Part = primary, Humanoid = humanoid, Player = target, Character = character, Source = target, ClassName = class }
+        end
+        return { Kind = kind, Humanoid = humanoid, Player = target, Character = character, Source = target, ClassName = class }
     end
 
     if class == "Model" then
         local humanoid = ExecuteSafely(function() return target:FindFirstChildOfClass("Humanoid") end)
-        local modelName = ExecuteSafely(function() return target.Name end)
-        local matchedPlayer = modelName and ExecuteSafely(function() return Players:FindFirstChild(modelName) end) or nil
-        local kind = humanoid and "NPC" or "Model"
-        if matchedPlayer then kind = matchedPlayer == LocalPlayer and "LocalPlayer" or "Player" end
-
-        local primary = ExecuteSafely(function() return target.PrimaryPart end)
+        local player = FindPlayerForCharacter(target)
+        local kind = player and (IsSameInstance(player, LocalPlayer) and "LocalPlayer" or "Player") or (humanoid and "NPC" or "Model")
+        local primary = ExecuteSafely(function() 
+            if humanoid or player then
+                return target:FindFirstChild("HumanoidRootPart") or target.PrimaryPart
+            end
+            return target.PrimaryPart 
+        end)
         if primary and IsBasePart(primary) then
-            return { Kind = kind, Part = primary, Humanoid = humanoid, Player = matchedPlayer, Source = target, ClassName = class }
+            return { Kind = kind, Part = primary, Humanoid = humanoid, Player = player, Character = target, Source = target, ClassName = class }
         end
 
-        return humanoid and { Kind = kind, Humanoid = humanoid, Player = matchedPlayer, Source = target, ClassName = class } or nil
+        return (humanoid or player) and { Kind = kind, Humanoid = humanoid, Player = player, Character = target, Source = target, ClassName = class } or nil
     end
 
     if IsBasePart(target) then
@@ -922,6 +1108,13 @@ end
 local function GetSelectedPhysicalPart(target)
     local info = GetResolvedTarget(target)
     return info and info.Part or nil
+end
+
+local function GetResolvedActionTarget(target)
+    local info = GetResolvedTarget(target)
+    if info and info.Character and IsInstanceValid(info.Character) then return info.Character, info end
+    if info and info.Source and IsInstanceValid(info.Source) then return info.Source, info end
+    return target, info
 end
 
 local function ClearSelectedState()
@@ -962,75 +1155,6 @@ local function UpdateSelectedState(forceRefresh)
     return part
 end
 
-local function RememberInstanceName(inst, name)
-    if not inst then return end
-    if not GalaxyState.CustomNames then GalaxyState.CustomNames = {} end
-    if not GalaxyState.CustomNamesByAddress then GalaxyState.CustomNamesByAddress = {} end
-    GalaxyState.CustomNames[inst] = tostring(name)
-    local address = GetInstanceAddress(inst)
-    if address then GalaxyState.CustomNamesByAddress[address] = tostring(name) end
-end
-
-local function RefreshLoadedNodeName(inst, name)
-    local address = GetInstanceAddress(inst)
-    local function visit(node)
-        if not node then return end
-        if node.Instance == inst or (address and node.Address == address) then
-            node.Name = tostring(name)
-            node.Address = address
-            node.TargetKind = nil
-            node.TargetKindChecked = false
-        end
-        for _, child in ipairs(node.Children or {}) do visit(child) end
-    end
-    visit(GalaxyState.TreeRoot)
-    visit(GalaxyState.SearchRoot)
-end
-
-local function FindPlayerForCharacter(character)
-    if not character then return nil end
-    local players = ExecuteSafely(function() return Players:GetChildren() end) or {}
-    for _, player in ipairs(players) do
-        if ExecuteSafely(function() return player.Character end) == character then
-            return player
-        end
-    end
-    local characterName = ExecuteSafely(function() return character.Name end)
-    return characterName and ExecuteSafely(function() return Players:FindFirstChild(characterName) end) or nil
-end
-
-local function GetRenameLinks(target)
-    local className = GetClassName(target)
-    if className == "Player" then
-        return {
-            Player = target,
-            Character = ExecuteSafely(function() return target.Character end)
-        }
-    end
-    if className == "Model" and ExecuteSafely(function() return target:FindFirstChildOfClass("Humanoid") end) then
-        local player = FindPlayerForCharacter(target)
-        if player then
-            return {
-                Player = player,
-                Character = target
-            }
-        end
-    end
-    return nil
-end
-
-local function ApplyRenameLinks(source, links, name)
-    if not links then return end
-    local targets = { links.Player, links.Character }
-    for _, inst in ipairs(targets) do
-        if inst and inst ~= source and IsInstanceValid(inst) then
-            inst.Name = tostring(name)
-            RememberInstanceName(inst, name)
-            RefreshLoadedNodeName(inst, name)
-        end
-    end
-end
-
 local function GetNodeTargetKind(node)
     if not node or node.TargetKindChecked then return node and node.TargetKind or nil end
     if node.ClassName ~= "Model" and node.ClassName ~= "Player" then
@@ -1040,12 +1164,12 @@ local function GetNodeTargetKind(node)
 
     local kind
     if node.ClassName == "Player" then
-        kind = (LocalPlayer and node.Name == LocalPlayer.Name) and "LocalPlayer" or "Player"
+        kind = (LocalPlayer and IsSameInstance(node.Instance, LocalPlayer)) and "LocalPlayer" or "Player"
     elseif node.ClassName == "Model" then
-        if LocalPlayer and node.Name == LocalPlayer.Name then
-            kind = "LocalPlayer"
-        elseif ExecuteSafely(function() return Players:FindFirstChild(node.Name) end) then
-            kind = "Player"
+        local player = FindPlayerForCharacter(node.Instance)
+        if player then
+            kind = IsSameInstance(player, LocalPlayer) and "LocalPlayer" or "Player"
+            node.TargetPlayer = player
         elseif ExecuteSafely(function() return node.Instance:FindFirstChildOfClass("Humanoid") end) then
             kind = "NPC"
         end
@@ -1067,9 +1191,9 @@ end
 
 local ToggleSpectate
 
-local function GetLocalHumanoidRootPart()
+local function GetLocalPrimaryPart()
     local character = ExecuteSafely(function() return LocalPlayer.Character end)
-    return character and ExecuteSafely(function() return character:FindFirstChild("HumanoidRootPart") end) or nil
+    return character and ExecuteSafely(function() return character:FindFirstChild("HumanoidRootPart") or character.PrimaryPart end) or nil
 end
 
 local function GetLocalHumanoid()
@@ -1180,19 +1304,43 @@ local function UpdateSpectateState(forceRefresh)
     end
 end
 
-local function TeleportPlayer(target, selectedPart)
+local StopTween
+
+local Movement = {}
+
+function Movement.HoverPosition(pos)
+    return Vector3.new(pos.X, pos.Y + 5, pos.Z)
+end
+
+function Movement.WritePosition(part, pos)
+    return pcall(function()
+        part.Position = pos
+    end)
+end
+
+function Movement.ZeroVelocity(part)
+    return pcall(function()
+        part.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+    end)
+end
+
+function Movement.ResolveAction(action, target, selectedPart, silentLocal)
     if not target then
-        return ReportGalaxError("Teleport failed", BuildDiagnosticContext({
-            Action = "Teleport",
+        return ReportGalaxError(action .. " failed", BuildDiagnosticContext({
+            Action = action,
             Reason = "No selected target"
         }))
     end
 
-    local hrp = GetLocalHumanoidRootPart()
-    if not hrp then
-        return ReportGalaxError("Teleport failed", BuildDiagnosticContext({
-            Action = "Teleport",
-            Reason = "LocalPlayer.Character.HumanoidRootPart was not found",
+    local hrp = GetLocalPrimaryPart()
+    if not IsInstanceValid(hrp) then
+        if silentLocal then
+            ShowNotification("Character not ready")
+            return nil
+        end
+        return ReportGalaxError(action .. " failed", BuildDiagnosticContext({
+            Action = action,
+            Reason = "LocalPlayer.Character.PrimaryPart was not found",
             LocalCharacter = ExecuteSafely(function() return LocalPlayer.Character end),
             LocalRoot = hrp
         }))
@@ -1200,9 +1348,9 @@ local function TeleportPlayer(target, selectedPart)
 
     local info = GetResolvedTarget(target)
     local part = selectedPart or (info and info.Part)
-    if not part then
-        return ReportGalaxError("Teleport failed", BuildDiagnosticContext({
-            Action = "Teleport",
+    if not IsInstanceValid(part) then
+        return ReportGalaxError(action .. " failed", BuildDiagnosticContext({
+            Action = action,
             Reason = "Selected target did not resolve to a physical BasePart",
             Target = target,
             TargetClass = ExecuteSafely(function() return target.ClassName end),
@@ -1215,8 +1363,8 @@ local function TeleportPlayer(target, selectedPart)
 
     local pos = part and ExecuteSafely(function() return part.Position end)
     if not pos or typeof(pos) ~= "Vector3" then
-        return ReportGalaxError("Teleport failed", BuildDiagnosticContext({
-            Action = "Teleport",
+        return ReportGalaxError(action .. " failed", BuildDiagnosticContext({
+            Action = action,
             Reason = "Resolved part has no valid Vector3 Position",
             Target = target,
             ResolvedKind = info and info.Kind or "nil",
@@ -1226,19 +1374,143 @@ local function TeleportPlayer(target, selectedPart)
         }))
     end
 
-    local ok, err = pcall(function()
-        hrp.Position = pos + Vector3.new(0, 5, 0)
-    end)
+    return {
+        LocalPart = hrp,
+        LocalAddress = tostring(GetInstanceAddress(hrp) or ""),
+        Target = target,
+        TargetAddress = tostring(GetInstanceAddress(target) or ""),
+        TargetPart = part,
+        TargetPartAddress = tostring(GetInstanceAddress(part) or ""),
+        TargetPos = pos,
+        Info = info
+    }
+end
+
+local function TeleportPlayer(target, selectedPart)
+    local move = Movement.ResolveAction("Teleport", target, selectedPart)
+    if not move then return end
+
+    local teleportPos = Movement.HoverPosition(move.TargetPos)
+    if GalaxyState.TweenActive then StopTween(false) end
+    local ok, err = Movement.WritePosition(move.LocalPart, teleportPos)
     if ok then
+        task.spawn(function()
+            for i = 1, 3 do
+                task.wait()
+                if not IsInstanceValid(move.LocalPart) then break end
+                Movement.WritePosition(move.LocalPart, teleportPos)
+            end
+        end)
         ShowNotification("Teleported!")
     else
         return ReportGalaxError("Teleport failed", BuildDiagnosticContext({
             Action = "Teleport",
-            Reason = "Failed to write LocalPlayer HumanoidRootPart.Position",
-            LocalRoot = hrp,
+            Reason = "Failed to write LocalPlayer Character.PrimaryPart.Position",
+            LocalRoot = move.LocalPart,
             Target = target,
+            ResolvedPart = move.TargetPart,
+            Value = teleportPos,
+            Error = err
+        }))
+    end
+end
+
+function StopTween(showNotify)
+    GalaxyState.TweenActive = false
+    GalaxyState.TweenTarget = nil
+    GalaxyState.TweenTargetAddress = nil
+    GalaxyState.TweenTargetPart = nil
+    GalaxyState.TweenTargetPartAddress = nil
+    GalaxyState.TweenLocalPart = nil
+    GalaxyState.TweenLocalPartAddress = nil
+    GalaxyState.LastTweenUpdate = 0
+    if showNotify then ShowNotification("Tween stopped") end
+end
+
+local function IsTweeningTarget(target)
+    if not GalaxyState.TweenActive or not target then return false end
+    local address = GetInstanceAddress(target)
+    return address and GalaxyState.TweenTargetAddress and tostring(address) == tostring(GalaxyState.TweenTargetAddress)
+end
+
+local function StartTweenToTarget(target, selectedPart)
+    local move = Movement.ResolveAction("Tween", target, selectedPart, true)
+    if not move then return end
+
+    StopTween(false)
+    GalaxyState.TweenTarget = move.Target
+    GalaxyState.TweenTargetAddress = move.TargetAddress
+    GalaxyState.TweenTargetPart = move.TargetPart
+    GalaxyState.TweenTargetPartAddress = move.TargetPartAddress
+    GalaxyState.TweenLocalPart = move.LocalPart
+    GalaxyState.TweenLocalPartAddress = move.LocalAddress
+    GalaxyState.TweenActive = true
+    GalaxyState.LastTweenUpdate = os.clock() - (1 / 60)
+
+    local speed = tonumber(GalaxyState.TweenSpeedText) or GalaxyState.TweenSpeed or 320
+    GalaxyState.TweenSpeed = math.clamp(speed, 1, 10000)
+    GalaxyState.TweenSpeedText = tostring(math.floor(GalaxyState.TweenSpeed + 0.5))
+    ShowNotification("Tweening...")
+end
+
+local function UpdateTweenState()
+    if not GalaxyState.TweenActive then return end
+
+    local hrp = GalaxyState.TweenLocalPart
+    local part = GalaxyState.TweenTargetPart
+    if not IsInstanceValid(hrp) or not IsInstanceValid(part) or
+        tostring(GetInstanceAddress(hrp) or "") ~= tostring(GalaxyState.TweenLocalPartAddress or "") then
+        StopTween(false)
+        return
+    end
+
+    local currentPos = ExecuteSafely(function() return hrp.Position end)
+    local targetPos = ExecuteSafely(function() return part.Position end)
+    if typeof(currentPos) ~= "Vector3" or typeof(targetPos) ~= "Vector3" then
+        StopTween(false)
+        return
+    end
+
+    targetPos = Movement.HoverPosition(targetPos)
+    local delta = targetPos - currentPos
+    local dist = math.sqrt(delta.X * delta.X + delta.Y * delta.Y + delta.Z * delta.Z)
+    if not dist or dist <= 0 then
+        StopTween(false)
+        return
+    end
+
+    local now = os.clock()
+    local dt = math.clamp(now - (GalaxyState.LastTweenUpdate or now), 0.001, 0.033)
+    GalaxyState.LastTweenUpdate = now
+
+    local speed = math.clamp(tonumber(GalaxyState.TweenSpeedText) or GalaxyState.TweenSpeed or 320, 1, 10000)
+    GalaxyState.TweenSpeed = speed
+    local step = speed * dt
+
+    local ok, err
+    if dist <= math.max(1, step) then
+        ok, err = Movement.WritePosition(hrp, targetPos)
+        if ok then Movement.ZeroVelocity(hrp) end
+        StopTween(false)
+    else
+        local dir = Vector3.new(delta.X / dist, delta.Y / dist, delta.Z / dist)
+        local nextPos = Vector3.new(
+            currentPos.X + dir.X * step,
+            currentPos.Y + dir.Y * step,
+            currentPos.Z + dir.Z * step
+        )
+        ok, err = Movement.WritePosition(hrp, nextPos)
+        if ok then Movement.ZeroVelocity(hrp) end
+    end
+
+    if not ok then
+        StopTween(false)
+        ReportGalaxError("Tween failed", BuildDiagnosticContext({
+            Action = "Tween",
+            Reason = "Failed to write LocalPlayer Character.PrimaryPart.Position",
+            LocalRoot = hrp,
+            Target = GalaxyState.TweenTarget,
             ResolvedPart = part,
-            Value = pos,
             Error = err
         }))
     end
@@ -1252,22 +1524,26 @@ local function BringObject(target)
         }))
     end
 
-    local hrp = GetLocalHumanoidRootPart()
-    if not hrp then
+    local move = Movement.ResolveAction("Bring", target)
+    if not move then return end
+
+    local hrp = move.LocalPart
+    if not IsInstanceValid(hrp) then
         return ReportGalaxError("Bring failed", BuildDiagnosticContext({
             Action = "Bring",
-            Reason = "LocalPlayer.Character.HumanoidRootPart was not found",
+            Reason = "LocalPlayer.Character.PrimaryPart was not found",
             LocalCharacter = ExecuteSafely(function() return LocalPlayer.Character end)
         }))
     end
 
     local targetPos = hrp.Position
+    local actionTarget, info = GetResolvedActionTarget(target)
     local count = 0
     local failures = 0
     local lastError
 
-    if IsBasePart(target) then
-        local ok, err = pcall(function() target.Position = targetPos end)
+    if IsBasePart(actionTarget) then
+        local ok, err = pcall(function() actionTarget.Position = targetPos end)
         if ok then
             count = count + 1
         else
@@ -1276,7 +1552,7 @@ local function BringObject(target)
         end
     end
 
-    local descendants = ExecuteSafely(function() return target:GetDescendants() end)
+    local descendants = ExecuteSafely(function() return actionTarget:GetDescendants() end)
     if descendants then
         for _, p in ipairs(descendants) do
             if IsBasePart(p) then
@@ -1296,6 +1572,8 @@ local function BringObject(target)
             Action = "Bring",
             Reason = failures > 0 and "All BasePart position writes failed" or "Selected target has no movable BasePart descendants",
             Target = target,
+            ActionTarget = actionTarget,
+            ResolvedKind = info and info.Kind or "nil",
             Error = lastError
         }))
     end
@@ -1305,6 +1583,8 @@ local function BringObject(target)
             Action = "Bring",
             Reason = "Some BasePart position writes failed",
             Target = target,
+            ActionTarget = actionTarget,
+            ResolvedKind = info and info.Kind or "nil",
             Value = count .. " moved / " .. failures .. " failed",
             Error = lastError
         }))
@@ -1327,6 +1607,7 @@ local function DeleteObject(target)
         }))
     end
 
+    local actionTarget, info = GetResolvedActionTarget(target)
     local partsCount = 0
     local failures = 0
     local lastError
@@ -1347,19 +1628,21 @@ local function DeleteObject(target)
         end
     end
 
-    local descendants = ExecuteSafely(function() return target:GetDescendants() end)
+    local descendants = ExecuteSafely(function() return actionTarget:GetDescendants() end)
     if descendants then
         for _, p in ipairs(descendants) do
             vanish(p)
         end
     end
-    vanish(target)
+    vanish(actionTarget)
 
     if failures > 0 then
         ReportGalaxError("Delete partial failure", BuildDiagnosticContext({
             Action = "Delete",
             Reason = "Some vanish operations failed",
             Target = target,
+            ActionTarget = actionTarget,
+            ResolvedKind = info and info.Kind or "nil",
             Value = partsCount .. " parts changed / " .. failures .. " failed",
             Error = lastError
         }))
@@ -1399,7 +1682,7 @@ local function PerformSearch()
 
             local function scan(root)
                 if count >= 200 then return end
-                local children = ExecuteSafely(function() return root:GetChildren() end)
+                local children = DexSettings.GetChildren(root)
                 if not children then return end
 
                 for _, c in ipairs(children) do
@@ -1410,7 +1693,7 @@ local function PerformSearch()
 
                     if count >= 200 then break end
 
-                    local name = ExecuteSafely(function() return c.Name:lower() end) or ""
+                    local name = tostring(GetDisplayName(c)):lower()
                     local isMatch = false
 
                     if query:find("%.") then
@@ -1421,7 +1704,9 @@ local function PerformSearch()
                     end
 
                     if isMatch then
-                        table.insert(results, CreateTreeNode(c, 1))
+                        local resultNode = CreateTreeNode(c, 1)
+                        RefreshNodeIdentity(resultNode, c)
+                        table.insert(results, resultNode)
                         count = count + 1
                     end
                     scan(c)
@@ -1494,6 +1779,18 @@ local HeaderHeight = 34
 local WindowPosition = Vector2.new(150, 80)
 local IsVisible = true
 
+GalaxyState.PanelMarginX = 14
+GalaxyState.PanelTopGap = 10
+GalaxyState.PanelBottomGap = 14
+
+GalaxyState.GetHeaderPanelGeometry = function(x, y, w, h)
+    local marginX = GalaxyState.PanelMarginX
+    local topGap = GalaxyState.PanelTopGap
+    local bottomGap = GalaxyState.PanelBottomGap
+    return x + marginX, y + HeaderHeight + topGap, math.max(0, w - marginX * 2),
+        math.max(0, h - HeaderHeight - topGap - bottomGap)
+end
+
 local function SetGalaxDexVisible(visible)
     visible = visible == true
     if IsVisible == visible then return end
@@ -1514,13 +1811,145 @@ GalaxyState.ResizeMode = nil
 GalaxyState.ResizeStartMouse = Vector2.new(0, 0)
 GalaxyState.ResizeStart = { X = 0, Y = 0, W = WindowWidth, H = WindowHeight }
 
+GalaxyState.GetMainBarOwnerGeometry = function(owner)
+    if owner == "Properties" and GalaxyState.PropertiesDetached then
+        return {
+            X = GalaxyState.PropertiesWindowX or WindowPosition.X,
+            Y = GalaxyState.PropertiesWindowY or WindowPosition.Y,
+            W = GalaxyState.PropertiesWindowW or WindowWidth,
+            H = GalaxyState.PropertiesWindowH or WindowHeight,
+            SnapSide = GalaxyState.PropertiesSnapSide,
+            FreeW = GalaxyState.PropertiesFreeW,
+            FreeH = GalaxyState.PropertiesFreeH
+        }
+    end
+    return nil
+end
+
+GalaxyState.ReleaseMainBarOwnerSource = function(owner)
+    if owner == "Properties" then
+        GalaxyState.PropertiesDetached = false
+        GalaxyState.PropertiesSnapSide = nil
+        GalaxyState.PropertiesSnapPreview = nil
+        GalaxyState.IsDraggingPropertiesWindow = false
+        GalaxyState.PropertiesResizeMode = nil
+    end
+end
+
+GalaxyState.ReturnMainBarOwnerToSource = function(owner)
+    if owner == "Properties" then
+        local x, y, w, h = GalaxyState.ClampFloatingBox(WindowPosition.X, WindowPosition.Y,
+            WindowWidth, WindowHeight, 300, MinWindowHeight, GalaxyState.WindowSnapSide)
+        GalaxyState.PropertiesDetached = true
+        GalaxyState.PropertiesWindowX = x
+        GalaxyState.PropertiesWindowY = y
+        GalaxyState.PropertiesWindowW = w
+        GalaxyState.PropertiesWindowH = h
+        GalaxyState.PropertiesSnapSide = GalaxyState.WindowSnapSide
+        GalaxyState.PropertiesSnapPreview = nil
+        GalaxyState.PropertiesFreeW = math.max(300, GalaxyState.WindowFreeWidth or w)
+        GalaxyState.PropertiesFreeH = math.max(MinWindowHeight, GalaxyState.WindowFreeHeight or h)
+        GalaxyState.IsDraggingPropertiesWindow = false
+        GalaxyState.PropertiesResizeMode = nil
+        return true
+    end
+    return false
+end
+
+GalaxyState.ClampFloatingBox = function(x, y, w, h, minW, minH, snapSide)
+    local viewport = (GalaxyState.GetViewportSizeRaw and GalaxyState.GetViewportSizeRaw()) or Vector2.new(1920, 1080)
+    local maxW = snapSide and math.floor(viewport.X * 0.5 + 0.5) or viewport.X
+
+    w = math.clamp(w or minW, minW, maxW)
+    h = snapSide and viewport.Y or math.clamp(h or minH, minH, viewport.Y)
+
+    if snapSide == "Left" then
+        x, y = 0, 0
+    elseif snapSide == "Right" then
+        x, y = math.max(0, viewport.X - w), 0
+    else
+        x = math.clamp(x or 0, 0, math.max(0, viewport.X - w))
+        y = math.clamp(y or 0, 0, math.max(0, viewport.Y - h))
+    end
+
+    return x, y, w, h
+end
+
+GalaxyState.SetMainBarOwner = function(owner)
+    local geometry = GalaxyState.GetMainBarOwnerGeometry(owner)
+    if not geometry then return false end
+
+    if not GalaxyState.MainBarOwner then
+        GalaxyState.MainBarRestore = {
+            X = WindowPosition.X,
+            Y = WindowPosition.Y,
+            W = WindowWidth,
+            H = WindowHeight,
+            SnapSide = GalaxyState.WindowSnapSide,
+            FreeW = GalaxyState.WindowFreeWidth,
+            FreeH = GalaxyState.WindowFreeHeight
+        }
+    end
+
+    local x, y, w, h = GalaxyState.ClampFloatingBox(geometry.X or WindowPosition.X,
+        geometry.Y or WindowPosition.Y, geometry.W or WindowWidth, geometry.H or WindowHeight,
+        MinWindowWidth, MinWindowHeight, geometry.SnapSide)
+    WindowWidth, WindowHeight = w, h
+    WindowPosition = Vector2.new(x, y)
+    GalaxyState.WindowSnapSide = geometry.SnapSide
+    GalaxyState.WindowSnapPreview = nil
+    GalaxyState.WindowFreeWidth = math.max(MinWindowWidth, geometry.FreeW or WindowWidth)
+    GalaxyState.WindowFreeHeight = math.max(MinWindowHeight, geometry.FreeH or WindowHeight)
+    GalaxyState.ReleaseMainBarOwnerSource(owner)
+    GalaxyState.MainBarOwner = owner
+    return true
+end
+
+GalaxyState.RestoreMainBarOwner = function(owner)
+    if owner and GalaxyState.MainBarOwner ~= owner then return false end
+    if not GalaxyState.MainBarOwner then return false end
+
+    local activeOwner = GalaxyState.MainBarOwner
+    GalaxyState.ReturnMainBarOwnerToSource(activeOwner)
+    local restore = GalaxyState.MainBarRestore or {}
+    local x, y, w, h = GalaxyState.ClampFloatingBox(restore.X or WindowPosition.X,
+        restore.Y or WindowPosition.Y, restore.W or WindowWidth, restore.H or WindowHeight,
+        MinWindowWidth, MinWindowHeight, restore.SnapSide)
+    WindowWidth, WindowHeight = w, h
+    WindowPosition = Vector2.new(x, y)
+    GalaxyState.WindowSnapPreview = nil
+    GalaxyState.WindowFreeWidth = restore.FreeW
+    GalaxyState.WindowFreeHeight = restore.FreeH
+    GalaxyState.WindowSnapSide = restore.SnapSide
+    GalaxyState.MainBarOwner = nil
+    GalaxyState.MainBarRestore = nil
+    return true
+end
+
 GalaxyState.SnapToStep = function(value, step)
     return math.floor((value or 0) / step + 0.5) * step
 end
 
-GalaxyState.GetWindowResizeMode = function(x, y, w, h)
+GalaxyState.GetViewportSizeRaw = function()
+    local cam = workspace.CurrentCamera
+    return (cam and cam.ViewportSize) or Vector2.new(1920, 1080)
+end
+
+GalaxyState.GetResizeModeAt = function(x, y, w, h, snapSide)
     local edge, corner = 10, 18
     local mx, my = Mouse.X, Mouse.Y
+    if snapSide == "Left" then
+        if mx >= x + w - edge / 2 and mx <= x + w + edge / 2 and my >= y and my <= y + h then
+            return "Right"
+        end
+        return nil
+    elseif snapSide == "Right" then
+        if mx >= x - edge / 2 and mx <= x + edge / 2 and my >= y and my <= y + h then
+            return "Left"
+        end
+        return nil
+    end
+
     local topLeft = mx >= x - edge and mx <= x + corner and my >= y - edge and my <= y + corner
     local topRight = mx >= x + w - corner and mx <= x + w + edge and my >= y - edge and my <= y + corner
     local bottomLeft = mx >= x - edge and mx <= x + corner and my >= y + h - corner and my <= y + h + edge
@@ -1541,29 +1970,88 @@ GalaxyState.GetWindowResizeMode = function(x, y, w, h)
     return nil
 end
 
-GalaxyState.ApplyWindowResize = function(mode)
-    local startMouse = GalaxyState.ResizeStartMouse
-    local start = GalaxyState.ResizeStart
+GalaxyState.ComputeResizeBox = function(mode, startMouse, start, minW, minH, snapSide, clampFree)
     local dx = Mouse.X - startMouse.X
     local dy = Mouse.Y - startMouse.Y
     local x, y, w, h = start.X, start.Y, start.W, start.H
 
     if mode:find("Right") then
-        w = math.max(MinWindowWidth, start.W + dx)
+        w = math.max(minW, start.W + dx)
     elseif mode:find("Left") then
-        w = math.max(MinWindowWidth, start.W - dx)
+        w = math.max(minW, start.W - dx)
         x = start.X + (start.W - w)
     end
 
     if mode:find("Bottom") then
-        h = math.max(MinWindowHeight, start.H + dy)
+        h = math.max(minH, start.H + dy)
     elseif mode:find("Top") then
-        h = math.max(MinWindowHeight, start.H - dy)
+        h = math.max(minH, start.H - dy)
         y = start.Y + (start.H - h)
     end
 
+    local viewport = GalaxyState.GetViewportSizeRaw()
+    local snapMaxWidth = math.floor(viewport.X * 0.5 + 0.5)
+    if snapSide then
+        w = math.min(w, snapMaxWidth)
+    end
+    if clampFree then
+        w = math.min(w, viewport.X)
+        h = math.min(h, viewport.Y)
+    end
+
+    if snapSide == "Left" then
+        x = 0
+        y = 0
+        h = viewport.Y
+    elseif snapSide == "Right" then
+        x = math.max(0, viewport.X - w)
+        y = 0
+        h = viewport.Y
+    elseif clampFree then
+        x = math.clamp(x, 0, math.max(0, viewport.X - w))
+        y = math.clamp(y, 0, math.max(0, viewport.Y - h))
+    end
+
+    return x, y, w, h, viewport
+end
+
+GalaxyState.GetWindowResizeMode = function(x, y, w, h)
+    return GalaxyState.GetResizeModeAt(x, y, w, h, GalaxyState.WindowSnapSide)
+end
+
+GalaxyState.ApplyWindowResize = function(mode)
+    local x, y, w, h = GalaxyState.ComputeResizeBox(mode, GalaxyState.ResizeStartMouse,
+        GalaxyState.ResizeStart, MinWindowWidth, MinWindowHeight, GalaxyState.WindowSnapSide, false)
+
     WindowWidth, WindowHeight = math.floor(w + 0.5), math.floor(h + 0.5)
     WindowPosition = Vector2.new(math.floor(x + 0.5), math.floor(y + 0.5))
+end
+
+GalaxyState.GetPropertiesResizeMode = function(x, y, w, h)
+    return GalaxyState.GetResizeModeAt(x, y, w, h, GalaxyState.PropertiesSnapSide)
+end
+
+GalaxyState.ApplyPropertiesResize = function(mode)
+    local startMouse = GalaxyState.PropertiesResizeStartMouse or Vector2.new(Mouse.X, Mouse.Y)
+    local start = GalaxyState.PropertiesResizeStart or {
+        X = GalaxyState.PropertiesWindowX or 0,
+        Y = GalaxyState.PropertiesWindowY or 0,
+        W = GalaxyState.PropertiesWindowW or WindowWidth,
+        H = GalaxyState.PropertiesWindowH or MinWindowHeight
+    }
+    local minW, minH = 300, MinWindowHeight
+    local x, y, w, h = GalaxyState.ComputeResizeBox(mode, startMouse, start, minW, minH,
+        GalaxyState.PropertiesSnapSide, true)
+
+    if not GalaxyState.PropertiesSnapSide then
+        GalaxyState.PropertiesFreeW = w
+        GalaxyState.PropertiesFreeH = h
+    end
+
+    GalaxyState.PropertiesWindowX = math.floor(x + 0.5)
+    GalaxyState.PropertiesWindowY = math.floor(y + 0.5)
+    GalaxyState.PropertiesWindowW = math.floor(w + 0.5)
+    GalaxyState.PropertiesWindowH = math.floor(h + 0.5)
 end
 
 local function GetDrawingFromPool(type)
@@ -1696,6 +2184,7 @@ end
 
 local function UnloadGalaxDex()
     if GalaxyState.SpectateSubject then Unspectate(nil, true) end
+    if GalaxyState.TweenActive then StopTween(false) end
     ShowNotification("Unloaded")
     if _G.GalaxDex then _G.GalaxDex.alive = false end
     setrobloxinput(true)
@@ -1727,8 +2216,10 @@ local function RenderTreeArrow(x, y, expanded, hovered)
 end
 
 local function GetClassIconName(className, kind)
-    if kind == "LocalPlayer" or kind == "Player" then return "Player" end
-    if kind == "NPC" then return "Player" end
+    if className == "Model" then
+        if kind == "LocalPlayer" or kind == "Player" then return "QuickOpen" end
+        if kind == "NPC" then return "QuickOpenActions" end
+    end
     if className and className ~= "" then return className end
     return "Folder"
 end
@@ -1752,6 +2243,8 @@ local ClassIconWarmSlots = {
     MeshPart = 28,
     Humanoid = 24,
     Player = 20,
+    QuickOpen = 20,
+    QuickOpenActions = 20,
     Script = 18,
     LocalScript = 18,
     ModuleScript = 18,
@@ -1781,7 +2274,16 @@ local ClassIconWarmSlots = {
     Clear = 8,
     Refresh = 8,
     Settings = 4,
+    More = 4,
+    Teleport = 8,
+    Bring = 8,
+    Tween = 8,
+    StopTween = 8,
     ColorPicker = 4,
+    Logo = 1,
+    ExplorerPanel = 2,
+    PropertiesPanel = 2,
+    VisualsPanel = 2,
     Reference = 12,
     Warning = 12,
     Lock = 12,
@@ -1795,9 +2297,20 @@ local ClassIconAliases = {
     Clear = "ui/CloseWidget.png",
     Refresh = "ui/Recent.png",
     Settings = "general/Settings.png",
+    More = "ui/More.png",
+    Teleport = "ui/Teleport.png",
+    Bring = "ui/Teleport.png",
+    Tween = "instance/Tween.png",
+    StopTween = "instance/StopTween.png",
     ColorPicker = "general/ColorPicker.png",
+    Logo = "ui/Logo.png",
+    ExplorerPanel = "general/Explorer.png",
+    PropertiesPanel = "general/Properties.png",
+    VisualsPanel = "general/ViewSelector.png",
     Info = "general/Help.png",
     Player = "general/Player.png",
+    QuickOpen = "general/QuickOpen.png",
+    QuickOpenActions = "general/QuickOpenActions.png",
     Copy = "general/Copy.png",
     Delete = "general/Delete.png",
     Struct = "general/Struct.png",
@@ -1918,7 +2431,16 @@ local StartupIconNames = {
     "Clear",
     "Refresh",
     "Settings",
-    "ColorPicker"
+    "More",
+    "Teleport",
+    "Bring",
+    "Tween",
+    "StopTween",
+    "ColorPicker",
+    "Logo",
+    "ExplorerPanel",
+    "PropertiesPanel",
+    "VisualsPanel"
 }
 
 local StartupIconsStarted = false
@@ -1958,14 +2480,35 @@ local function IsMouseOver(x, y, w, h)
 end
 
 local function IsMouseAllowedFor(owner, id)
+    if GalaxyState.ResizeMode then
+        return owner == "WindowResize"
+    end
+    if GalaxyState.PropertiesResizeMode then
+        return owner == "PropertiesResize"
+    end
+    if IsDragging then
+        return owner == "WindowDrag"
+    end
     if GalaxyState.IsDraggingLayoutSplit then
         return owner == "LayoutSplit"
     end
-    if GalaxyState.ContextMenu then
-        return owner == "ContextMenu"
+    if GalaxyState.IsDraggingScroll or GalaxyState.IsDraggingSearchScroll then
+        return owner == "ExplorerScroll"
+    end
+    if GalaxyState.IsDraggingPropertyScroll then
+        return owner == "PropertyScroll"
+    end
+    if GalaxyState.IsDraggingPropertiesWindow then
+        return owner == "PropertiesWindow"
     end
     if GalaxyState.FocusedElement then
         return owner == "TextInput" and id == GalaxyState.FocusedElement
+    end
+    if GalaxyState.DexControlOpen then
+        return owner == "DexControl"
+    end
+    if GalaxyState.ContextMenu then
+        return owner == "ContextMenu" or (owner == "TextInput" and id == "Setting_TweenSpeed")
     end
     return true
 end
@@ -2004,7 +2547,7 @@ local function CreateInteractiveButton(x, y, w, h, label, accentColor, symbol, z
     local z = zIndex or 8
 
     if hovered then
-        background = Color3.fromRGB(25, 40, 65)
+        background = Theme.AccentSurface
         border = Theme.AccentHover
     end
 
@@ -2034,7 +2577,7 @@ end
 local function CreateToolbarIconButton(x, y, size, iconName, zIndex, owner, focusId, drawBackground, iconSize)
     local hovered = IsMouseAllowedFor(owner, focusId) and IsMouseOver(x, y, size, size)
     local z = zIndex or 8
-    local bg = hovered and Color3.fromRGB(25, 40, 65) or Color3.fromRGB(21, 21, 31)
+    local bg = hovered and Theme.AccentSurface or Color3.fromRGB(21, 21, 31)
     local border = hovered and Theme.AccentHover or Theme.Border
     local drawBg = drawBackground ~= false
 
@@ -2055,6 +2598,114 @@ local function CreateToolbarIconButton(x, y, size, iconName, zIndex, owner, focu
     return false
 end
 
+GalaxyState.RenderDexControl = function()
+    local viewport = GetViewportSize()
+    local logoSize, topY = 50, 14
+    local logoX = math.floor((viewport.X - logoSize) / 2)
+    local logoHovered = IsMouseAllowedFor("DexControl") and IsMouseOver(logoX, topY, logoSize, logoSize)
+
+    RenderSquare(logoX, topY, logoSize, logoSize, logoHovered and Theme.AccentSurface or Theme.Section,
+        true, 7, 72, Theme.GlassStrong)
+    RenderSquare(logoX, topY, logoSize, logoSize, logoHovered and Theme.AccentHover or Theme.BorderBright,
+        false, 7, 73, logoHovered and 0.95 or 0.72)
+    RenderClassIcon("Logo", logoX + 2.5, topY + 2.5, 45, 45, 75, logoHovered and 1 or 0.92)
+
+    if logoHovered and GalaxyState.IsMouseClicked then
+        GalaxyState.DexControlOpen = not GalaxyState.DexControlOpen
+        GalaxyState.ContextMenu = nil
+        GalaxyState.FocusedElement = nil
+        GalaxyState.IsMouseClicked = false
+    end
+
+    if not GalaxyState.DexControlOpen then return end
+
+    local itemSize, gap, pad = 56, 9, 9
+    local items = {
+        { Name = "Explorer", Icon = "ExplorerPanel", State = "ShowExplorer" },
+        { Name = "Properties", Icon = "PropertiesPanel", State = "ShowProperties" },
+        { Name = "Visuals", Icon = "VisualsPanel", State = "ShowVisuals" }
+    }
+    local cols = math.min(3, #items)
+    local rows = math.ceil(#items / 3)
+    local width = (cols * itemSize) + ((cols - 1) * gap) + pad * 2
+    local height = (rows * itemSize) + ((rows - 1) * gap) + pad * 2
+    local x = math.floor((viewport.X - width) / 2)
+    local y = topY + logoSize + 7
+    local hoveredPanel = IsMouseOver(x, y, width, height)
+
+    RenderSquare(x, y, width, height, Theme.Section, true, 7, 70, Theme.Glass)
+    RenderSquare(x, y, width, height, Theme.BorderBright, false, 7, 78, 0.72)
+
+    for idx, item in ipairs(items) do
+        local col = (idx - 1) % 3
+        local row = math.floor((idx - 1) / 3)
+        local bx = x + pad + col * (itemSize + gap)
+        local by = y + pad + row * (itemSize + gap)
+        local active = GalaxyState[item.State] ~= false
+        local hovered = IsMouseAllowedFor("DexControl") and IsMouseOver(bx, by, itemSize, itemSize)
+        local bg = active and Theme.AccentSurface or Theme.Background
+        local border = active and Theme.Accent or Theme.Border
+
+        if hovered then
+            bg = active and Theme.AccentHover or Theme.AccentSurface
+            border = Theme.AccentHover
+        end
+
+        RenderSquare(bx, by, itemSize, itemSize, bg, true, 6, 74, Theme.GlassStrong)
+        RenderSquare(bx, by, itemSize, itemSize, border, false, 6, 75, active and 0.9 or 0.65)
+        RenderClassIcon(item.Icon, bx + 17, by + 7, 22, 22, 77, active and 1 or 0.62)
+        RenderText(item.Name, bx + itemSize / 2, by + 34, active and Theme.White or Theme.SubText,
+            10, Drawing.Fonts.System, 77, true)
+
+        if hovered and GalaxyState.IsMouseClicked then
+            local nextValue = not active
+            GalaxyState[item.State] = nextValue
+            if item.State == "ShowExplorer" and not nextValue then
+                GalaxyState.ShowProperties = true
+                if GalaxyState.PropertiesDetached then
+                    GalaxyState.SetMainBarOwner("Properties")
+                else
+                    GalaxyState.PropertiesSnapSide = nil
+                    GalaxyState.PropertiesSnapPreview = nil
+                end
+                GalaxyState.IsDraggingPropertiesWindow = false
+                GalaxyState.PropertiesResizeMode = nil
+                if GalaxyState.FocusedElement == "SearchInput" then
+                    GalaxyState.FocusedElement = nil
+                end
+            elseif item.State == "ShowExplorer" and nextValue then
+                GalaxyState.RestoreMainBarOwner("Properties")
+            elseif item.State == "ShowProperties" and not nextValue and GalaxyState.ShowExplorer == false then
+                GalaxyState.ShowExplorer = true
+                GalaxyState.RestoreMainBarOwner("Properties")
+            end
+            GalaxyState.IsDraggingLayoutSplit = false
+            GalaxyState.IsDraggingScroll = false
+            GalaxyState.IsDraggingSearchScroll = false
+            GalaxyState.IsDraggingPropertyScroll = false
+            if item.State == "ShowVisuals" and not nextValue then
+                GalaxyState.SelectedVisualCache = {}
+            end
+            if item.State == "ShowProperties" and not nextValue and
+                GalaxyState.FocusedElement and GalaxyState.FocusedElement:sub(1, 5) == "Prop_" then
+                GalaxyState.FocusedElement = nil
+            end
+            if item.State == "ShowProperties" and nextValue and GalaxyState.Selected then
+                GalaxyState.RequestPropertyRefresh("show properties")
+                UpdatePropertyPanel()
+            end
+            GalaxyState.IsMouseClicked = false
+        end
+    end
+
+    if (GalaxyState.IsMouseClicked or GalaxyState.IsRightMouseClicked) and
+        not logoHovered and not hoveredPanel then
+        GalaxyState.DexControlOpen = false
+        GalaxyState.IsMouseClicked = false
+        GalaxyState.IsRightMouseClicked = false
+    end
+end
+
 local function RenderAccentColorPicker(x, y, w, zIndex)
     local z = zIndex or 84
     local pad = 8
@@ -2062,13 +2713,17 @@ local function RenderAccentColorPicker(x, y, w, zIndex)
     local areaW, areaH = w - pad * 2, 76
     local barY, barH = areaY + areaH + 8, 10
     local mouseDown = ismouse1pressed()
+    local wasDragging = GalaxyState.ColorPickerDrag ~= nil
 
     if GalaxyState.IsMouseClicked and IsMouseOver(areaX, areaY, areaW, areaH) then
         GalaxyState.ColorPickerDrag = "SV"
     elseif GalaxyState.IsMouseClicked and IsMouseOver(areaX, barY, areaW, barH) then
         GalaxyState.ColorPickerDrag = "Hue"
     end
-    if not mouseDown then GalaxyState.ColorPickerDrag = nil end
+    if not mouseDown then
+        if wasDragging then DexSettings.Save() end
+        GalaxyState.ColorPickerDrag = nil
+    end
 
     if GalaxyState.ColorPickerDrag == "SV" then
         ThemeAccent.S = math.clamp((Mouse.X - areaX) / areaW, 0, 1)
@@ -2159,18 +2814,18 @@ end
 local function RenderSelectedEspFrame(frame)
     if not frame then return false end
     for _, line in ipairs(frame.Lines or {}) do
-        RenderLine(line[1], line[2], line[3], line[4], Theme.Accent, 81, 1, SelectedEsp.ChamsAlpha)
+        RenderLine(line[1], line[2], line[3], line[4], Theme.Accent, SelectedVisualZ.Chams, 1, SelectedEsp.ChamsAlpha)
     end
 
-    RenderSquare(frame.LabelX, frame.Y, frame.LabelW, frame.H, Theme.Section, true, 5, 82, Theme.Glass)
-    RenderSquare(frame.LabelX, frame.Y, frame.LabelW, frame.H, Theme.BorderBright, false, 5, 83, Theme.GlassStrong)
+    RenderSquare(frame.LabelX, frame.Y, frame.LabelW, frame.H, Theme.Section, true, 5, SelectedVisualZ.LabelFill, Theme.Glass)
+    RenderSquare(frame.LabelX, frame.Y, frame.LabelW, frame.H, Theme.BorderBright, false, 5, SelectedVisualZ.LabelBorder, Theme.GlassStrong)
     RenderText(frame.Label, frame.LabelX + (frame.LabelW / 2), frame.TextY, Theme.White, frame.TextSize,
-        Drawing.Fonts.System, 84, true)
+        Drawing.Fonts.System, SelectedVisualZ.LabelText, true)
 
-    RenderSquare(frame.DistanceX, frame.Y, frame.DistanceW, frame.H, Theme.Section, true, 5, 82, Theme.Glass)
-    RenderSquare(frame.DistanceX, frame.Y, frame.DistanceW, frame.H, Theme.Border, false, 5, 83, Theme.GlassStrong)
+    RenderSquare(frame.DistanceX, frame.Y, frame.DistanceW, frame.H, Theme.Section, true, 5, SelectedVisualZ.LabelFill, Theme.Glass)
+    RenderSquare(frame.DistanceX, frame.Y, frame.DistanceW, frame.H, Theme.Border, false, 5, SelectedVisualZ.LabelBorder, Theme.GlassStrong)
     RenderText(frame.Distance, frame.DistanceX + (frame.DistanceW / 2), frame.TextY, Theme.SubText, frame.TextSize,
-        Drawing.Fonts.System, 84, true)
+        Drawing.Fonts.System, SelectedVisualZ.LabelText, true)
     return true
 end
 
@@ -2257,8 +2912,8 @@ end
 
 local function RenderSelectedUiFrame(frame)
     if not frame then return false end
-    RenderSquare(frame.X, frame.Y, frame.W, frame.H, Color3.fromRGB(25, 40, 65), true, 0, -100, 0.5)
-    RenderSquare(frame.X, frame.Y, frame.W, frame.H, Theme.Accent, false, 0, -99, 1)
+    RenderSquare(frame.X, frame.Y, frame.W, frame.H, Theme.AccentSurface, true, 6, SelectedVisualZ.UiFill, 0.5)
+    RenderSquare(frame.X, frame.Y, frame.W, frame.H, Theme.Accent, false, 6, SelectedVisualZ.UiBorder, 1)
     return true
 end
 
@@ -2286,6 +2941,17 @@ end
 local function RenderSelectedVisualCache()
     RenderSelectedUiFrame(GalaxyState.SelectedVisualCache.Ui)
     RenderSelectedEspFrame(GalaxyState.SelectedVisualCache.Esp)
+end
+
+local function RenderSelectedVisuals(target, espPart)
+    if not IsInstanceValid(target) then
+        ClearSelectedVisualCache()
+        return
+    end
+
+    -- Keep selected overlays first in the draw frame; heavier UI can render after.
+    RenderSelectedUi(target)
+    RenderSelectedEsp(target, espPart)
 end
 
 local function HandleKeyboardScroll(id, currentValue, maxValue, step, isActive)
@@ -2327,7 +2993,8 @@ PopulateNodeChildren = function(node, knownChildren, timestamp)
     node.Children = node.Children or {}
     local success, children = true, knownChildren
     if not children then
-        success, children = pcall(function() return node.Instance:GetChildren() end)
+        children = DexSettings.GetChildren(node.Instance)
+        success = children ~= nil
     end
     if success then
         node.ChildCount = #children
@@ -2336,7 +3003,6 @@ PopulateNodeChildren = function(node, knownChildren, timestamp)
 
         local existingByInstance = {}
         local existingByAddress = {}
-        local existingByName = {}
         for _, childNode in ipairs(node.Children) do
             if childNode.Instance then
                 existingByInstance[childNode.Instance] = childNode
@@ -2344,8 +3010,6 @@ PopulateNodeChildren = function(node, knownChildren, timestamp)
             if childNode.Address then
                 existingByAddress[childNode.Address] = childNode
             end
-            local key = childNode.ClassName .. "\0" .. childNode.Name
-            existingByName[key] = childNode
         end
 
         local newChildren = {}
@@ -2354,20 +3018,6 @@ PopulateNodeChildren = function(node, knownChildren, timestamp)
             if not existingNode then
                 local childAddress = GetInstanceAddress(child)
                 existingNode = childAddress and existingByAddress[childAddress]
-            end
-            if not existingNode then
-                local key = child.ClassName .. "\0" .. child.Name
-                existingNode = existingByName[key]
-                if existingNode then
-                    local wasSelected = (GalaxyState.Selected == existingNode.Instance) or
-                    (GalaxyState.SelectedNode == existingNode)
-                    if wasSelected then
-                        GalaxyState.Selected = child
-                        GalaxyState.SelectedNode = existingNode
-                        MarkSelectedChanged()
-                    end
-                    existingByName[key] = nil -- Consume it to avoid duplicate mapping
-                end
             end
 
             if existingNode then
@@ -2386,13 +3036,21 @@ PopulateNodeChildren = function(node, knownChildren, timestamp)
         end
 
         table.sort(newChildren, function(a, b)
-            if node.Instance == game then
+            if DexSettings.IsRootServiceContainer(node.Instance) then
                 local o1 = ExplorerOrder[a.ClassName] or 99
                 local o2 = ExplorerOrder[b.ClassName] or 99
                 if o1 ~= o2 then return o1 < o2 end
             end
             if a.ClassName ~= b.ClassName then return a.ClassName < b.ClassName end
-            return a.Name:lower() < b.Name:lower()
+            local aName = a.Name:lower()
+            local bName = b.Name:lower()
+            if aName ~= bName then return aName < bName end
+
+            local aAddress = tonumber(a.Address) or 0
+            local bAddress = tonumber(b.Address) or 0
+            if aAddress ~= bAddress then return aAddress < bAddress end
+
+            return tostring(a.Address or "") < tostring(b.Address or "")
         end)
 
         local nameCounts = {}
@@ -2667,6 +3325,7 @@ UpdatePropertyPanel = function()
         if not ok or val == nil then return end
         add_val(spec.Name, val, target, spec.Name, forceReadOnly or spec.ReadOnly, false, nil, GetPropertyValueType(val))
         props[#props].Direct = not spec.Reader
+        props[#props].DirectWriter = spec.Writer
     end
 
     local directSpecs, nativeDirectNames = GetDirectSpecsForClass(className)
@@ -2746,7 +3405,6 @@ local function ApplyProp(foc)
             local tProp = pData.IsVirtual and pData.VirtualProp or pData.Name
             if not tObj then error("Target object is nil") end
             if not tProp then error("Target property is nil") end
-            local renameLinks = (tProp == "Name" and pData.Direct and not pData.IsAttribute) and GetRenameLinks(tObj) or nil
 
             if IsBooleanType(pData.Type) or pData.IsBoolean then
                 val = (val == true or val == "true" or val == 1 or val == "1")
@@ -2777,12 +3435,17 @@ local function ApplyProp(foc)
                     tObj:SetAttribute(tProp, val)
                 end)
                 if not wrote then error("SetAttribute failed: " .. tostring(writeErr)) end
+            elseif pData.DirectWriter then
+                local wrote, writeErr = pcall(function()
+                    local result = pData.DirectWriter(tObj, val)
+                    if result == false then error("Direct computed writer rejected value") end
+                end)
+                if not wrote then error("Direct computed write failed: " .. tostring(writeErr)) end
             elseif pData.Direct then
                 local wrote, writeErr = pcall(function()
                     tObj[tProp] = val
                 end)
                 if not wrote then error("Direct property write failed: " .. tostring(writeErr)) end
-                ApplyRenameLinks(tObj, renameLinks, val)
             else
                 local didMemWrite = false
                 local mem = pData.Memory
@@ -2836,13 +3499,36 @@ local function ApplyProp(foc)
             pData.EditValue = pData.Value
 
             if pData.Name == "Name" then
-                RememberInstanceName(GalaxyState.Selected, newVal)
-                RefreshLoadedNodeName(GalaxyState.Selected, newVal)
+                local selectedAddress = GetInstanceAddress(GalaxyState.Selected)
+                GalaxyState.PendingRenameAddress = selectedAddress and tostring(selectedAddress) or nil
+                GalaxyState.PendingRenameName = tostring(newVal)
+                GalaxyState.PendingRenameUntil = os.clock() + 1
+                if GalaxyState.SelectedNode and tostring(GalaxyState.SelectedNode.Address) == tostring(selectedAddress) then
+                    GalaxyState.SelectedNode.Name = tostring(newVal)
+                end
                 MarkSelectedChanged()
-                GalaxyState.LastTreeRefresh = 0
+                GalaxyState.RequestTreeRefresh("rename")
+                local renameUntil = GalaxyState.PendingRenameUntil
+                task.spawn(function()
+                    task.wait(1)
+                    if GalaxyState.PendingRenameUntil == renameUntil then
+                        GalaxyState.PendingRenameAddress = nil
+                        GalaxyState.PendingRenameName = nil
+                        GalaxyState.PendingRenameUntil = 0
+                    end
+                    GalaxyState.RequestTreeRefresh("rename settled")
+                    GalaxyState.RequestPropertyRefresh("rename settled")
+                    if GalaxyState.SearchQuery and GalaxyState.SearchQuery ~= "" then
+                        PerformSearch()
+                    end
+                end)
             end
 
-            GalaxyState.LastPropertyUpdate = pData.Name == "Name" and 0 or os.clock() + 0.5
+            if pData.Name == "Name" then
+                GalaxyState.RequestPropertyRefresh("rename")
+            else
+                GalaxyState.LastPropertyUpdate = os.clock() + 0.5
+            end
             ShowNotification("Set " .. pData.Name)
         end
     end
@@ -2869,12 +3555,11 @@ local function NavigateToInstance(target)
 
     local node = GalaxyState.TreeRoot
     for i, ancestor in ipairs(path) do
-        local aName = ExecuteSafely(function() return ancestor.Name end) or "???"
-        local aClass = ExecuteSafely(function() return ancestor.ClassName end) or "???"
+        local ancestorAddress = GetInstanceAddress(ancestor)
         if not node.Children or #node.Children == 0 then PopulateNodeChildren(node) end
         local found = nil
         for _, child in ipairs(node.Children or {}) do
-            if child.Instance == ancestor or (child.Name == aName and child.ClassName == aClass) then
+            if child.Instance == ancestor or (ancestorAddress and child.Address == ancestorAddress) then
                 child.Expanded = true; found = child; break
             end
         end
@@ -2886,14 +3571,12 @@ local function NavigateToInstance(target)
     end
 
     local tName = ExecuteSafely(function() return target.Name end) or "Object"
-    local tClass = ExecuteSafely(function() return target.ClassName end) or "???"
     local targetAddress = GetInstanceAddress(target)
     if not node.Children or #node.Children == 0 then PopulateNodeChildren(node) end
 
     local targetNode = nil
     for _, child in ipairs(node.Children or {}) do
-        if child.Instance == target or (targetAddress and child.Address == targetAddress) or
-            (child.Name == tName and child.ClassName == tClass) then
+        if child.Instance == target or (targetAddress and child.Address == targetAddress) then
             child.Expanded = true
             if child.HasChildren and (#(child.Children or {}) == 0) then PopulateNodeChildren(child) end
             GalaxyState.Selected = child.Instance
@@ -2942,6 +3625,8 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
     if not GalaxyState.Selected then return end
 
     local spectateSubject = ResolveSpectateSubject(GalaxyState.Selected)
+    local _, actionInfo = GetResolvedActionTarget(GalaxyState.Selected)
+    local hasPhysicalActionTarget = selectedPart or (actionInfo and actionInfo.Character and IsInstanceValid(actionInfo.Character))
     if spectateSubject then
         local isSpectating = IsSpectatingTarget(GalaxyState.Selected)
         table.insert(buttons, {
@@ -2952,8 +3637,23 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
     end
 
     if selectedPart then
-        table.insert(buttons, { n = "Teleport", i = "TeleportService", f = function() TeleportPlayer(GalaxyState.Selected, selectedPart) end })
-        table.insert(buttons, { n = "Bring", i = "Move", f = function() BringObject(GalaxyState.Selected) end })
+        local tweeningThis = IsTweeningTarget(GalaxyState.Selected)
+        table.insert(buttons, {
+            n = tweeningThis and "Stop Tween" or "Tween",
+            i = tweeningThis and "StopTween" or "Tween",
+            f = function()
+                if IsTweeningTarget(GalaxyState.Selected) then
+                    StopTween(true)
+                else
+                    StartTweenToTarget(GalaxyState.Selected, selectedPart)
+                end
+            end
+        })
+        table.insert(buttons, { n = "Teleport", i = "Teleport", f = function() TeleportPlayer(GalaxyState.Selected, selectedPart) end })
+    end
+
+    if hasPhysicalActionTarget then
+        table.insert(buttons, { n = "Bring", i = "Bring", f = function() BringObject(GalaxyState.Selected) end })
         table.insert(buttons, { n = "Delete", i = "Delete", f = function() DeleteObject(GalaxyState.Selected) end })
     end
 
@@ -3030,13 +3730,22 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
             if isSelected then
                 RenderSquare(rowX, screenY, rowW, 20, Theme.Accent, true, 2, 5)
             elseif hovered then
-                RenderSquare(rowX, screenY, rowW, 20, Color3.fromRGB(25, 40, 65), true, 2, 5)
+                RenderSquare(rowX, screenY, rowW, 20, Theme.AccentSurface, true, 2, 5)
                 RenderSquare(rowX, screenY, rowW, 20, Theme.AccentHover, false, 2, 6)
             end
 
             local arrowX = x + (node.Depth * 14) + 8
             local arrowY = screenY + 10
             local arrowHovered = (not mouseBlocked) and IsMouseOver(arrowX - 8, screenY, 16, 20)
+
+            local currentAddress = GetInstanceAddress(node.Instance)
+            local currentName = GetDisplayName(node.Instance)
+            if GalaxyState.PendingRenameUntil and os.clock() < GalaxyState.PendingRenameUntil and
+                tostring(currentAddress) == tostring(GalaxyState.PendingRenameAddress) then
+                currentName = GalaxyState.PendingRenameName
+            end
+            if currentAddress then node.Address = currentAddress end
+            if currentName and node.Name ~= currentName then node.Name = currentName end
 
             if node.HasChildren then
                 RenderTreeArrow(arrowX, arrowY, node.Expanded, arrowHovered)
@@ -3050,12 +3759,12 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
             local kind = GetNodeTargetKind(node)
             local displayName = node.Name .. (node.Suffix or "")
             local tagName = node.ClassName or "Instance"
-            if kind == "LocalPlayer" then
-                tagName = "LocalPlayer"
-            elseif kind == "Player" then
-                tagName = "Player"
-            elseif kind == "NPC" then
-                tagName = "NPC / Mob"
+            if tagName == "Model" then
+                if kind == "LocalPlayer" or kind == "Player" then
+                    tagName = "Player - " .. tagName
+                elseif kind == "NPC" then
+                    tagName = "Entity - " .. tagName
+                end
             end
             local tagText = "[ " .. tagName .. " ]"
             local nameX = arrowX + 32
@@ -3082,7 +3791,12 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
                 GalaxyState.PropertyScroll = 0
                 GalaxyState.PropertyScrollY = 0
                 GalaxyState.ContextMenu = nil
-                UpdatePropertyPanel(); GalaxyState.IsMouseClicked = false
+                if GalaxyState.ShowProperties ~= false then
+                    UpdatePropertyPanel()
+                else
+                    GalaxyState.RequestPropertyRefresh("select")
+                end
+                GalaxyState.IsMouseClicked = false
             end
 
             if not mouseBlocked and GalaxyState.IsRightMouseClicked and hovered and not arrowHovered then
@@ -3091,7 +3805,11 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
                 MarkSelectedChanged()
                 GalaxyState.PropertyScroll = 0
                 GalaxyState.PropertyScrollY = 0
-                UpdatePropertyPanel()
+                if GalaxyState.ShowProperties ~= false then
+                    UpdatePropertyPanel()
+                else
+                    GalaxyState.RequestPropertyRefresh("select")
+                end
                 GalaxyState.ContextMenu = {
                     X = Mouse.X,
                     Y = Mouse.Y,
@@ -3119,7 +3837,7 @@ local function RenderSettingsMenu()
 
     local width = 236
     local pickerOpen = GalaxyState.ColorPickerOpen == true
-    local height = pickerOpen and 372 or 252
+    local height = pickerOpen and 508 or 388
     local viewport = GetViewportSize()
     local x = math.clamp(menu.X or Mouse.X, 8, math.max(8, viewport.X - width - 8))
     local y = math.clamp(menu.Y or Mouse.Y, 8, math.max(8, viewport.Y - height - 8))
@@ -3130,6 +3848,7 @@ local function RenderSettingsMenu()
 
     if (GalaxyState.IsMouseClicked or GalaxyState.IsRightMouseClicked) and not hoveredMenu then
         GalaxyState.ContextMenu = nil
+        GalaxyState.FocusedElement = nil
         GalaxyState.CapturingKeybind = false
         GalaxyState.ColorPickerOpen = false
         GalaxyState.ColorPickerDrag = nil
@@ -3150,18 +3869,53 @@ local function RenderSettingsMenu()
 
     local pad, gap = 10, 8
     local cursorY = y + 66
-    RenderText("Accent", x + 12, cursorY + 5, Theme.SubText, 10, Drawing.Fonts.System, 84)
-    RenderSquare(x + width - 64, cursorY, 22, 22, Theme.Accent, true, 5, 84, 1)
-    RenderSquare(x + width - 64, cursorY, 22, 22, Theme.Border, false, 5, 85)
-    if CreateToolbarIconButton(x + width - 36, cursorY, 22, "ColorPicker", 84, "ContextMenu", nil, true, 14) then
+
+    local servicesEnabled = GalaxyState.HideServices == true
+    RenderText("Services", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    cursorY = cursorY + 16
+    local servicesText = servicesEnabled and "Hidden" or "Visible"
+    if CreateInteractiveButton(x + 12, cursorY, width - 24, 24, servicesText, servicesEnabled and Theme.Accent or Theme.Section,
+        nil, 84, "ContextMenu", servicesEnabled and "UIOff" or "UIOn") then
+        GalaxyState.HideServices = not GalaxyState.HideServices
+        DexSettings.Save()
+        RefreshExplorer()
+        ShowNotification(GalaxyState.HideServices and "Services Hidden" or "Services Visible")
+    end
+    cursorY = cursorY + 36
+
+    RenderText("Accent", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    cursorY = cursorY + 16
+    if CreateToolbarIconButton(x + 12, cursorY, 22, "ColorPicker", 84, "ContextMenu", nil, true, 14) then
         GalaxyState.ColorPickerOpen = not GalaxyState.ColorPickerOpen
     end
+    RenderSquare(x + 40, cursorY, 22, 22, Theme.Accent, true, 5, 84, 1)
+    RenderSquare(x + 40, cursorY, 22, 22, Theme.Border, false, 5, 85)
 
-    cursorY = cursorY + 33
+    cursorY = cursorY + 34
     if GalaxyState.ColorPickerOpen then
         cursorY = RenderAccentColorPicker(x + pad, cursorY, width - pad * 2, 84) + 12
     end
 
+    local tweenKey = "Setting_TweenSpeed"
+    local tweenFocused = GalaxyState.FocusedElement == tweenKey
+    local tweenBoxW, tweenBoxH = width - 24, 22
+    RenderText("Tween Speed", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    cursorY = cursorY + 16
+    local tweenBoxX, tweenBoxY = x + 12, cursorY
+    RenderSquare(tweenBoxX, tweenBoxY, tweenBoxW, tweenBoxH,
+        tweenFocused and Color3.fromRGB(15, 15, 25) or Color3.fromRGB(25, 25, 35), true, 5, 84,
+        Theme.GlassStrong)
+    RenderSquare(tweenBoxX, tweenBoxY, tweenBoxW, tweenBoxH, tweenFocused and Theme.Accent or Theme.Border, false, 5, 85)
+    RenderText(FitTextToWidth(GalaxyState.TweenSpeedText or tostring(GalaxyState.TweenSpeed or 320), tweenBoxW - 10, 10),
+        tweenBoxX + 5, tweenBoxY + 4, Theme.Text, 10, Drawing.Fonts.System, 86)
+    RememberFocusRect(tweenKey, tweenBoxX, tweenBoxY, tweenBoxW, tweenBoxH)
+    if IsMouseAllowedFor("TextInput", tweenKey) and GalaxyState.IsMouseClicked and
+        IsMouseOver(tweenBoxX, tweenBoxY, tweenBoxW, tweenBoxH) then
+        GalaxyState.FocusedElement = tweenKey
+        GalaxyState.IsMouseClicked = false
+    end
+
+    cursorY = cursorY + 38
     RenderText("Quick Search", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
     local quickLabels = { "Workspace", "Replicated", "Character", "StarterGui", "LocalPlayer", "Players" }
     local quickIcons = {
@@ -3186,9 +3940,17 @@ local function RenderSettingsMenu()
         end
     end
 
-    if CreateInteractiveButton(x + pad, y + height - 36, width - pad * 2, 26, "Unload", Theme.Danger, nil, 84, "ContextMenu", "Delete") then
+    local bottomY = y + height - 42
+    local bottomW = (width - pad * 2 - gap) / 2
+    RenderText("Options", x + 12, bottomY - 16, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    if CreateInteractiveButton(x + pad, bottomY, bottomW, 28, "Unload", Theme.Danger, nil, 84, "ContextMenu", "Delete") then
         GalaxyState.ContextMenu = nil
         GalaxyState.PendingUnload = true
+    end
+    if CreateInteractiveButton(x + pad + bottomW + gap, bottomY, bottomW, 28, "Refresh", Theme.Accent, nil, 84,
+        "ContextMenu", "Refresh") then
+        GalaxyState.ContextMenu = nil
+        RunGalaxAction("Refresh", RefreshExplorer)
     end
 
     if hoveredMenu and GalaxyState.IsRightMouseClicked then
@@ -3256,6 +4018,112 @@ local function GetTreeHeight(nodes)
     return height
 end
 
+GalaxyState.RequestTreeRefresh = function(reason)
+    GalaxyState.TreeRefreshRequested = reason or true
+    GalaxyState.LastTreeRefresh = 0
+end
+
+GalaxyState.RequestPropertyRefresh = function(reason)
+    GalaxyState.PropertyRefreshRequested = reason or true
+    GalaxyState.LastPropertyUpdate = 0
+end
+
+GalaxyState.UpdatePropertyScan = function(currentTime, canScan)
+    if not canScan or GalaxyState.ShowProperties == false or not GalaxyState.Selected then return end
+
+    if not IsInstanceValid(GalaxyState.Selected) then
+        ClearSelectedState()
+        return
+    end
+
+    if GalaxyState.PropertyRefreshRequested or not GalaxyState.LastPropertyUpdate or
+        currentTime - GalaxyState.LastPropertyUpdate > 0.25 then
+        pcall(UpdatePropertyPanel)
+        GalaxyState.LastPropertyUpdate = currentTime
+        GalaxyState.PropertyRefreshRequested = nil
+    end
+end
+
+GalaxyState.ScanTreeNode = function(node, currentTime, checksLeft)
+    if checksLeft <= 0 or not node or not node.Instance then return checksLeft end
+
+    if not node.Expanded then
+        if not node.LastChildCheck or currentTime - node.LastChildCheck > 2.0 then
+            local children = DexSettings.GetChildren(node.Instance)
+            if children then
+                node.ChildCount = #children
+                node.HasChildren = node.ChildCount > 0
+                node.LastChildCheck = currentTime
+                checksLeft = checksLeft - 1
+            end
+        end
+        return checksLeft
+    end
+
+    local real = DexSettings.GetChildren(node.Instance) or {}
+    checksLeft = checksLeft - 1
+    local realCount = #real
+    local needsRefresh = GalaxyState.TreeRefreshRequested or
+        (realCount ~= (node.ChildCount or #(node.Children or {}))) or
+        (realCount ~= #(node.Children or {}))
+
+    if not needsRefresh and currentTime - (node.LastDeepCheck or 0) > 3.0 then
+        local childSet = {}
+        for _, childNode in ipairs(node.Children or {}) do
+            if not IsInstanceValid(childNode.Instance) then
+                needsRefresh = true
+                break
+            end
+            childSet[childNode.Instance] = true
+        end
+        if not needsRefresh then
+            for _, inst in ipairs(real) do
+                if not childSet[inst] then
+                    needsRefresh = true
+                    break
+                end
+            end
+        end
+        node.LastDeepCheck = currentTime
+    end
+
+    if needsRefresh then
+        PopulateNodeChildren(node, real, currentTime)
+    else
+        node.ChildCount = realCount
+        node.HasChildren = realCount > 0
+        node.LastChildCheck = currentTime
+        for _, childNode in ipairs(node.Children or {}) do
+            if childNode.Instance and IsInstanceValid(childNode.Instance) then
+                RefreshNodeIdentity(childNode, childNode.Instance)
+            end
+        end
+    end
+
+    for _, child in ipairs(node.Children or {}) do
+        if checksLeft <= 0 then break end
+        checksLeft = GalaxyState.ScanTreeNode(child, currentTime, checksLeft)
+    end
+
+    return checksLeft
+end
+
+GalaxyState.UpdateTreeScan = function(currentTime, canScan)
+    if not canScan or GalaxyState.ShowExplorer == false or not GalaxyState.TreeRoot then return end
+    if not GalaxyState.TreeRefreshRequested and GalaxyState.LastTreeRefresh and
+        currentTime - GalaxyState.LastTreeRefresh <= 0.35 then
+        return
+    end
+
+    local checksLeft = GalaxyState.ScanTreeNode(GalaxyState.TreeRoot, currentTime,
+        GalaxyState.TreeRefreshRequested and 40 or 20)
+    GalaxyState.LastTreeRefresh = currentTime
+    if checksLeft > 0 then
+        GalaxyState.TreeRefreshRequested = nil
+    end
+end
+
+DexSettings.Load()
 GalaxyState.TreeRoot = CreateTreeNode(game, 0)
 PopulateNodeChildren(GalaxyState.TreeRoot)
 GalaxyState.TreeRoot.Expanded = true
@@ -3281,6 +4149,7 @@ task.spawn(function()
                 GalaxyState.CapturingKeybind = false
                 GalaxyState.SuppressMenuToggleUntilRelease = true
                 PreviousMenuKey = true
+                DexSettings.Save()
                 ShowNotification("Keybind: " .. name)
             end
         end
@@ -3326,6 +4195,7 @@ task.spawn(function()
             UpdateSelectedState(not IsVisible)
             UpdateSpectateState(not IsVisible)
         end
+        UpdateTweenState()
         local selectedPhysicalPart = GalaxyState.SelectedPhysicalPart
 
         local shouldBlockRobloxInput = GalaxyState.FocusedElement ~= nil
@@ -3340,9 +4210,10 @@ task.spawn(function()
 
         if not IsVisible then
             ClearDrawingPool()
-            if selectedPhysicalPart then
-                RenderSelectedEsp(GalaxyState.Selected, selectedPhysicalPart)
+            if GalaxyState.Selected and GalaxyState.ShowVisuals ~= false then
+                RenderSelectedVisuals(GalaxyState.Selected, selectedPhysicalPart)
             end
+            GalaxyState.RenderDexControl()
             HideUnusedDrawings()
             continue
         end
@@ -3354,6 +4225,18 @@ task.spawn(function()
             local currentVal, setter
             if GalaxyState.FocusedElement == "SearchInput" then
                 currentVal, setter = GalaxyState.SearchQuery, function(v) GalaxyState.SearchQuery = v end
+            elseif GalaxyState.FocusedElement == "Setting_TweenSpeed" then
+                currentVal = GalaxyState.TweenSpeedText or tostring(GalaxyState.TweenSpeed or 320)
+                setter = function(v)
+                    v = tostring(v or ""):gsub("[^%d%.]", "")
+                    local firstDot = v:find("%.")
+                    if firstDot then
+                        v = v:sub(1, firstDot) .. v:sub(firstDot + 1):gsub("%.", "")
+                    end
+                    GalaxyState.TweenSpeedText = v
+                    local speed = tonumber(v)
+                    if speed then GalaxyState.TweenSpeed = math.clamp(speed, 1, 10000) end
+                end
             elseif GalaxyState.FocusedElement:sub(1, 5) == "Prop_" then
                 local parts = {}
                 for p in GalaxyState.FocusedElement:gmatch("[^_]+") do table.insert(parts, p) end
@@ -3395,6 +4278,12 @@ task.spawn(function()
                                 elseif k == 0x0D then
                                     if GalaxyState.FocusedElement == "SearchInput" then
                                         PerformSearch()
+                                    elseif GalaxyState.FocusedElement == "Setting_TweenSpeed" then
+                                        local speed = tonumber(GalaxyState.TweenSpeedText) or GalaxyState.TweenSpeed or 320
+                                        GalaxyState.TweenSpeed = math.clamp(speed, 1, 10000)
+                                        GalaxyState.TweenSpeedText = tostring(math.floor(GalaxyState.TweenSpeed + 0.5))
+                                        DexSettings.Save()
+                                        ShowNotification("Tween Speed: " .. GalaxyState.TweenSpeedText)
                                     else
                                         ApplyProp(GalaxyState.FocusedElement)
                                     end
@@ -3445,20 +4334,37 @@ task.spawn(function()
         end
 
         ClearDrawingPool()
-        if GalaxyState.Selected and IsInstanceValid(GalaxyState.Selected) then
-            RenderSelectedVisualCache()
+        if GalaxyState.Selected and GalaxyState.ShowVisuals ~= false then
+            RenderSelectedVisuals(GalaxyState.Selected, GalaxyState.SelectedPhysicalPart)
         end
+        GalaxyState.RenderDexControl()
+        PosX, PosY = WindowPosition.X, WindowPosition.Y
+
+        local showExplorer = GalaxyState.ShowExplorer ~= false
+        local showProperties = GalaxyState.ShowProperties ~= false
+        if not showExplorer then
+            if GalaxyState.FocusedElement == "SearchInput" then GalaxyState.FocusedElement = nil end
+            if showProperties then
+                if GalaxyState.PropertiesDetached then
+                    GalaxyState.SetMainBarOwner("Properties")
+                else
+                    GalaxyState.PropertiesSnapSide = nil
+                    GalaxyState.PropertiesSnapPreview = nil
+                end
+                GalaxyState.IsDraggingPropertiesWindow = false
+                GalaxyState.PropertiesResizeMode = nil
+            end
+        elseif GalaxyState.MainBarOwner == "Properties" then
+            GalaxyState.RestoreMainBarOwner("Properties")
+        end
+        PosX, PosY = WindowPosition.X, WindowPosition.Y
 
         local RedDotX, DotY = PosX + 18, PosY + HeaderHeight / 2
         local YellowDotX = PosX + 32
         local TopSettingsSize = 22
         local TopSettingsX = PosX + WindowWidth - 34
         local TopSettingsY = PosY + (HeaderHeight - TopSettingsSize) / 2
-        local TopRefreshSize = 22
-        local TopRefreshX = TopSettingsX - TopRefreshSize - 8
-        local TopRefreshY = PosY + (HeaderHeight - TopRefreshSize) / 2
-        local overTopbarControl = IsMouseOver(TopRefreshX, TopRefreshY, TopRefreshSize, TopRefreshSize)
-            or IsMouseOver(TopSettingsX, TopSettingsY, TopSettingsSize, TopSettingsSize)
+        local overTopbarControl = IsMouseOver(TopSettingsX, TopSettingsY, TopSettingsSize, TopSettingsSize)
             or IsMouseOver(RedDotX - 7, DotY - 7, 14, 14)
             or IsMouseOver(YellowDotX - 7, DotY - 7, 14, 14)
         local hoveredResizeMode = GalaxyState.GetWindowResizeMode(PosX, PosY, WindowWidth, WindowHeight)
@@ -3468,34 +4374,115 @@ task.spawn(function()
             GalaxyState.ResizeStartMouse = Vector2.new(Mouse.X, Mouse.Y)
             GalaxyState.ResizeStart = { X = PosX, Y = PosY, W = WindowWidth, H = WindowHeight }
             IsDragging = false
+            GalaxyState.IsDraggingLayoutSplit = false
+            GalaxyState.IsDraggingScroll = false
+            GalaxyState.IsDraggingSearchScroll = false
+            GalaxyState.IsDraggingPropertyScroll = false
             GalaxyState.IsMouseClicked = false
         end
 
         if not GalaxyState.ResizeMode and not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and
             IsMouseOver(PosX, PosY, WindowWidth, HeaderHeight) and not overTopbarControl then
             IsDragging = true; DragOffset = Vector2.new(Mouse.X - PosX, Mouse.Y - PosY)
-        end
-        if not IsMousePressed then
-            IsDragging = false
-            GalaxyState.ResizeMode = nil
+            if GalaxyState.WindowSnapSide then
+                local viewport = GetViewportSize()
+                WindowWidth = math.clamp(GalaxyState.WindowFreeWidth or WindowWidth, 360, viewport.X)
+                WindowHeight = math.clamp(GalaxyState.WindowFreeHeight or 700, 460, viewport.Y)
+                WindowPosition = Vector2.new(Mouse.X - DragOffset.X,
+                    math.clamp(Mouse.Y - HeaderHeight / 2, 0, math.max(0, viewport.Y - WindowHeight)))
+                PosX, PosY = WindowPosition.X, WindowPosition.Y
+            else
+                GalaxyState.WindowFreeWidth = WindowWidth
+                GalaxyState.WindowFreeHeight = WindowHeight
+            end
+            GalaxyState.WindowSnapSide = nil
+            GalaxyState.IsDraggingLayoutSplit = false
+            GalaxyState.IsDraggingScroll = false
+            GalaxyState.IsDraggingSearchScroll = false
+            GalaxyState.IsDraggingPropertyScroll = false
         end
         if GalaxyState.ResizeMode then
             GalaxyState.ApplyWindowResize(GalaxyState.ResizeMode)
             PosX, PosY = WindowPosition.X, WindowPosition.Y
         elseif IsDragging then
-            WindowPosition = Vector2.new(Mouse.X - DragOffset.X, Mouse.Y - DragOffset.Y)
+            local viewport = GetViewportSize()
+            WindowPosition = Vector2.new(
+                math.clamp(Mouse.X - DragOffset.X, 0, math.max(0, viewport.X - WindowWidth)),
+                math.clamp(Mouse.Y - DragOffset.Y, 0, math.max(0, viewport.Y - WindowHeight))
+            )
             PosX, PosY = WindowPosition.X, WindowPosition.Y
         end
+
+        GalaxyState.WindowSnapPreview = nil
+        if IsDragging then
+            local viewport = GetViewportSize()
+            local snapRange = 92
+            if Mouse.X <= snapRange then
+                GalaxyState.WindowFreeWidth = GalaxyState.WindowFreeWidth or WindowWidth
+                GalaxyState.WindowFreeHeight = GalaxyState.WindowFreeHeight or WindowHeight
+                GalaxyState.WindowSnapPreview = "Left"
+            elseif Mouse.X >= viewport.X - snapRange then
+                GalaxyState.WindowFreeWidth = GalaxyState.WindowFreeWidth or WindowWidth
+                GalaxyState.WindowFreeHeight = GalaxyState.WindowFreeHeight or WindowHeight
+                GalaxyState.WindowSnapPreview = "Right"
+            end
+        end
+
+        if not IsMousePressed then
+            if IsDragging and GalaxyState.WindowSnapPreview then
+                GalaxyState.WindowSnapSide = GalaxyState.WindowSnapPreview
+            end
+            IsDragging = false
+            GalaxyState.ResizeMode = nil
+            GalaxyState.WindowSnapPreview = nil
+        end
+
+        if GalaxyState.WindowSnapSide == "Left" then
+            local viewport = GetViewportSize()
+            WindowWidth = math.min(WindowWidth, math.floor(viewport.X * 0.5 + 0.5))
+            WindowHeight = viewport.Y
+            WindowPosition = Vector2.new(0, 0)
+            PosX, PosY = WindowPosition.X, WindowPosition.Y
+        elseif GalaxyState.WindowSnapSide == "Right" then
+            local viewport = GetViewportSize()
+            WindowWidth = math.min(WindowWidth, math.floor(viewport.X * 0.5 + 0.5))
+            WindowHeight = viewport.Y
+            WindowPosition = Vector2.new(math.max(0, viewport.X - WindowWidth), 0)
+            PosX, PosY = WindowPosition.X, WindowPosition.Y
+        end
+
         RedDotX, DotY = PosX + 18, PosY + HeaderHeight / 2
         YellowDotX = PosX + 32
         TopSettingsX = PosX + WindowWidth - 34
         TopSettingsY = PosY + (HeaderHeight - TopSettingsSize) / 2
-        TopRefreshX = TopSettingsX - TopRefreshSize - 8
-        TopRefreshY = PosY + (HeaderHeight - TopRefreshSize) / 2
 
-        RenderSquare(PosX, PosY, WindowWidth, WindowHeight, Theme.Background, true, 13, 1, Theme.GlassSubtle)
-        RenderSquare(PosX, PosY, WindowWidth, WindowHeight, Theme.BorderBright, false, 13, 2)
-        RenderSquare(PosX, PosY, WindowWidth, HeaderHeight, Theme.Topbar, true, 13, 10, Theme.GlassTopbar)
+        if GalaxyState.WindowSnapPreview then
+            local viewport = GetViewportSize()
+            local snapW = 76
+            local snapX = GalaxyState.WindowSnapPreview == "Left" and 0 or (viewport.X - snapW)
+            RenderSquare(snapX, 0, snapW, viewport.Y, Theme.Accent, true, 0, -2, 0.5)
+            RenderLine(snapX + (GalaxyState.WindowSnapPreview == "Left" and snapW or 0), 0,
+                snapX + (GalaxyState.WindowSnapPreview == "Left" and snapW or 0), viewport.Y,
+                Theme.BorderBright, -1, 1, 0.55)
+        end
+
+        local windowCorner = GalaxyState.WindowSnapSide and 0 or 13
+        RenderSquare(PosX, PosY, WindowWidth, WindowHeight, Theme.Background, true, windowCorner, 1, Theme.GlassSubtle)
+        if GalaxyState.WindowSnapSide then
+            local borderColor = Theme.BorderBright
+            if GalaxyState.WindowSnapSide == "Left" then
+                RenderLine(PosX + WindowWidth - 1, PosY + 10, PosX + WindowWidth - 1, PosY + WindowHeight - 10,
+                    borderColor, 2, 1, 1)
+            elseif GalaxyState.WindowSnapSide == "Right" then
+                RenderLine(PosX, PosY + 10, PosX, PosY + WindowHeight - 10, borderColor, 2, 1, 1)
+            end
+            RenderLine(PosX + 10, PosY, PosX + WindowWidth - 10, PosY, borderColor, 2, 1, 1)
+            RenderLine(PosX + 10, PosY + WindowHeight - 1, PosX + WindowWidth - 10, PosY + WindowHeight - 1,
+                borderColor, 2, 1, 1)
+        else
+            RenderSquare(PosX, PosY, WindowWidth, WindowHeight, Theme.BorderBright, false, windowCorner, 2)
+        end
+        RenderSquare(PosX, PosY, WindowWidth, HeaderHeight, Theme.Topbar, true, windowCorner, 10, Theme.GlassTopbar)
         RenderCircle(RedDotX, DotY, 4, Theme.Red, 12)
         RenderCircle(YellowDotX, DotY, 4, Theme.Yellow, 12)
         RenderText("Galax Dex", PosX + 48, PosY + HeaderHeight / 2 - 6, Theme.Text, 12, Drawing.Fonts.System, 12)
@@ -3527,136 +4514,373 @@ task.spawn(function()
             SetGalaxDexVisible(false)
             GalaxyState.IsMouseClicked = false
         end
-        if CreateToolbarIconButton(TopRefreshX, TopRefreshY, TopRefreshSize, "Refresh", 12, nil, nil, true, 14) then
-            RunGalaxAction("Refresh", RefreshExplorer)
-        end
-        if CreateToolbarIconButton(TopSettingsX, TopSettingsY, TopSettingsSize, "Settings", 12, nil, nil, true, 14) then
+        if CreateToolbarIconButton(TopSettingsX, TopSettingsY, TopSettingsSize, "More", 12, nil, nil, true, 14) then
             OpenSettingsMenu(TopSettingsX - 210, PosY + HeaderHeight + 6)
         end
 
         local ContainerX, ListWidth = PosX + 14, WindowWidth - 28
         local SearchY, SearchHeight = PosY + HeaderHeight + 10, 30
-        local BtnSize, BtnGap = 22, 5
-        local ClearX = ContainerX + ListWidth - BtnSize - 5
-        local SearchBtnX = ClearX - BtnSize - BtnGap
-        local TextX = ContainerX + 10
-        local searchFocused = GalaxyState.FocusedElement == "SearchInput"
+        local ContentY = showExplorer and (SearchY + SearchHeight + 10) or (PosY + HeaderHeight + 10)
+        if showExplorer then
+            local BtnSize, BtnGap = 22, 5
+            local ClearX = ContainerX + ListWidth - BtnSize - 5
+            local SearchBtnX = ClearX - BtnSize - BtnGap
+            local TextX = ContainerX + 10
+            local searchFocused = GalaxyState.FocusedElement == "SearchInput"
 
-        RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, Theme.Section, true, 6, 4, Theme.GlassStrong)
-        RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, searchFocused and Theme.Accent or Theme.BorderBright, false, 6, 5)
-        RenderText(GalaxyState.SearchQuery == "" and "Search..." or FitTextToWidth(GalaxyState.SearchQuery, SearchBtnX - TextX - 8, 11),
-            TextX, SearchY + SearchHeight / 2 - 6,
-            GalaxyState.SearchQuery == "" and Theme.SubText or Theme.Text, 11, Drawing.Fonts.System, 6)
-        RememberFocusRect("SearchInput", ContainerX, SearchY, SearchBtnX - ContainerX - 4, SearchHeight)
+            RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, Theme.Section, true, 6, 4, Theme.GlassStrong)
+            RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, searchFocused and Theme.Accent or Theme.BorderBright, false, 6, 5)
+            RenderText(GalaxyState.SearchQuery == "" and "Search..." or FitTextToWidth(GalaxyState.SearchQuery, SearchBtnX - TextX - 8, 11),
+                TextX, SearchY + SearchHeight / 2 - 6,
+                GalaxyState.SearchQuery == "" and Theme.SubText or Theme.Text, 11, Drawing.Fonts.System, 6)
+            RememberFocusRect("SearchInput", ContainerX, SearchY, SearchBtnX - ContainerX - 4, SearchHeight)
 
-        if IsMouseAllowedFor("TextInput", "SearchInput") and GalaxyState.IsMouseClicked and
-            IsMouseOver(ContainerX, SearchY, SearchBtnX - ContainerX - 4, SearchHeight) then
-            GalaxyState.FocusedElement = "SearchInput"
-            GalaxyState.IsMouseClicked = false
+            if IsMouseAllowedFor("TextInput", "SearchInput") and GalaxyState.IsMouseClicked and
+                IsMouseOver(ContainerX, SearchY, SearchBtnX - ContainerX - 4, SearchHeight) then
+                GalaxyState.FocusedElement = "SearchInput"
+                GalaxyState.IsMouseClicked = false
+            end
+
+            if CreateToolbarIconButton(SearchBtnX, SearchY + 4, BtnSize, "Search", 7, "TextInput", "SearchInput") then
+                RunGalaxAction("Search", PerformSearch)
+            end
+            if CreateToolbarIconButton(ClearX, SearchY + 4, BtnSize, "Clear", 7, "TextInput", "SearchInput") then
+                RunGalaxAction("Clear Search", function()
+                    ClearSearch()
+                    UpdatePropertyPanel()
+                    ShowNotification("Search Cleared")
+                end)
+            end
         end
-
-        if CreateToolbarIconButton(SearchBtnX, SearchY + 4, BtnSize, "Search", 7, "TextInput", "SearchInput") then
-            RunGalaxAction("Search", PerformSearch)
-        end
-        if CreateToolbarIconButton(ClearX, SearchY + 4, BtnSize, "Clear", 7, "TextInput", "SearchInput") then
-            RunGalaxAction("Clear Search", function()
-                ClearSearch()
-                UpdatePropertyPanel()
-                ShowNotification("Search Cleared")
-            end)
-        end
-
-        local ContentY = SearchY + SearchHeight + 10
         local viewingSearch = CurrentTab == "Search"
         local treeNodes = viewingSearch and GalaxyState.SearchRoot.Children or GalaxyState.TreeRoot.Children
-        local TreeStartY, SplitterHeight, PanelWidth = ContentY, 10, ListWidth
+        local propertiesDetached = showProperties and GalaxyState.PropertiesDetached == true
+        local mainShowProperties = showProperties and not propertiesDetached
+        local TreeStartY, SplitterHeight, PanelWidth = ContentY, ((showExplorer and mainShowProperties) and 10 or 0), ListWidth
         local MinTreeHeight, MinPropertyHeight = 80, 96
-        local AvailableHeight = math.max(MinTreeHeight + SplitterHeight + MinPropertyHeight,
+        local minContentHeight = (showExplorer and mainShowProperties) and
+            (MinTreeHeight + SplitterHeight + MinPropertyHeight) or
+            (showExplorer and MinTreeHeight or MinPropertyHeight)
+        local AvailableHeight = math.max(minContentHeight,
             WindowHeight - (ContentY - PosY) - 14)
         local SplitArea = AvailableHeight - SplitterHeight
         local MaxTreeHeight = math.max(MinTreeHeight, SplitArea - MinPropertyHeight)
-        local TreeHeight = math.clamp(GalaxyState.SnapToStep(SplitArea * (GalaxyState.LayoutSplitRatio or (340 / 592)), 20),
-            MinTreeHeight, MaxTreeHeight)
+        local LayoutSplitBase, LayoutSplitStep = 340, 20
+        local function SnapLayoutSplit(value)
+            return LayoutSplitBase + GalaxyState.SnapToStep(value - LayoutSplitBase, LayoutSplitStep)
+        end
+        local TreeHeight
+        if showExplorer and mainShowProperties then
+            TreeHeight = math.clamp(SnapLayoutSplit(SplitArea * (GalaxyState.LayoutSplitRatio or (340 / 592))),
+                MinTreeHeight, MaxTreeHeight)
+        elseif showExplorer then
+            TreeHeight = AvailableHeight
+        else
+            TreeHeight = 0
+        end
         local SplitterY = TreeStartY + TreeHeight
-        local splitHovered = IsMouseAllowedFor("LayoutSplit") and IsMouseOver(ContainerX, SplitterY, ListWidth, SplitterHeight)
+        local splitHovered = showExplorer and mainShowProperties and IsMouseAllowedFor("LayoutSplit") and
+            IsMouseOver(ContainerX, SplitterY, ListWidth, SplitterHeight)
 
         if splitHovered and GalaxyState.IsMouseClicked then
             GalaxyState.IsDraggingLayoutSplit = true
+            GalaxyState.IsDraggingScroll = false
+            GalaxyState.IsDraggingSearchScroll = false
+            GalaxyState.IsDraggingPropertyScroll = false
             GalaxyState.IsMouseClicked = false
         end
         if not IsMousePressed then GalaxyState.IsDraggingLayoutSplit = false end
-        if GalaxyState.IsDraggingLayoutSplit then
-            TreeHeight = math.clamp(GalaxyState.SnapToStep(Mouse.Y - TreeStartY, 20), MinTreeHeight, MaxTreeHeight)
+        if GalaxyState.IsDraggingLayoutSplit and showExplorer and mainShowProperties then
+            if Mouse.X < PosX - 80 or Mouse.X > PosX + WindowWidth + 80 then
+                local detachTop = TreeStartY + TreeHeight + SplitterHeight
+                local detachPanelHeight = math.max(MinPropertyHeight, WindowHeight - (detachTop - PosY) - 14)
+                GalaxyState.PropertiesDetached = true
+                GalaxyState.PropertiesWindowW = math.max(300, ListWidth)
+                GalaxyState.PropertiesWindowH = math.max(MinWindowHeight,
+                    detachPanelHeight + HeaderHeight + GalaxyState.PanelTopGap + GalaxyState.PanelBottomGap)
+                GalaxyState.PropertiesFreeW = GalaxyState.PropertiesWindowW
+                GalaxyState.PropertiesFreeH = GalaxyState.PropertiesWindowH
+                GalaxyState.PropertiesWindowX = math.clamp(Mouse.X - (GalaxyState.PropertiesWindowW / 2), 0,
+                    math.max(0, GetViewportSize().X - GalaxyState.PropertiesWindowW))
+                GalaxyState.PropertiesWindowY = math.max(0, detachTop - 18)
+                GalaxyState.PropertiesSnapSide = nil
+                GalaxyState.IsDraggingLayoutSplit = false
+                GalaxyState.IsDraggingPropertiesWindow = true
+                GalaxyState.PropertiesWindowDragOffset = Vector2.new(Mouse.X - GalaxyState.PropertiesWindowX,
+                    Mouse.Y - GalaxyState.PropertiesWindowY)
+                propertiesDetached = true
+                mainShowProperties = false
+                SplitterHeight = 0
+                SplitArea = AvailableHeight
+                TreeHeight = showExplorer and AvailableHeight or 0
+                SplitterY = TreeStartY + TreeHeight
+            end
+        end
+        if GalaxyState.IsDraggingLayoutSplit and showExplorer and mainShowProperties then
+            TreeHeight = math.clamp(SnapLayoutSplit(Mouse.Y - TreeStartY), MinTreeHeight, MaxTreeHeight)
             GalaxyState.LayoutSplitRatio = TreeHeight / SplitArea
             SplitterY = TreeStartY + TreeHeight
         end
 
         local TreeEndY = SplitterY
         local BottomY = SplitterY + SplitterHeight
-        local PropertyHeight = math.max(MinPropertyHeight, WindowHeight - (BottomY - PosY) - 14)
+        local PropertyHeight = showProperties and
+            (mainShowProperties and math.max(MinPropertyHeight, WindowHeight - (BottomY - PosY) - 14) or AvailableHeight) or 0
 
-        RenderSquare(ContainerX, TreeStartY, ListWidth, TreeHeight, Theme.Section, true, 6, 4)
-        RenderSquare(ContainerX, TreeStartY, ListWidth, TreeHeight, Theme.Border, false, 6, 5)
-        RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Section, true, 6, 4)
-        RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Border, false, 6, 5)
-        local SplitHandleW = math.min(86, ListWidth * 0.35)
-        local SplitHandleX = ContainerX + (ListWidth - SplitHandleW) / 2
-        RenderSquare(SplitHandleX, SplitterY + 2, SplitHandleW, SplitterHeight - 4,
-            Theme.Section, true, 4, 7, Theme.GlassSubtle)
-        RenderSquare(SplitHandleX, SplitterY + 2, SplitHandleW, SplitterHeight - 4,
-            GalaxyState.IsDraggingLayoutSplit and Theme.Accent or Theme.BorderBright, false, 4, 8,
-            GalaxyState.IsDraggingLayoutSplit and 0.85 or 0.55)
+        if showExplorer then
+            RenderSquare(ContainerX, TreeStartY, ListWidth, TreeHeight, Theme.Section, true, 6, 4)
+            RenderSquare(ContainerX, TreeStartY, ListWidth, TreeHeight, Theme.Border, false, 6, 5)
+        end
+        if mainShowProperties then
+            RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Section, true, 6, 4)
+            RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Border, false, 6, 5)
+        end
+        if showExplorer and mainShowProperties then
+            local SplitHandleW = math.min(86, ListWidth * 0.35)
+            local SplitHandleX = ContainerX + (ListWidth - SplitHandleW) / 2
+            RenderSquare(SplitHandleX, SplitterY + 2, SplitHandleW, SplitterHeight - 4,
+                Theme.Section, true, 4, 7, Theme.GlassSubtle)
+            RenderSquare(SplitHandleX, SplitterY + 2, SplitHandleW, SplitterHeight - 4,
+                GalaxyState.IsDraggingLayoutSplit and Theme.Accent or Theme.BorderBright, false, 4, 8,
+                GalaxyState.IsDraggingLayoutSplit and 0.85 or 0.55)
+        end
         RenderLine(PosX + WindowWidth - 15, PosY + WindowHeight - 5, PosX + WindowWidth - 5,
             PosY + WindowHeight - 15, GalaxyState.ResizeMode and Theme.AccentHover or Theme.BorderBright, 9, 1, 0.6)
         RenderLine(PosX + WindowWidth - 10, PosY + WindowHeight - 5, PosX + WindowWidth - 5,
             PosY + WindowHeight - 10, GalaxyState.ResizeMode and Theme.AccentHover or Theme.BorderBright, 9, 1, 0.5)
 
-        local ScrollTrackX = ContainerX + ListWidth - 14
-        local ScrollTrackY = TreeStartY + 6
-        local ScrollTrackHeight = TreeHeight - 12
-        local TotalContentHeight = GetTreeHeight(treeNodes)
-        local activeMaxScrollY = math.max(0, TotalContentHeight - TreeHeight)
         local activeScrollY = viewingSearch and GalaxyState.SearchScrollY or GalaxyState.ScrollY
-        activeScrollY = math.clamp(math.floor(activeScrollY / 20 + 0.5) * 20, 0, activeMaxScrollY)
-
-        local ScrollThumbHeight = math.max(20,
-            (ScrollTrackHeight / math.max(1, TotalContentHeight)) * ScrollTrackHeight)
-        if TotalContentHeight <= ScrollTrackHeight then ScrollThumbHeight = ScrollTrackHeight end
-
         local dragFlag = viewingSearch and "IsDraggingSearchScroll" or "IsDraggingScroll"
-        if not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and IsMouseOver(ScrollTrackX - 3, ScrollTrackY, 14, ScrollTrackHeight) then
-            GalaxyState[dragFlag] = true
-            GalaxyState.IsMouseClicked = false
-        end
-        if not IsMousePressed then
+        local ScrollTrackX, ScrollTrackY, ScrollTrackHeight, ScrollThumbY, ScrollThumbHeight
+        if showExplorer then
+            ScrollTrackX = ContainerX + ListWidth - 14
+            ScrollTrackY = TreeStartY + 6
+            ScrollTrackHeight = TreeHeight - 12
+            local TotalContentHeight = GetTreeHeight(treeNodes)
+            local activeMaxScrollY = math.max(0, TotalContentHeight - TreeHeight)
+            activeScrollY = math.clamp(math.floor(activeScrollY / 20 + 0.5) * 20, 0, activeMaxScrollY)
+
+            ScrollThumbHeight = math.max(20,
+                (ScrollTrackHeight / math.max(1, TotalContentHeight)) * ScrollTrackHeight)
+            if TotalContentHeight <= ScrollTrackHeight then ScrollThumbHeight = ScrollTrackHeight end
+
+            if IsMouseAllowedFor("ExplorerScroll") and GalaxyState.IsMouseClicked and IsMouseOver(ScrollTrackX - 3, ScrollTrackY, 14, ScrollTrackHeight) then
+                GalaxyState[dragFlag] = true
+                GalaxyState.IsDraggingLayoutSplit = false
+                GalaxyState.IsDraggingPropertyScroll = false
+                GalaxyState.IsMouseClicked = false
+            end
+            if not IsMousePressed then
+                GalaxyState.IsDraggingScroll = false
+                GalaxyState.IsDraggingSearchScroll = false
+            end
+
+            if GalaxyState[dragFlag] and activeMaxScrollY > 0 then
+                local pct = math.clamp(
+                    (Mouse.Y - ScrollTrackY - (ScrollThumbHeight / 2)) / (ScrollTrackHeight - ScrollThumbHeight), 0, 1)
+                local maxLines = activeMaxScrollY / 20
+                activeScrollY = math.floor(pct * maxLines + 0.5) * 20
+            end
+
+            activeScrollY = HandleKeyboardScroll(viewingSearch and "Search" or "Explorer", activeScrollY, activeMaxScrollY, 20,
+                IsMouseOver(ContainerX, TreeStartY, ListWidth, TreeHeight))
+
+            if viewingSearch then
+                GalaxyState.SearchMaxScrollY = activeMaxScrollY
+                GalaxyState.SearchScrollY = activeScrollY
+            else
+                GalaxyState.MaxScrollY = activeMaxScrollY
+                GalaxyState.ScrollY = activeScrollY
+            end
+
+            ScrollThumbY = ScrollTrackY +
+                (activeMaxScrollY > 0 and (activeScrollY / activeMaxScrollY) * (ScrollTrackHeight - ScrollThumbHeight) or 0)
+        else
             GalaxyState.IsDraggingScroll = false
             GalaxyState.IsDraggingSearchScroll = false
         end
 
-        if GalaxyState[dragFlag] and activeMaxScrollY > 0 then
-            local pct = math.clamp(
-                (Mouse.Y - ScrollTrackY - (ScrollThumbHeight / 2)) / (ScrollTrackHeight - ScrollThumbHeight), 0, 1)
-            local maxLines = activeMaxScrollY / 20
-            activeScrollY = math.floor(pct * maxLines + 0.5) * 20
+        if showExplorer then
+            RenderSquare(ScrollTrackX, ScrollTrackY, 9, ScrollTrackHeight, Theme.Background, true, 4, 10)
+            local thumbBg = GalaxyState[dragFlag] and Theme.Accent or Theme.BorderBright
+            local thumbBorder = GalaxyState[dragFlag] and Theme.AccentHover or Color3.fromRGB(90, 90, 120)
+            RenderSquare(ScrollTrackX, ScrollThumbY, 9, ScrollThumbHeight, thumbBorder, true, 4, 11)
+            RenderSquare(ScrollTrackX + 1, ScrollThumbY + 1, 7, ScrollThumbHeight - 2, thumbBg, true, 3, 12)
         end
 
-        activeScrollY = HandleKeyboardScroll(viewingSearch and "Search" or "Explorer", activeScrollY, activeMaxScrollY, 20,
-            IsMouseOver(ContainerX, TreeStartY, ListWidth, TreeHeight))
+        local MainContainerX, MainBottomY, MainPanelWidth, MainPropertyHeight = ContainerX, BottomY, PanelWidth, PropertyHeight
+        if propertiesDetached then
+            local viewport = GetViewportSize()
+            local propW = math.clamp(GalaxyState.PropertiesWindowW or WindowWidth, 300, viewport.X)
+            if GalaxyState.PropertiesSnapSide then
+                propW = math.min(propW, math.floor(viewport.X * 0.5 + 0.5))
+            end
+            local propH = GalaxyState.PropertiesSnapSide and viewport.Y or
+                math.clamp(GalaxyState.PropertiesWindowH or
+                    (PropertyHeight + HeaderHeight + GalaxyState.PanelTopGap + GalaxyState.PanelBottomGap),
+                    MinWindowHeight, viewport.Y)
+            local propX = math.clamp(GalaxyState.PropertiesWindowX or (viewport.X - propW), 0, math.max(0, viewport.X - propW))
+            local propY = GalaxyState.PropertiesSnapSide and 0 or
+                math.clamp(GalaxyState.PropertiesWindowY or 0, 0, math.max(0, viewport.Y - propH))
+            if GalaxyState.PropertiesSnapSide == "Left" then
+                propX = 0
+            elseif GalaxyState.PropertiesSnapSide == "Right" then
+                propX = math.max(0, viewport.X - propW)
+            end
+            local hoveredPropertiesResize = GalaxyState.GetPropertiesResizeMode(propX, propY, propW, propH)
+            local topbarHovered = IsMouseAllowedFor("PropertiesWindow") and
+                IsMouseOver(propX, propY, propW, HeaderHeight)
 
-        if viewingSearch then
-            GalaxyState.SearchMaxScrollY = activeMaxScrollY
-            GalaxyState.SearchScrollY = activeScrollY
-        else
-            GalaxyState.MaxScrollY = activeMaxScrollY
-            GalaxyState.ScrollY = activeScrollY
+            if IsMouseAllowedFor("PropertiesResize") and hoveredPropertiesResize and GalaxyState.IsMouseClicked then
+                GalaxyState.PropertiesResizeMode = hoveredPropertiesResize
+                GalaxyState.PropertiesResizeStartMouse = Vector2.new(Mouse.X, Mouse.Y)
+                GalaxyState.PropertiesResizeStart = { X = propX, Y = propY, W = propW, H = propH }
+                GalaxyState.IsDraggingPropertiesWindow = false
+                GalaxyState.IsDraggingPropertyScroll = false
+                GalaxyState.IsMouseClicked = false
+            end
+
+            if GalaxyState.PropertiesResizeMode then
+                GalaxyState.ApplyPropertiesResize(GalaxyState.PropertiesResizeMode)
+                propW = GalaxyState.PropertiesWindowW or propW
+                propH = GalaxyState.PropertiesWindowH or propH
+                propX = GalaxyState.PropertiesWindowX or propX
+                propY = GalaxyState.PropertiesWindowY or propY
+            end
+
+            if topbarHovered and GalaxyState.IsMouseClicked and not GalaxyState.PropertiesResizeMode then
+                GalaxyState.IsDraggingPropertiesWindow = true
+                if GalaxyState.PropertiesSnapSide then
+                    propW = math.clamp(GalaxyState.PropertiesFreeW or propW, 300, viewport.X)
+                    propH = math.clamp(GalaxyState.PropertiesFreeH or MinWindowHeight, MinWindowHeight, viewport.Y)
+                    propX = math.clamp(Mouse.X - propW / 2, 0, math.max(0, viewport.X - propW))
+                    propY = math.clamp(Mouse.Y - HeaderHeight / 2, 0, math.max(0, viewport.Y - propH))
+                    GalaxyState.PropertiesWindowW = propW
+                    GalaxyState.PropertiesWindowH = propH
+                    GalaxyState.PropertiesWindowX = propX
+                    GalaxyState.PropertiesWindowY = propY
+                    GalaxyState.PropertiesFreeW = propW
+                    GalaxyState.PropertiesFreeH = propH
+                end
+                GalaxyState.PropertiesSnapSide = nil
+                GalaxyState.PropertiesWindowDragOffset = Vector2.new(Mouse.X - propX, Mouse.Y - propY)
+                GalaxyState.IsDraggingScroll = false
+                GalaxyState.IsDraggingSearchScroll = false
+                GalaxyState.IsDraggingPropertyScroll = false
+                GalaxyState.IsMouseClicked = false
+            end
+            if not IsMousePressed then
+                if GalaxyState.IsDraggingPropertiesWindow then
+                    local dockNearMain = Mouse.X >= PosX - 35 and Mouse.X <= PosX + WindowWidth + 35 and
+                        Mouse.Y >= PosY - 35 and Mouse.Y <= PosY + WindowHeight + 35
+                    local snapSide = nil
+                    if Mouse.X <= 120 then
+                        snapSide = "Left"
+                    elseif Mouse.X >= viewport.X - 120 then
+                        snapSide = "Right"
+                    end
+                    GalaxyState.PropertiesSnapPreview = (snapSide and GalaxyState.WindowSnapSide ~= snapSide) and snapSide or nil
+                    if dockNearMain then
+                        GalaxyState.PropertiesDetached = false
+                        propertiesDetached = false
+                        GalaxyState.PropertiesSnapSide = nil
+                        GalaxyState.PropertiesSnapPreview = nil
+                    elseif snapSide and GalaxyState.WindowSnapSide == snapSide then
+                        GalaxyState.PropertiesDetached = false
+                        propertiesDetached = false
+                        GalaxyState.PropertiesSnapSide = nil
+                        GalaxyState.PropertiesSnapPreview = nil
+                    elseif snapSide then
+                        GalaxyState.PropertiesSnapSide = snapSide
+                        GalaxyState.PropertiesSnapPreview = nil
+                        propH = viewport.Y
+                        propY = 0
+                        propX = snapSide == "Left" and 0 or math.max(0, viewport.X - propW)
+                    end
+                end
+                GalaxyState.IsDraggingPropertiesWindow = false
+                GalaxyState.PropertiesResizeMode = nil
+                GalaxyState.PropertiesSnapPreview = nil
+            end
+            if not GalaxyState.IsDraggingPropertiesWindow then
+                GalaxyState.PropertiesSnapPreview = nil
+            end
+            if GalaxyState.IsDraggingPropertiesWindow and GalaxyState.PropertiesWindowDragOffset then
+                propX = math.clamp(Mouse.X - GalaxyState.PropertiesWindowDragOffset.X, 0, math.max(0, viewport.X - propW))
+                propY = math.clamp(Mouse.Y - GalaxyState.PropertiesWindowDragOffset.Y, 0, math.max(0, viewport.Y - propH))
+                GalaxyState.PropertiesWindowX = propX
+                GalaxyState.PropertiesWindowY = propY
+                local previewSide = nil
+                if Mouse.X <= 120 then
+                    previewSide = "Left"
+                elseif Mouse.X >= viewport.X - 120 then
+                    previewSide = "Right"
+                end
+                GalaxyState.PropertiesSnapPreview = (previewSide and GalaxyState.WindowSnapSide ~= previewSide) and previewSide or nil
+            end
+            if propertiesDetached then
+                if GalaxyState.PropertiesSnapPreview then
+                    local snapW = 76
+                    local snapX = GalaxyState.PropertiesSnapPreview == "Left" and 0 or (viewport.X - snapW)
+                    RenderSquare(snapX, 0, snapW, viewport.Y, Theme.Accent, true, 0, 16, 0.5)
+                    RenderLine(snapX + (GalaxyState.PropertiesSnapPreview == "Left" and snapW or 0), 0,
+                        snapX + (GalaxyState.PropertiesSnapPreview == "Left" and snapW or 0), viewport.Y,
+                        Theme.BorderBright, 17, 1, 0.55)
+                end
+                GalaxyState.PropertiesWindowX = propX
+                GalaxyState.PropertiesWindowY = propY
+                GalaxyState.PropertiesWindowW = propW
+                if not GalaxyState.PropertiesSnapSide then
+                    GalaxyState.PropertiesWindowH = propH
+                    GalaxyState.PropertiesFreeW = propW
+                    GalaxyState.PropertiesFreeH = propH
+                end
+                ContainerX, BottomY, PanelWidth, PropertyHeight =
+                    GalaxyState.GetHeaderPanelGeometry(propX, propY, propW, propH)
+                local propCorner = GalaxyState.PropertiesSnapSide and 0 or 13
+                RenderSquare(propX, propY, propW, propH, Theme.Background, true, propCorner, 18, Theme.GlassSubtle)
+                RenderSquare(propX, propY, propW, HeaderHeight, Theme.Topbar, true, propCorner, 24, Theme.GlassTopbar)
+                if GalaxyState.PropertiesSnapSide then
+                    RenderLine(propX, propY, propX + propW, propY, Theme.BorderBright, 19, 1, 0.75)
+                    RenderLine(propX, propY + propH - 1, propX + propW, propY + propH - 1, Theme.BorderBright, 19, 1, 0.75)
+                    if GalaxyState.PropertiesSnapSide == "Left" then
+                        RenderLine(propX + propW - 1, propY, propX + propW - 1, propY + propH, Theme.BorderBright, 19, 1, 0.75)
+                    else
+                        RenderLine(propX, propY, propX, propY + propH, Theme.BorderBright, 19, 1, 0.75)
+                    end
+                else
+                    RenderSquare(propX, propY, propW, propH, Theme.BorderBright, false, propCorner, 19)
+                end
+                local propResizeGuide = GalaxyState.PropertiesResizeMode or hoveredPropertiesResize
+                if propResizeGuide then
+                    local guideColor = GalaxyState.PropertiesResizeMode and Theme.Accent or Theme.BorderBright
+                    local guideAlpha = GalaxyState.PropertiesResizeMode and 1 or 0.72
+                    local margin = 10
+                    if propResizeGuide:find("Left") then
+                        RenderLine(propX, propY + margin, propX, propY + propH - margin, guideColor, 26, 1, guideAlpha)
+                    end
+                    if propResizeGuide:find("Right") then
+                        RenderLine(propX + propW - 1, propY + margin, propX + propW - 1,
+                            propY + propH - margin, guideColor, 26, 1, guideAlpha)
+                    end
+                    if propResizeGuide:find("Top") then
+                        RenderLine(propX + margin, propY, propX + propW - margin, propY, guideColor, 26, 1, guideAlpha)
+                    end
+                    if propResizeGuide:find("Bottom") then
+                        RenderLine(propX + margin, propY + propH - 1, propX + propW - margin,
+                            propY + propH - 1, guideColor, 26, 1, guideAlpha)
+                    end
+                end
+                RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Section, true, 6, 20)
+                RenderSquare(ContainerX, BottomY, PanelWidth, PropertyHeight, Theme.Border, false, 6, 21)
+            end
         end
 
-        local ScrollThumbY = ScrollTrackY +
-            (activeMaxScrollY > 0 and (activeScrollY / activeMaxScrollY) * (ScrollTrackHeight - ScrollThumbHeight) or 0)
-
+        if showProperties and (mainShowProperties or propertiesDetached) then
+        local propZ = propertiesDetached and 22 or 0
         local TotalProperties = #GalaxyState.PropLines
-        local PropertyTopPad, PropertyBottomPad = 10, 8
-        local PropertyRowHeight, PropertyHeaderHeight = 32, 32
+        local PropertyTopPad, PropertyBottomPad = 6, 3
+        local PropertyRowHeight, PropertyHeaderHeight = 40, 40
         local PropertyVisibleHeight = math.max(1, PropertyHeight - PropertyTopPad - PropertyBottomPad)
         local PropertyHeights, PropertyContentHeight = {}, 0
         for idx, item in ipairs(GalaxyState.PropLines) do
@@ -3687,8 +4911,11 @@ task.spawn(function()
             (PropertyVisibleHeight / math.max(1, PropertyContentHeight)) * PropertyScrollTrackHeight)
         if PropertyContentHeight <= PropertyVisibleHeight then PropertyScrollThumbHeight = PropertyScrollTrackHeight end
 
-        if not IsMouseBlockedFor(nil) and GalaxyState.IsMouseClicked and IsMouseOver(PropertyScrollTrackX - 3, PropertyScrollTrackY, 14, PropertyScrollTrackHeight) then
+        if IsMouseAllowedFor("PropertyScroll") and GalaxyState.IsMouseClicked and IsMouseOver(PropertyScrollTrackX - 3, PropertyScrollTrackY, 14, PropertyScrollTrackHeight) then
             GalaxyState.IsDraggingPropertyScroll = true
+            GalaxyState.IsDraggingLayoutSplit = false
+            GalaxyState.IsDraggingScroll = false
+            GalaxyState.IsDraggingSearchScroll = false
             GalaxyState.IsMouseClicked = false
         end
         if not IsMousePressed then GalaxyState.IsDraggingPropertyScroll = false end
@@ -3706,17 +4933,11 @@ task.spawn(function()
         local PropertyScrollThumbY = PropertyScrollTrackY +
             (MaxScrollIndex > 0 and (GalaxyState.PropertyScroll / MaxScrollIndex) * (PropertyScrollTrackHeight - PropertyScrollThumbHeight) or 0)
 
-        RenderSquare(PropertyScrollTrackX, PropertyScrollTrackY, 9, PropertyScrollTrackHeight, Theme.Background, true, 4, 10)
+        RenderSquare(PropertyScrollTrackX, PropertyScrollTrackY, 9, PropertyScrollTrackHeight, Theme.Background, true, 4, 10 + propZ)
         local propertyThumbBg = GalaxyState.IsDraggingPropertyScroll and Theme.Accent or Theme.BorderBright
         local propertyThumbBorder = GalaxyState.IsDraggingPropertyScroll and Theme.AccentHover or Color3.fromRGB(90, 90, 120)
-        RenderSquare(PropertyScrollTrackX, PropertyScrollThumbY, 9, PropertyScrollThumbHeight, propertyThumbBorder, true, 4, 11)
-        RenderSquare(PropertyScrollTrackX + 1, PropertyScrollThumbY + 1, 7, PropertyScrollThumbHeight - 2, propertyThumbBg, true, 3, 12)
-
-        RenderSquare(ScrollTrackX, ScrollTrackY, 9, ScrollTrackHeight, Theme.Background, true, 4, 10)
-        local thumbBg = GalaxyState[dragFlag] and Theme.Accent or Theme.BorderBright
-        local thumbBorder = GalaxyState[dragFlag] and Theme.AccentHover or Color3.fromRGB(90, 90, 120)
-        RenderSquare(ScrollTrackX, ScrollThumbY, 9, ScrollThumbHeight, thumbBorder, true, 4, 11)
-        RenderSquare(ScrollTrackX + 1, ScrollThumbY + 1, 7, ScrollThumbHeight - 2, thumbBg, true, 3, 12)
+        RenderSquare(PropertyScrollTrackX, PropertyScrollThumbY, 9, PropertyScrollThumbHeight, propertyThumbBorder, true, 4, 11 + propZ)
+        RenderSquare(PropertyScrollTrackX + 1, PropertyScrollThumbY + 1, 7, PropertyScrollThumbHeight - 2, propertyThumbBg, true, 3, 12 + propZ)
 
         local propY = BottomY + PropertyTopPad
         local propEndY = BottomY + PropertyHeight - PropertyBottomPad
@@ -3729,8 +4950,8 @@ task.spawn(function()
                 if propY + lineHeight > propEndY then break end
                 if pData.IsHeader then
                     local headerY = propY + math.floor((lineHeight - 16) / 2)
-                    RenderClassIcon(pData.Icon, ContainerX + 10, headerY + 1, 14, 14, 7, 0.92)
-                    RenderText(pData.Name, ContainerX + 31, headerY + 3, Theme.Text, 11, Drawing.Fonts.System, 7)
+                    RenderClassIcon(pData.Icon, ContainerX + 10, headerY + 1, 14, 14, 7 + propZ, 0.92)
+                    RenderText(pData.Name, ContainerX + 31, headerY + 3, Theme.Text, 11, Drawing.Fonts.System, 7 + propZ)
                     propY = propY + lineHeight
                 else
                 local inputX, inputY, inputW, inputH = ContainerX + 10, propY + 10, PanelWidth - 28, 18
@@ -3738,7 +4959,7 @@ task.spawn(function()
                 local stateAlpha = pData.IsReadOnly and 0.78 or 0.92
 
                 RenderText(FitTextToWidth(pData.Name, inputW, 10), inputX, propY, Theme.SubText, 10,
-                    Drawing.Fonts.System, 6)
+                    Drawing.Fonts.System, 6 + propZ)
 
                 local propKey = "Prop_" .. propIndex
                 local isFocused = GalaxyState.FocusedElement == propKey
@@ -3751,25 +4972,25 @@ task.spawn(function()
                     local toggleX = inputX + textBoxW + 6
                     local toggleY = inputY
 
-                    RenderSquare(inputX, inputY, textBoxW, inputH, Color3.fromRGB(20, 20, 30), true, 4, 6, Theme.GlassStrong)
-                    RenderSquare(inputX, inputY, textBoxW, inputH, Theme.Border, false, 4, 7)
+                    RenderSquare(inputX, inputY, textBoxW, inputH, Color3.fromRGB(20, 20, 30), true, 4, 6 + propZ, Theme.GlassStrong)
+                    RenderSquare(inputX, inputY, textBoxW, inputH, Theme.Border, false, 4, 7 + propZ)
                     RenderText(FitTextToWidth(pData.EditValue, textBoxW - 25, 10), inputX + 6, inputY + 3,
-                        Theme.SubText, 10, Drawing.Fonts.System, 8)
-                    RenderClassIcon(stateIcon, inputX + textBoxW - 15, inputY + 3, 12, 12, 8, stateAlpha)
+                        Theme.SubText, 10, Drawing.Fonts.System, 8 + propZ)
+                    RenderClassIcon(stateIcon, inputX + textBoxW - 15, inputY + 3, 12, 12, 8 + propZ, stateAlpha)
 
                     local isTrue = (pData.EditValue == true or pData.EditValue == "true")
                     local toggleBg = isTrue and Theme.Accent or Color3.fromRGB(25, 25, 35)
                     local toggleBorder = isTrue and Theme.BorderBright or Theme.Border
 
-                    RenderSquare(toggleX, toggleY, toggleSize, toggleSize, toggleBg, true, 4, 12)
-                    RenderSquare(toggleX, toggleY, toggleSize, toggleSize, toggleBorder, false, 4, 13)
+                    RenderSquare(toggleX, toggleY, toggleSize, toggleSize, toggleBg, true, 4, 12 + propZ)
+                    RenderSquare(toggleX, toggleY, toggleSize, toggleSize, toggleBorder, false, 4, 13 + propZ)
 
                     if not IsMouseBlockedFor(nil) and not pData.IsReadOnly and GalaxyState.IsMouseClicked then
                         if IsMouseOver(toggleX, toggleY, toggleSize, toggleSize) then
                             local nextVal = isTrue and "false" or "true"
                             pData.EditValue = nextVal
                             ApplyProp(propKey)
-                            task.spawn(UpdatePropertyPanel)
+                            GalaxyState.RequestPropertyRefresh("toggle")
                             GalaxyState.IsMouseClicked = false
                         end
                     end
@@ -3785,13 +5006,13 @@ task.spawn(function()
                         local subBg = isSubFocused and Color3.fromRGB(15, 15, 25) or Color3.fromRGB(25, 25, 35)
                         local isLastComponent = subIdx == count - 1
 
-                        RenderSquare(subX, inputY, subW, inputH, subBg, true, 4, 6, Theme.GlassStrong)
+                        RenderSquare(subX, inputY, subW, inputH, subBg, true, 4, 6 + propZ, Theme.GlassStrong)
                         RenderSquare(subX, inputY, subW, inputH, isSubFocused and Theme.Accent or Theme.Border, false,
-                            4, 7)
+                            4, 7 + propZ)
                         RenderText(FitTextToWidth(components[subIdx + 1] or "0", subW - (isLastComponent and 24 or 8), 10),
-                            subX + 4, inputY + 3, Theme.Text, 10, Drawing.Fonts.System, 8)
+                            subX + 4, inputY + 3, Theme.Text, 10, Drawing.Fonts.System, 8 + propZ)
                         if isLastComponent then
-                            RenderClassIcon(stateIcon, subX + subW - 15, inputY + 3, 12, 12, 8, stateAlpha)
+                            RenderClassIcon(stateIcon, subX + subW - 15, inputY + 3, 12, 12, 8 + propZ, stateAlpha)
                         end
                         RememberFocusRect(subKey, subX, inputY, subW, inputH)
 
@@ -3803,12 +5024,12 @@ task.spawn(function()
                         end
                     end
                 else
-                    RenderSquare(inputX, inputY, inputW, inputH, bgColor, true, 4, 6, Theme.GlassStrong)
+                    RenderSquare(inputX, inputY, inputW, inputH, bgColor, true, 4, 6 + propZ, Theme.GlassStrong)
                     RenderSquare(inputX, inputY, inputW, inputH, isFocused and Theme.Accent or Theme.Border, false, 4,
-                        7)
+                        7 + propZ)
                     RenderText(FitTextToWidth(pData.EditValue, inputW - 30, 10), inputX + 6, inputY + 3,
-                        pData.IsReadOnly and Theme.SubText or Theme.Text, 10, Drawing.Fonts.System, 8)
-                    RenderClassIcon(stateIcon, inputX + inputW - 15, inputY + 3, 12, 12, 8, stateAlpha)
+                        pData.IsReadOnly and Theme.SubText or Theme.Text, 10, Drawing.Fonts.System, 8 + propZ)
+                    RenderClassIcon(stateIcon, inputX + inputW - 15, inputY + 3, 12, 12, 8 + propZ, stateAlpha)
                     RememberFocusRect(propKey, inputX, inputY, inputW, inputH)
 
                     if IsMouseAllowedFor("TextInput", propKey) and not pData.IsReadOnly and GalaxyState.IsMouseClicked and IsMouseOver(inputX, inputY, inputW, inputH) then
@@ -3826,11 +5047,14 @@ task.spawn(function()
             drawnProperties = drawnProperties + 1
         end
 
-        DisplayExplorerTree(treeNodes, ContainerX, 0, TreeStartY + 1, TreeEndY - 1, ListWidth - 16, activeScrollY)
+        else
+            GalaxyState.IsDraggingPropertyScroll = false
+        end
 
-        if GalaxyState.Selected and IsInstanceValid(GalaxyState.Selected) then
-            RenderSelectedUi(GalaxyState.Selected)
-            RenderSelectedEsp(GalaxyState.Selected, GalaxyState.SelectedPhysicalPart)
+        ContainerX, BottomY, PanelWidth, PropertyHeight = MainContainerX, MainBottomY, MainPanelWidth, MainPropertyHeight
+
+        if showExplorer then
+            DisplayExplorerTree(treeNodes, ContainerX, 0, TreeStartY + 1, TreeEndY - 1, ListWidth - 16, activeScrollY)
         end
 
         RenderContextMenu(GalaxyState.SelectedPhysicalPart)
@@ -3861,7 +5085,8 @@ task.spawn(function()
             local isCoolingDown = GalaxyState.LastEditTime and (currentTime - GalaxyState.LastEditTime < 0.5)
             local isInteracting = IsDragging or GalaxyState.ResizeMode or GalaxyState.IsDraggingLayoutSplit or
                 GalaxyState.IsDraggingScroll or GalaxyState.IsDraggingSearchScroll or
-                GalaxyState.IsDraggingPropertyScroll or IsMousePressed
+                GalaxyState.IsDraggingPropertyScroll or GalaxyState.IsDraggingPropertiesWindow or
+                GalaxyState.PropertiesResizeMode or IsMousePressed
             if isInteracting then
                 GalaxyState.LastInteractionTime = currentTime
             end
@@ -3870,85 +5095,8 @@ task.spawn(function()
                 (not GalaxyState.LastInteractionTime or currentTime - GalaxyState.LastInteractionTime > 0.15)
 
             if canScan then
-                if CurrentTab == "Explorer" and GalaxyState.Selected then
-                    if not IsInstanceValid(GalaxyState.Selected) then
-                        ClearSelectedState()
-                    elseif not GalaxyState.LastPropertyUpdate or currentTime - GalaxyState.LastPropertyUpdate > 0.25 then
-                        pcall(UpdatePropertyPanel)
-                        GalaxyState.LastPropertyUpdate = currentTime
-                    end
-                end
-
-                if not GalaxyState.LastTreeRefresh or currentTime - GalaxyState.LastTreeRefresh > 0.35 then
-                    local checksLeft = 20
-                    local function ScanAndRefreshNode(node)
-                        if checksLeft <= 0 or not node or not node.Instance then return end
-
-                        if not node.Expanded then
-                            if not node.LastChildCheck or currentTime - node.LastChildCheck > 2.0 then
-                                local children = ExecuteSafely(function() return node.Instance:GetChildren() end)
-                                if children then
-                                    node.ChildCount = #children
-                                    node.HasChildren = node.ChildCount > 0
-                                    node.LastChildCheck = currentTime
-                                    checksLeft = checksLeft - 1
-                                end
-                            end
-                            return
-                        end
-
-                        local real = ExecuteSafely(function() return node.Instance:GetChildren() end) or {}
-                        checksLeft = checksLeft - 1
-                        local realCount = #real
-                        local needsRefresh = (realCount ~= (node.ChildCount or #(node.Children or {}))) or
-                            (realCount ~= #(node.Children or {}))
-                        if not needsRefresh and currentTime - (node.LastDeepCheck or 0) > 3.0 then
-                            local childSet = {}
-                            for _, childNode in ipairs(node.Children or {}) do
-                                if not IsInstanceValid(childNode.Instance) then
-                                    needsRefresh = true
-                                    break
-                                end
-                                childSet[childNode.Instance] = true
-                            end
-                            if not needsRefresh then
-                                for _, inst in ipairs(real) do
-                                    if not childSet[inst] then
-                                        needsRefresh = true
-                                        break
-                                    end
-                                end
-                            end
-                            node.LastDeepCheck = currentTime
-                        end
-
-                        if needsRefresh then
-                            PopulateNodeChildren(node, real, currentTime)
-                        else
-                            node.ChildCount = realCount
-                            node.HasChildren = realCount > 0
-                            node.LastChildCheck = currentTime
-                            for _, childNode in ipairs(node.Children or {}) do
-                                if childNode.Instance and IsInstanceValid(childNode.Instance) then
-                                    RefreshNodeIdentity(childNode, childNode.Instance)
-                                end
-                            end
-                        end
-
-                        if node.Children then
-                            for _, child in ipairs(node.Children) do
-                                if checksLeft <= 0 then break end
-                                ScanAndRefreshNode(child)
-                            end
-                        end
-                    end
-
-                    if GalaxyState.TreeRoot then
-                        ScanAndRefreshNode(GalaxyState.TreeRoot)
-                    end
-
-                    GalaxyState.LastTreeRefresh = currentTime
-                end
+                GalaxyState.UpdatePropertyScan(currentTime, true)
+                GalaxyState.UpdateTreeScan(currentTime, true)
             end
         end
     end
