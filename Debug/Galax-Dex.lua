@@ -8,7 +8,6 @@
 Hello! This was vibecoded then don´t judge me! 😭
 Gimme credits! 🥺
 ]]
-
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
@@ -707,6 +706,7 @@ local GalaxyState = {
     MenuToggleKey = 0x70,
     MenuToggleName = "F1",
     HideServices = false,
+    HideClassIcons = false,
     CapturingKeybind = false,
     KeybindCaptureStarted = 0,
     SuppressMenuToggleUntilRelease = false,
@@ -809,6 +809,7 @@ function DexSettings.Save()
             MenuToggleName = GalaxyState.MenuToggleName,
             TweenSpeed = GalaxyState.TweenSpeed,
             HideServices = GalaxyState.HideServices,
+            HideClassIcons = GalaxyState.HideClassIcons,
             Accent = {
                 H = ThemeAccent.H,
                 S = ThemeAccent.S,
@@ -832,6 +833,7 @@ function DexSettings.Load()
         GalaxyState.TweenSpeedText = tostring(math.floor(GalaxyState.TweenSpeed + 0.5))
     end
     if type(data.HideServices) == "boolean" then GalaxyState.HideServices = data.HideServices end
+    if type(data.HideClassIcons) == "boolean" then GalaxyState.HideClassIcons = data.HideClassIcons end
     if type(data.Accent) == "table" then
         if tonumber(data.Accent.H) then ThemeAccent.H = math.clamp(tonumber(data.Accent.H), 0, 1) end
         if tonumber(data.Accent.S) then ThemeAccent.S = math.clamp(tonumber(data.Accent.S), 0, 1) end
@@ -2107,7 +2109,6 @@ local function RenderText(content, x, y, color, size, font, zIndex, centered)
     local drawing = GetDrawingFromPool('tx')
     drawing.Text = tostring(content)
     drawing.Position = Vector2.new(x, y)
-    drawing.Color = color
     drawing.Size = size or 13
     drawing.Font = font or Drawing.Fonts.System
     drawing.Outline = false
@@ -2270,6 +2271,7 @@ local ClassIconWarmSlots = {
     Instance = 20,
     Expand = 40,
     Collapse = 40,
+    ArrowRight = 8,
     Search = 8,
     Clear = 8,
     Refresh = 8,
@@ -2277,8 +2279,14 @@ local ClassIconWarmSlots = {
     More = 4,
     Teleport = 8,
     Bring = 8,
+    Position = 8,
     Tween = 8,
     StopTween = 8,
+    Archive = 8,
+    CopyPath = 8,
+    CopyName = 8,
+    Dump = 8,
+    Class = 4,
     ColorPicker = 4,
     Logo = 1,
     ExplorerPanel = 2,
@@ -2293,25 +2301,32 @@ local ClassIconWarmSlots = {
 local ClassIconAliases = {
     Expand = "ui/Expand.png",
     Collapse = "ui/Collapse.png",
+    ArrowRight = "ui/ArrowRight.png",
     Search = "general/FindAll.png",
     Clear = "ui/CloseWidget.png",
     Refresh = "ui/Recent.png",
     Settings = "general/Settings.png",
     More = "ui/More.png",
-    Teleport = "ui/Teleport.png",
-    Bring = "ui/Teleport.png",
-    Tween = "instance/Tween.png",
+    Teleport = "general/Move.png",
+    Bring = "general/Move_P.png",
+    Position = "instance/PartAdornment.png",
+    Tween = "instance/AlignPosition.png",
     StopTween = "instance/StopTween.png",
+    Archive = "ui/Archive.png",
     ColorPicker = "general/ColorPicker.png",
     Logo = "ui/Logo.png",
     ExplorerPanel = "general/Explorer.png",
     PropertiesPanel = "general/Properties.png",
-    VisualsPanel = "general/ViewSelector.png",
+    VisualsPanel = "instance/BlockMesh.png",
     Info = "general/Help.png",
     Player = "general/Player.png",
     QuickOpen = "general/QuickOpen.png",
     QuickOpenActions = "general/QuickOpenActions.png",
-    Copy = "general/Copy.png",
+    Class = "general/Class.png",
+    Copy = "general/Save.png",
+    CopyPath = "instance/CatalogPages.png",
+    CopyName = "general/Copy.png",
+    Dump = "instance/MemStorageService.png",
     Delete = "general/Delete.png",
     Struct = "general/Struct.png",
     Move = "general/Move.png",
@@ -3115,6 +3130,10 @@ local function GetPropertyValueType(value, defaultType)
     return defaultType or type(value)
 end
 
+local function IsBackendOnlyMemoryType(memType)
+    return memType == "uintptr_t"
+end
+
 local function IsBooleanType(propType)
     return propType == "boolean" or propType == "bool"
 end
@@ -3260,18 +3279,14 @@ UpdatePropertyPanel = function()
     add_val("Name", targetName, target, "Name", false)
     props[#props].Direct = true
     add_val("ClassName", className, target, "ClassName", true)
-    add_val("Address", FormatPointer(targetAddress), target, "Address", true, false, nil, "string")
 
     local function add_memory(prop, offsetClass, offsetField, memType, readOnly, baseAddress, displayType)
+        if IsBackendOnlyMemoryType(memType) then return end
         local address = baseAddress or targetAddress
         local offset = GetOffset(offsetClass, offsetField)
         local val = MemoryReadByType(address, offset, memType)
         if val == nil then return end
-        if memType == "uintptr_t" then
-            val = FormatPointer(val)
-            readOnly = true
-            displayType = "string"
-        elseif memType == "udim2" or memType == "matrix3" or memType == "cframe" then
+        if memType == "udim2" or memType == "matrix3" or memType == "cframe" then
             readOnly = true
             displayType = "string"
         end
@@ -3372,6 +3387,197 @@ UpdatePropertyPanel = function()
     end
 
     GalaxyState.PropLines = BuildPropertyLines(props)
+end
+
+GalaxyState.CollectDumpProperties = function(target)
+    local groups = { Properties = {}, Memory = {}, Attributes = {} }
+    if not IsInstanceValid(target) then return groups end
+
+    local className = ExecuteSafely(function() return target.ClassName end) or ""
+    local targetAddress = GetInstanceAddress(target)
+    local primitiveAddress
+    local directSpecs, nativeDirectNames = GetDirectSpecsForClass(className)
+    local specs = PropertyOffsetSpecs[className]
+    if not specs and BasePartClasses[className] then
+        specs = PropertyOffsetSpecs.BasePart
+    elseif not specs and GuiObjectClasses[className] then
+        specs = PropertyOffsetSpecs.GuiObject
+    end
+
+    local function add(group, name, value, meta, valueType)
+        if value == nil then return end
+        groups[group][#groups[group] + 1] = {
+            Name = name,
+            Value = FormatPropertyValue(value, valueType or GetPropertyValueType(value)),
+            Meta = meta
+        }
+    end
+
+    add("Properties", "Name", ExecuteSafely(function() return target.Name end) or GetDisplayName(target), nil, "string")
+    add("Properties", "ClassName", className, nil, "string")
+
+    local function add_memory(prop, offsetClass, offsetField, memType, baseAddress, displayType)
+        if IsBackendOnlyMemoryType(memType) then return end
+        local address = baseAddress or targetAddress
+        local offset = GetOffset(offsetClass, offsetField)
+        local val = MemoryReadByType(address, offset, memType)
+        if val == nil then return end
+        if memType == "udim2" or memType == "matrix3" or memType == "cframe" then
+            displayType = "string"
+        end
+        add("Memory", prop, val, {
+            Address = address,
+            Offset = offset,
+            Type = memType,
+            OffsetClass = offsetClass,
+            OffsetField = offsetField
+        }, displayType or memType)
+    end
+
+    local function primitive_address()
+        if primitiveAddress ~= nil then return primitiveAddress end
+        local primitiveOffset = GetOffset("BasePart", "Primitive")
+        if not targetAddress or not primitiveOffset then return nil end
+        primitiveAddress = ReadMemoryPtr(targetAddress, primitiveOffset) or false
+        return primitiveAddress
+    end
+
+    for _, spec in ipairs(directSpecs or {}) do
+        local ok, val
+        if spec.Reader then
+            ok, val = pcall(spec.Reader, target)
+        else
+            ok, val = pcall(function() return target[spec.Name] end)
+        end
+        if ok and val ~= nil then
+            add("Properties", spec.Name, val)
+        end
+    end
+
+    for _, spec in ipairs(specs or {}) do
+        if nativeDirectNames[spec.Name] then
+            -- Native Matcha property already dumped above.
+        elseif spec.Kind == "primitive" then
+            local prim = primitive_address()
+            if prim and prim ~= 0 then
+                add_memory(spec.Name, "Primitive", spec.OffsetField, spec.Type, prim)
+            end
+        elseif spec.Kind == "flag" then
+            local prim = primitive_address()
+            local flagsOffset = GetOffset("Primitive", "Flags")
+            local mask = GetOffset("PrimitiveFlags", spec.OffsetField)
+            local flags = prim and flagsOffset and mask and ReadMemoryByte(prim, flagsOffset)
+            if flags ~= nil then
+                add("Memory", spec.Name, bit32.band(flags, mask) ~= 0, {
+                    Address = prim,
+                    Offset = flagsOffset,
+                    Type = "flag",
+                    Mask = mask,
+                    OffsetClass = "PrimitiveFlags",
+                    OffsetField = spec.OffsetField
+                }, "boolean")
+            end
+        else
+            add_memory(spec.Name, spec.OffsetClass, spec.OffsetField, spec.Type)
+        end
+    end
+
+    local attrs = ExecuteSafely(function() return target:GetAttributes() end)
+    if attrs and type(attrs) == "table" then
+        for k, v in pairs(attrs) do
+            local attrName, attrVal
+            if type(k) == "string" then
+                attrName, attrVal = k, v
+            elseif type(k) == "number" and type(v) == "string" then
+                attrName = v
+                attrVal = ExecuteSafely(function() return target:GetAttribute(v) end)
+            end
+            if attrName then add("Attributes", attrName, attrVal) end
+        end
+    end
+
+    return groups
+end
+
+GalaxyState.BuildDumpText = function(root)
+    local lines = {
+        "-- Galax Dex Dump",
+        "-- Root: " .. (GetInstancePath(root) or "nil"),
+        ""
+    }
+
+    local function writeProperties(indent, title, props)
+        if not props or #props == 0 then return end
+        lines[#lines + 1] = indent .. title .. " = {"
+        for _, prop in ipairs(props) do
+            lines[#lines + 1] = indent .. "    " .. prop.Name .. " = " .. tostring(prop.Value)
+        end
+        lines[#lines + 1] = indent .. "}"
+    end
+
+    local function dumpInstance(inst, depth)
+        if not IsInstanceValid(inst) then return end
+        local indent = string.rep("    ", depth)
+        local name = ExecuteSafely(function() return inst.Name end) or "Instance"
+        local className = ExecuteSafely(function() return inst.ClassName end) or "Instance"
+        lines[#lines + 1] = indent .. name .. " [" .. className .. "] = {"
+        lines[#lines + 1] = indent .. "    Path = " .. (GetInstancePath(inst) or "nil")
+
+        local groups = GalaxyState.CollectDumpProperties(inst)
+        writeProperties(indent .. "    ", "Properties", groups.Properties)
+        writeProperties(indent .. "    ", "Memory", groups.Memory)
+        writeProperties(indent .. "    ", "Attributes", groups.Attributes)
+
+        local children = DexSettings.GetChildren(inst)
+        if children and #children > 0 then
+            lines[#lines + 1] = indent .. "    Children = {"
+            for _, child in ipairs(children) do
+                dumpInstance(child, depth + 2)
+            end
+            lines[#lines + 1] = indent .. "    }"
+        end
+
+        lines[#lines + 1] = indent .. "}"
+    end
+
+    dumpInstance(root, 0)
+    return table.concat(lines, "\n")
+end
+
+GalaxyState.GetDumpFilePath = function(target)
+    local name = ExecuteSafely(function() return target.Name end) or "Instance"
+    local safeName = tostring(name):gsub('[\\/:*?"<>|%c]', "_")
+    safeName = safeName:gsub("^%s+", ""):gsub("%s+$", "")
+    if safeName == "" then safeName = "Instance" end
+    if #safeName > 80 then safeName = safeName:sub(1, 80) end
+    return "Galax/Dex/Dump/" .. safeName .. ".json"
+end
+
+GalaxyState.SaveSelectedDump = function()
+    if not IsInstanceValid(GalaxyState.Selected) then
+        ShowNotification("No Selection")
+        return
+    end
+
+    local dump = GalaxyState.BuildDumpText(GalaxyState.Selected)
+    local path = GalaxyState.GetDumpFilePath(GalaxyState.Selected)
+    local ok, err = pcall(function()
+        pcall(makefolder, "Galax")
+        pcall(makefolder, "Galax/Dex")
+        pcall(makefolder, "Galax/Dex/Dump")
+        writefile(path, dump)
+    end)
+
+    if ok then
+        ShowNotification("Dump Saved")
+    else
+        ReportGalaxError("Dump failed", BuildDiagnosticContext({
+            Action = "Dump",
+            Path = path,
+            Selected = GalaxyState.Selected,
+            Error = err
+        }))
+    end
 end
 
 local function ApplyProp(foc)
@@ -3627,6 +3833,18 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
     local spectateSubject = ResolveSpectateSubject(GalaxyState.Selected)
     local _, actionInfo = GetResolvedActionTarget(GalaxyState.Selected)
     local hasPhysicalActionTarget = selectedPart or (actionInfo and actionInfo.Character and IsInstanceValid(actionInfo.Character))
+    local function addActionGroup(label, icon, items)
+        if #items == 1 then
+            table.insert(buttons, items[1])
+        elseif #items > 1 then
+            table.insert(buttons, {
+                n = label,
+                i = icon,
+                submenu = items
+            })
+        end
+    end
+
     if spectateSubject then
         local isSpectating = IsSpectatingTarget(GalaxyState.Selected)
         table.insert(buttons, {
@@ -3636,9 +3854,10 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
         })
     end
 
+    local positionActions = {}
     if selectedPart then
         local tweeningThis = IsTweeningTarget(GalaxyState.Selected)
-        table.insert(buttons, {
+        table.insert(positionActions, {
             n = tweeningThis and "Stop Tween" or "Tween",
             i = tweeningThis and "StopTween" or "Tween",
             f = function()
@@ -3649,31 +3868,46 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
                 end
             end
         })
-        table.insert(buttons, { n = "Teleport", i = "Teleport", f = function() TeleportPlayer(GalaxyState.Selected, selectedPart) end })
+        table.insert(positionActions, { n = "Teleport", i = "Teleport", f = function() TeleportPlayer(GalaxyState.Selected, selectedPart) end })
     end
+    if hasPhysicalActionTarget then
+        table.insert(positionActions, { n = "Bring", i = "Bring", f = function() BringObject(GalaxyState.Selected) end })
+    end
+    if includeGoto then
+        table.insert(positionActions, { n = "Goto Path", i = "Struct", f = function() NavigateToInstance(GalaxyState.Selected) end })
+    end
+    addActionGroup("Position", "Position", positionActions)
 
     if hasPhysicalActionTarget then
-        table.insert(buttons, { n = "Bring", i = "Bring", f = function() BringObject(GalaxyState.Selected) end })
         table.insert(buttons, { n = "Delete", i = "Delete", f = function() DeleteObject(GalaxyState.Selected) end })
     end
 
-    if includeGoto then
-        table.insert(buttons, { n = "Goto Path", i = "Struct", f = function() NavigateToInstance(GalaxyState.Selected) end })
-    end
-
     table.insert(buttons, {
-        n = "Copy Path",
+        n = "Copy",
         i = "Copy",
-        f = function()
-            pcall(setclipboard, GetInstancePath(GalaxyState.Selected)); ShowNotification("Copied Path")
-        end
+        submenu = {
+            {
+                n = "Path",
+                i = "CopyPath",
+                f = function()
+                    pcall(setclipboard, GetInstancePath(GalaxyState.Selected)); ShowNotification("Copied Path")
+                end
+            },
+            {
+                n = "Name",
+                i = "CopyName",
+                f = function()
+                    pcall(setclipboard, ExecuteSafely(function() return GalaxyState.Selected.Name end) or "")
+                    ShowNotification("Copied Name")
+                end
+            }
+        }
     })
     table.insert(buttons, {
-        n = "Copy Name",
-        i = "Copy",
+        n = "Dump",
+        i = "Dump",
         f = function()
-            pcall(setclipboard, ExecuteSafely(function() return GalaxyState.Selected.Name end) or "")
-            ShowNotification("Copied Name")
+            GalaxyState.SaveSelectedDump()
         end
     })
 end
@@ -3767,17 +4001,20 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
                 end
             end
             local tagText = "[ " .. tagName .. " ]"
-            local nameX = arrowX + 32
+            local showClassIcon = GalaxyState.HideClassIcons ~= true
+            local nameX = arrowX + (showClassIcon and 32 or 14)
             local tagRight = x + containerWidth - 10
             local tagWidth = EstimateTextWidth(tagText, 11) * (0.775 + math.min(#tagText, 22) * 0.00536)
             local tagX = tagRight - tagWidth
             local maxNameChars = math.max(8, math.floor((tagRight - tagWidth - nameX - 8) / 6))
             local name = displayName
             if #name > maxNameChars then name = name:sub(1, math.max(1, maxNameChars - 3)) .. "..." end
-            local iconName = GetClassIconName(node.ClassName, kind)
-            local renderedIcon = RenderClassIcon(iconName, arrowX + 12, screenY + 2, 16, 16, 6, isSelected and 1 or 0.92)
-            if not renderedIcon and iconName ~= "Instance" then
-                RenderClassIcon("Instance", arrowX + 12, screenY + 2, 16, 16, 6, isSelected and 1 or 0.92)
+            if showClassIcon then
+                local iconName = GetClassIconName(node.ClassName, kind)
+                local renderedIcon = RenderClassIcon(iconName, arrowX + 12, screenY + 2, 16, 16, 6, isSelected and 1 or 0.92)
+                if not renderedIcon and iconName ~= "Instance" then
+                    RenderClassIcon("Instance", arrowX + 12, screenY + 2, 16, 16, 6, isSelected and 1 or 0.92)
+                end
             end
             RenderText(name, nameX, screenY + 4, isSelected and Theme.White or Theme.Text, 11, Drawing.Fonts.System, 6)
             RenderText(tagText, tagX, screenY + 4, isSelected and Theme.White or Theme.SubText, 11,
@@ -3837,7 +4074,7 @@ local function RenderSettingsMenu()
 
     local width = 236
     local pickerOpen = GalaxyState.ColorPickerOpen == true
-    local height = pickerOpen and 508 or 388
+    local height = pickerOpen and 518 or 398
     local viewport = GetViewportSize()
     local x = math.clamp(menu.X or Mouse.X, 8, math.max(8, viewport.X - width - 8))
     local y = math.clamp(menu.Y or Mouse.Y, 8, math.max(8, viewport.Y - height - 8))
@@ -3870,18 +4107,30 @@ local function RenderSettingsMenu()
     local pad, gap = 10, 8
     local cursorY = y + 66
 
-    local servicesEnabled = GalaxyState.HideServices == true
-    RenderText("Services", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
-    cursorY = cursorY + 16
-    local servicesText = servicesEnabled and "Hidden" or "Visible"
-    if CreateInteractiveButton(x + 12, cursorY, width - 24, 24, servicesText, servicesEnabled and Theme.Accent or Theme.Section,
-        nil, 84, "ContextMenu", servicesEnabled and "UIOff" or "UIOn") then
-        GalaxyState.HideServices = not GalaxyState.HideServices
-        DexSettings.Save()
-        RefreshExplorer()
-        ShowNotification(GalaxyState.HideServices and "Services Hidden" or "Services Visible")
+    local toggleW = (width - 24 - gap) / 2
+    local function renderSettingsToggle(label, hidden, bx, iconName, onToggle)
+        RenderText(label, bx, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+        local text = hidden and "Hidden" or "Visible"
+        if CreateInteractiveButton(bx, cursorY + 16, toggleW, 24, text, hidden and Theme.Accent or Theme.Section,
+            nil, 84, "ContextMenu", iconName or (hidden and "UIOff" or "UIOn")) then
+            onToggle()
+        end
     end
-    cursorY = cursorY + 36
+
+    renderSettingsToggle("Services", GalaxyState.HideServices == true, x + 12,
+        GalaxyState.HideServices and "UIOff" or "UIOn", function()
+            GalaxyState.HideServices = not GalaxyState.HideServices
+            DexSettings.Save()
+            RefreshExplorer()
+            ShowNotification(GalaxyState.HideServices and "Services Hidden" or "Services Visible")
+        end)
+    renderSettingsToggle("Icons", GalaxyState.HideClassIcons == true, x + 12 + toggleW + gap,
+        GalaxyState.HideClassIcons and "UIOff" or "UIOn", function()
+        GalaxyState.HideClassIcons = not GalaxyState.HideClassIcons
+        DexSettings.Save()
+        ShowNotification(GalaxyState.HideClassIcons and "Class Icons Hidden" or "Class Icons Visible")
+    end)
+    cursorY = cursorY + 46
 
     RenderText("Accent", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
     cursorY = cursorY + 16
@@ -3921,7 +4170,7 @@ local function RenderSettingsMenu()
     local quickIcons = {
         Workspace = "Workspace",
         Replicated = "ReplicatedStorage",
-        Character = "Player",
+        Character = "Pose",
         StarterGui = "StarterGui",
         LocalPlayer = "Player",
         Players = "Players"
@@ -3939,10 +4188,10 @@ local function RenderSettingsMenu()
             RunQuickSearch(label)
         end
     end
-
-    local bottomY = y + height - 42
+    cursorY = startY + 3 * 30 + 10
     local bottomW = (width - pad * 2 - gap) / 2
-    RenderText("Options", x + 12, bottomY - 16, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    RenderText("Options", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    local bottomY = cursorY + 16
     if CreateInteractiveButton(x + pad, bottomY, bottomW, 28, "Unload", Theme.Danger, nil, 84, "ContextMenu", "Delete") then
         GalaxyState.ContextMenu = nil
         GalaxyState.PendingUnload = true
@@ -3980,31 +4229,115 @@ local function RenderContextMenu(selectedPart)
     local viewport = GetViewportSize()
     local x = math.clamp(menu.X or Mouse.X, 8, math.max(8, viewport.X - width - 8))
     local y = math.clamp(menu.Y or Mouse.Y, 8, math.max(8, viewport.Y - height - 8))
+    local activeButton, activeIndex
+    for idx, button in ipairs(buttons) do
+        if button.submenu and button.n == menu.Submenu then
+            activeButton, activeIndex = button, idx
+            break
+        end
+    end
+
+    local submenuW, submenuH, submenuX, submenuY = 126, 0, nil, nil
+    if activeButton then
+        submenuH = (#activeButton.submenu * itemH) + pad * 2
+        submenuX = x + width + 4
+        if submenuX + submenuW > viewport.X - 8 then submenuX = x - submenuW - 4 end
+        submenuY = math.clamp(y + pad + ((activeIndex or 1) - 1) * itemH, 8, math.max(8, viewport.Y - submenuH - 8))
+    end
+
     local hoveredMenu = IsMouseOver(x, y, width, height)
+    local hoveredSubmenu = activeButton and IsMouseOver(submenuX, submenuY, submenuW, submenuH)
 
     RenderSquare(x, y, width, height, Theme.Section, true, 7, 80, Theme.Glass)
     RenderSquare(x, y, width, height, Theme.BorderBright, false, 7, 92)
 
-    if (GalaxyState.IsMouseClicked or GalaxyState.IsRightMouseClicked) and not hoveredMenu then
+    if (GalaxyState.IsMouseClicked or GalaxyState.IsRightMouseClicked) and not hoveredMenu and not hoveredSubmenu then
         GalaxyState.ContextMenu = nil
         GalaxyState.IsMouseClicked = false
         GalaxyState.IsRightMouseClicked = false
         return
     end
 
+    local function renderMenuButton(button, bx, by, bw, bh, parentMenu)
+        local hovered = (not IsMouseBlockedFor("ContextMenu")) and IsMouseOver(bx, by, bw, bh)
+        local background = hovered and Theme.AccentSurface or Theme.Section
+        local border = hovered and Theme.AccentHover or Theme.BorderBright
+        local z = parentMenu and 84 or 94
+
+        RenderSquare(bx, by, bw, bh, background, true, 4, z)
+        RenderSquare(bx, by, bw, bh, border, false, 4, z + 1)
+        if button.i then
+            RenderClassIcon(button.i, bx + 7, by + math.floor((bh - 16) / 2), 16, 16, z + 3, hovered and 1 or 0.92)
+            RenderText(FitTextToWidth(button.n, bw - (button.submenu and 48 or 36), 11), bx + 29, by + math.floor((bh - 12) / 2),
+                hovered and Theme.White or Theme.Text, 11, Drawing.Fonts.System, z + 2)
+        else
+            RenderText(FitTextToWidth(button.n, bw - 10, 11), bx + bw / 2, by + bh / 2 - 1,
+                hovered and Theme.White or Theme.Text, 11, Drawing.Fonts.System, z + 2, true)
+        end
+        if button.submenu then
+            RenderClassIcon("ArrowRight", bx + bw - 20, by + math.floor((bh - 14) / 2), 14, 14, z + 3,
+                hovered and 1 or 0.82)
+        end
+
+        if hovered and button.submenu then
+            menu.Submenu = button.n
+        elseif hovered and parentMenu then
+            menu.Submenu = nil
+        end
+        if GalaxyState.IsMouseClicked and hovered then
+            GalaxyState.IsMouseClicked = false
+            if button.submenu then
+                menu.Submenu = button.n
+                return "submenu"
+            end
+            return "action"
+        end
+        return hovered and "hover" or nil
+    end
+
     local itemY = y + pad
     for _, button in ipairs(buttons) do
-        if CreateInteractiveButton(x + pad, itemY, width - pad * 2, itemH - 3, button.n, Theme.Accent, nil, 84, "ContextMenu", button.i) then
+        local result = renderMenuButton(button, x + pad, itemY, width - pad * 2, itemH - 3, true)
+        if result == "action" then
             GalaxyState.ContextMenu = nil
             RunGalaxAction(button.n, button.f)
-            GalaxyState.IsMouseClicked = false
             GalaxyState.IsRightMouseClicked = false
             break
         end
         itemY = itemY + itemH
     end
 
-    if hoveredMenu and GalaxyState.IsRightMouseClicked then
+    activeButton, activeIndex = nil, nil
+    for idx, button in ipairs(buttons) do
+        if button.submenu and button.n == menu.Submenu then
+            activeButton, activeIndex = button, idx
+            break
+        end
+    end
+    if activeButton then
+        submenuH = (#activeButton.submenu * itemH) + pad * 2
+        submenuX = x + width + 4
+        if submenuX + submenuW > viewport.X - 8 then submenuX = x - submenuW - 4 end
+        submenuY = math.clamp(y + pad + ((activeIndex or 1) - 1) * itemH, 8, math.max(8, viewport.Y - submenuH - 8))
+
+        RenderSquare(submenuX, submenuY, submenuW, submenuH, Theme.Section, true, 7, 86, Theme.Glass)
+        RenderSquare(submenuX, submenuY, submenuW, submenuH, Theme.BorderBright, false, 7, 93)
+
+        local subY = submenuY + pad
+        for _, subButton in ipairs(activeButton.submenu) do
+            if renderMenuButton(subButton, submenuX + pad, subY, submenuW - pad * 2, itemH - 3, false) == "action" then
+                GalaxyState.ContextMenu = nil
+                RunGalaxAction(activeButton.n .. " " .. subButton.n, subButton.f)
+                GalaxyState.IsRightMouseClicked = false
+                break
+            end
+            subY = subY + itemH
+        end
+    elseif not hoveredMenu then
+        menu.Submenu = nil
+    end
+
+    if (hoveredMenu or hoveredSubmenu) and GalaxyState.IsRightMouseClicked then
         GalaxyState.IsRightMouseClicked = false
     end
 end
