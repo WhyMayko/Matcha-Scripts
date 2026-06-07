@@ -2299,6 +2299,7 @@ local ClassIconWarmSlots = {
 }
 
 local ClassIconAliases = {
+    Back = "general/Back.png",
     Expand = "ui/Expand.png",
     Collapse = "ui/Collapse.png",
     ArrowRight = "ui/ArrowRight.png",
@@ -2752,28 +2753,39 @@ local function RenderAccentColorPicker(x, y, w, zIndex)
     RenderSquare(x, y, w, areaH + barH + pad * 3, Theme.Background, true, 6, z, Theme.GlassStrong)
     RenderSquare(x, y, w, areaH + barH + pad * 3, Theme.BorderBright, false, 6, z + 1)
 
-    local cols, rows = 18, 10
+    local cols, rows = 36, 16
     local cellW, cellH = areaW / cols, areaH / rows
     for row = 0, rows - 1 do
         local value = 1 - (row / (rows - 1))
         for col = 0, cols - 1 do
             local sat = col / (cols - 1)
-            RenderSquare(areaX + col * cellW, areaY + row * cellH, cellW + 1, cellH + 1,
-                HSVToColor3(ThemeAccent.H, sat, value), true, 0, z + 2, 1)
+            local sqX = math.floor(areaX + col * cellW)
+            local sqY = math.floor(areaY + row * cellH)
+            local sqW = math.ceil(cellW) + 1
+            local sqH = math.ceil(cellH) + 1
+            RenderSquare(sqX, sqY, sqW, sqH, HSVToColor3(ThemeAccent.H, sat, value), true, 0, z + 2, 1)
         end
     end
-    RenderSquare(areaX, areaY, areaW, areaH, Theme.Border, false, 4, z + 3)
+    for i = 0, 3 do
+        RenderSquare(areaX - i, areaY - i, areaW + i * 2, areaH + i * 2, Theme.Background, false, 4 + i, z + 3)
+    end
+    RenderSquare(areaX, areaY, areaW, areaH, Theme.Border, false, 4, z + 4)
 
     local cursorX = areaX + ThemeAccent.S * areaW
     local cursorY = areaY + (1 - ThemeAccent.V) * areaH
     RenderCircle(cursorX, cursorY, 4, Theme.White, z + 5, false, 1.5, 1)
 
-    local segments = 36
+    local segments = 72
     local segW = areaW / segments
     for i = 0, segments - 1 do
-        RenderSquare(areaX + i * segW, barY, segW + 1, barH, HSVToColor3(i / segments, 1, 1), true, 0, z + 2, 1)
+        local sqX = math.floor(areaX + i * segW)
+        local sqW = math.ceil(segW) + 1
+        RenderSquare(sqX, barY, sqW, barH, HSVToColor3(i / segments, 1, 1), true, 0, z + 2, 1)
     end
-    RenderSquare(areaX, barY, areaW, barH, Theme.Border, false, 3, z + 3)
+    for i = 0, 3 do
+        RenderSquare(areaX - i, barY - i, areaW + i * 2, barH + i * 2, Theme.Background, false, 4 + i, z + 3)
+    end
+    RenderSquare(areaX, barY, areaW, barH, Theme.Border, false, 3, z + 4)
     local hueX = areaX + ThemeAccent.H * areaW
     RenderLine(hueX, barY - 2, hueX, barY + barH + 2, Theme.White, z + 5, 1.5, 1)
 
@@ -4137,8 +4149,15 @@ local function RenderSettingsMenu()
     if CreateToolbarIconButton(x + 12, cursorY, 22, "ColorPicker", 84, "ContextMenu", nil, true, 14) then
         GalaxyState.ColorPickerOpen = not GalaxyState.ColorPickerOpen
     end
-    RenderSquare(x + 40, cursorY, 22, 22, Theme.Accent, true, 5, 84, 1)
-    RenderSquare(x + 40, cursorY, 22, 22, Theme.Border, false, 5, 85)
+    if CreateToolbarIconButton(x + 38, cursorY, 22, "Back", 84, "ContextMenu", nil, true, 14) then
+        ThemeAccent.H = 0.58
+        ThemeAccent.S = 0.96
+        ThemeAccent.V = 1
+        ApplyThemeAccent()
+        DexSettings.Save()
+    end
+    RenderSquare(x + 64, cursorY, 22, 22, Theme.Accent, true, 5, 84, 1)
+    RenderSquare(x + 64, cursorY, 22, 22, Theme.Border, false, 5, 85)
 
     cursorY = cursorY + 34
     if GalaxyState.ColorPickerOpen then
