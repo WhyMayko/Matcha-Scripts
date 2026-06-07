@@ -2669,7 +2669,7 @@ GalaxyState.RenderDexControl = function()
         RenderSquare(bx, by, itemSize, itemSize, bg, true, 6, 74, Theme.GlassStrong)
         RenderSquare(bx, by, itemSize, itemSize, border, false, 6, 75, active and 0.9 or 0.65)
         RenderClassIcon(item.Icon, bx + 17, by + 7, 22, 22, 77, active and 1 or 0.62)
-        RenderText(item.Name, bx + itemSize / 2, by + 34, active and Theme.White or Theme.SubText,
+        RenderText(item.Name, bx + itemSize / 2, by + 37, active and Theme.White or Theme.SubText,
             10, Drawing.Fonts.System, 77, true)
 
         if hovered and GalaxyState.IsMouseClicked then
