@@ -34,7 +34,7 @@ local function load_offsets()
     if not data then data = fetchJSON(secondaryUrl) end
 
     if not data or not data.Offsets then
-        warn("Galax Hub: Offsets load failed!")
+        error("Galax Hub: Offsets load failed!")
         return nil
     end
 
@@ -312,16 +312,6 @@ local PropertyOffsetSpecs = {
     },
 }
 
-local header = table.concat({
-    "",
-    "------------------------------------------",
-    "Galax Dex: External Explorer",
-    "Status: Loaded",
-    "------------------------------------------"
-}, "\n")
-
-print(header)
-
 if _G.GalaxDex then
     _G.GalaxDex.alive = false
     setrobloxinput(true)
@@ -407,8 +397,8 @@ ApplyThemeAccent()
 local SelectedEsp = {
     Enabled = true,
     TipHeightScale = 0.75,
-    TextSize = 11,
-    MinTextSize = 8,
+    TextSize = 13,
+    MinTextSize = 10,
     LabelScaleDistance = 100,
     MinDistance = 3,
     PaddingX = 8,
@@ -619,20 +609,44 @@ local function ShowNotification(msg)
     pcall(function() notify(msg, "Galax Dex", 3) end)
 end
 
+_G.GalaxDexDeepCache = {}
+_G.GalaxDexDeepList = {}
+_G.GalaxDexDeepScanComplete = false
+
 local function CreateTreeNode(inst, depth)
+    local cached = _G.GalaxDexDeepCache[inst]
     local hasChildren = false
     local childCount = 0
-    pcall(function()
-        childCount = #inst:GetChildren()
-        hasChildren = childCount > 0
-    end)
-
+    if cached then
+        hasChildren = cached.HasChildren
+        childCount = cached.ChildCount
+    else
+        local ok, children = pcall(function() return inst:GetChildren() end)
+        if ok and children then
+            childCount = #children
+            hasChildren = childCount > 0
+            local name = ExecuteSafely(function() return inst.Name end) or "???"
+            local className = ExecuteSafely(function() return inst.ClassName end) or "???"
+            _G.GalaxDexDeepCache[inst] = {
+                HasChildren = hasChildren,
+                ChildCount = childCount,
+                Name = name,
+                ClassName = className,
+                LowerName = tostring(name):lower()
+            }
+            table.insert(_G.GalaxDexDeepList, inst)
+        end
+    end
     return {
         Instance = inst,
         Name = ExecuteSafely(function() return inst.Name end) or "???",
         ClassName = ExecuteSafely(function() return inst.ClassName end) or "???",
-        Address = ExecuteSafely(function() return inst.Address end),
         Depth = depth,
+        SortIndex = 0,
+        StableKey = nil,
+        ChildrenSignature = nil,
+        LoadedChildLimit = nil,
+        LastVisible = 0,
         Expanded = false,
         Children = {},
         HasChildren = hasChildren,
@@ -646,12 +660,15 @@ end
 
 local GalaxyState = {
     IsVisible = true,
+    ScanEnabled = true,
     CurrentTab = "Explorer",
     Selected = nil,
     SearchQuery = "",
     TreeRoot = nil,
     SearchRoot = nil,
+    SearchToken = 0,
     LastTreeRefresh = 0,
+    EmptyRootScans = 0,
     LastSearchRefresh = 0,
     PropLines = {},
     FocusedElement = nil,
@@ -670,6 +687,7 @@ local GalaxyState = {
     LastEditTime = 0,
     LastPropertyUpdate = 0,
     LastInputTime = 0,
+    SuppressMouseInputUntil = 0,
     ResolvedTarget = nil,
     DiagnosticCooldown = {},
     KeyStates = {},
@@ -707,6 +725,7 @@ local GalaxyState = {
     MenuToggleName = "F1",
     HideServices = false,
     HideClassIcons = false,
+    BlockInput = false,
     CapturingKeybind = false,
     KeybindCaptureStarted = 0,
     SuppressMenuToggleUntilRelease = false,
@@ -719,11 +738,14 @@ local GalaxyState = {
     TweenTargetPartAddress = nil,
     TweenLocalPart = nil,
     TweenLocalPartAddress = nil,
+    ChildrenLimit = 100,
+    ChildrenLimitText = "100",
     TweenSpeed = 320,
     TweenSpeedText = "320",
     TweenActive = false,
     LastTweenUpdate = 0,
     PendingRenameAddress = nil,
+    PendingRenameInstance = nil,
     PendingRenameName = nil,
     PendingRenameUntil = 0,
     LastSelectedCheck = 0,
@@ -807,9 +829,11 @@ function DexSettings.Save()
         writefile(DexSettings.Path, HttpService:JSONEncode({
             MenuToggleKey = GalaxyState.MenuToggleKey,
             MenuToggleName = GalaxyState.MenuToggleName,
+            ChildrenLimit = GalaxyState.ChildrenLimit,
             TweenSpeed = GalaxyState.TweenSpeed,
             HideServices = GalaxyState.HideServices,
             HideClassIcons = GalaxyState.HideClassIcons,
+            BlockInput = GalaxyState.BlockInput,
             Accent = {
                 H = ThemeAccent.H,
                 S = ThemeAccent.S,
@@ -828,12 +852,17 @@ function DexSettings.Load()
 
     if tonumber(data.MenuToggleKey) then GalaxyState.MenuToggleKey = tonumber(data.MenuToggleKey) end
     if type(data.MenuToggleName) == "string" then GalaxyState.MenuToggleName = data.MenuToggleName end
+    if tonumber(data.ChildrenLimit) then
+        GalaxyState.ChildrenLimit = math.clamp(math.floor(tonumber(data.ChildrenLimit) + 0.5), 1, 10000)
+        GalaxyState.ChildrenLimitText = tostring(GalaxyState.ChildrenLimit)
+    end
     if tonumber(data.TweenSpeed) then
         GalaxyState.TweenSpeed = math.clamp(tonumber(data.TweenSpeed), 1, 10000)
         GalaxyState.TweenSpeedText = tostring(math.floor(GalaxyState.TweenSpeed + 0.5))
     end
     if type(data.HideServices) == "boolean" then GalaxyState.HideServices = data.HideServices end
     if type(data.HideClassIcons) == "boolean" then GalaxyState.HideClassIcons = data.HideClassIcons end
+    if type(data.BlockInput) == "boolean" then GalaxyState.BlockInput = data.BlockInput end
     if type(data.Accent) == "table" then
         if tonumber(data.Accent.H) then ThemeAccent.H = math.clamp(tonumber(data.Accent.H), 0, 1) end
         if tonumber(data.Accent.S) then ThemeAccent.S = math.clamp(tonumber(data.Accent.S), 0, 1) end
@@ -988,7 +1017,6 @@ end
 local function RefreshNodeIdentity(node, inst)
     if not node or not inst then return end
     node.Instance = inst
-    node.Address = GetInstanceAddress(inst)
     node.Name = GetDisplayName(inst)
     node.ClassName = ExecuteSafely(function() return inst.ClassName end) or "???"
     node.TargetKind = nil
@@ -997,11 +1025,7 @@ local function RefreshNodeIdentity(node, inst)
 end
 
 local function IsSelectedNode(node)
-    if not node or not GalaxyState.Selected then return false end
-    if GalaxyState.SelectedNode == node or GalaxyState.Selected == node.Instance then return true end
-
-    local selectedAddress = GetInstanceAddress(GalaxyState.Selected)
-    return selectedAddress ~= nil and selectedAddress ~= 0 and node.Address == selectedAddress
+    return node ~= nil and GalaxyState.SelectedNode == node
 end
 
 local ExplorerOrder = {
@@ -1660,10 +1684,135 @@ end
 local PopulateNodeChildren
 local UpdatePropertyPanel
 
+function GalaxyState.GetChildrenPageSize()
+    return math.max(1, math.floor(tonumber(GalaxyState.ChildrenLimit) or 100))
+end
+
+function GalaxyState.BuildChildEntries(children, limit)
+    local entries = {}
+    local maxIndex = math.min(#children, limit or #children)
+    for index = 1, maxIndex do
+        local child = children[index]
+        local childName = GetDisplayName(child)
+        local childClass = ExecuteSafely(function() return child.ClassName end) or "???"
+        entries[index] = {
+            Instance = child,
+            Name = childName,
+            ClassName = childClass,
+            SortIndex = index
+        }
+    end
+
+    return entries
+end
+
+function GalaxyState.ComputeChildrenSignature(entries, totalCount, renderLimit)
+    local parts = { tostring(totalCount), tostring(renderLimit) }
+    for index = 1, renderLimit do
+        local entry = entries[index]
+        if not entry then break end
+        parts[#parts + 1] = entry.ClassName
+        parts[#parts + 1] = "\0"
+        parts[#parts + 1] = entry.Name
+        parts[#parts + 1] = "\0"
+    end
+    return table.concat(parts)
+end
+
+function GalaxyState.CreateLoadMoreNode(parentNode, hiddenCount)
+    return {
+        IsLoadMore = true,
+        ParentNode = parentNode,
+        Instance = parentNode.Instance,
+        Name = "Load " .. math.min(GalaxyState.GetChildrenPageSize(), hiddenCount) .. " more...",
+        ClassName = "LoadMore",
+        Depth = parentNode.Depth + 1,
+        SortIndex = 999999,
+        StableKey = "__load_more",
+        Expanded = false,
+        Children = {},
+        HasChildren = false,
+        ChildCount = 0,
+        Visible = true
+    }
+end
+
+function GalaxyState.IsTreeBranchRecentlyVisible(node, currentTime)
+    if node == GalaxyState.TreeRoot then return true end
+    if currentTime - (node.LastVisible or 0) < 4.0 then return true end
+    for _, child in ipairs(node.Children or {}) do
+        if currentTime - (child.LastVisible or 0) < 4.0 or
+            (child.Expanded and GalaxyState.IsTreeBranchRecentlyVisible(child, currentTime)) then
+            return true
+        end
+    end
+    return false
+end
+
+function GalaxyState.CacheDeepInstance(inst, children, lightweight)
+    if not inst or not children then return end
+    local wasCached = _G.GalaxDexDeepCache[inst] ~= nil
+    local name = ExecuteSafely(function() return inst.Name end) or "???"
+    local className = ExecuteSafely(function() return inst.ClassName end) or "???"
+    local cached = _G.GalaxDexDeepCache[inst] or {}
+    cached.HasChildren = #children > 0
+    cached.ChildCount = #children
+    cached.Name = name
+    cached.ClassName = cached.ClassName or className
+    cached.LowerName = tostring(name):lower()
+
+    if not lightweight then
+        local parent = ExecuteSafely(function() return inst.Parent end)
+        local parentCache = parent and _G.GalaxDexDeepCache[parent]
+        local path = parentCache and parentCache.Path and (parentCache.Path .. "." .. tostring(name)) or
+            (inst == game and "game" or (ExecuteSafely(function() return inst:GetFullName() end) or name))
+        cached.ClassName = className
+        cached.Path = path
+        cached.LowerPath = tostring(path):lower()
+    end
+
+    _G.GalaxDexDeepCache[inst] = cached
+    if not wasCached then
+        table.insert(_G.GalaxDexDeepList, inst)
+    end
+end
+
+function GalaxyState.SearchDeepCache(query, limit)
+    local results = {}
+    local seen = {}
+    local count = 0
+    local usePath = query:find("%.") ~= nil
+    for _, inst in ipairs(_G.GalaxDexDeepList or {}) do
+        if count >= limit then break end
+        if IsInstanceValid(inst) and not seen[inst] then
+            local cached = _G.GalaxDexDeepCache[inst]
+            if cached then
+                if usePath and not cached.LowerPath then
+                    local path = ExecuteSafely(function() return inst:GetFullName() end)
+                    if path then
+                        cached.Path = path
+                        cached.LowerPath = tostring(path):lower()
+                    end
+                end
+                local haystack = usePath and cached.LowerPath or cached.LowerName
+                if haystack and haystack:find(query, 1, true) then
+                    local resultNode = CreateTreeNode(inst, 1)
+                    RefreshNodeIdentity(resultNode, inst)
+                    table.insert(results, resultNode)
+                    seen[inst] = true
+                    count = count + 1
+                end
+            end
+        end
+    end
+    return results, count, seen
+end
+
 local function PerformSearch()
     local query = GalaxyState.SearchQuery:lower()
 
     if #query < 1 then
+        GalaxyState.SearchToken = (GalaxyState.SearchToken or 0) + 1
         GalaxyState.SearchRoot.Children = {}
         CurrentTab = "Explorer"
         GalaxyState.CurrentTab = "Explorer"
@@ -1674,22 +1823,35 @@ local function PerformSearch()
     GalaxyState.CurrentTab = "Search"
     GalaxyState.SearchRoot.Children = {}
     GalaxyState.SearchScrollY = 0
+    GalaxyState.SearchToken = (GalaxyState.SearchToken or 0) + 1
+    local searchToken = GalaxyState.SearchToken
 
     task.spawn(function()
         local ok, err = pcall(function()
             ShowNotification("Searching...")
-            local results = {}
-            local count = 0
+            local results, count, seen = GalaxyState.SearchDeepCache(query, 200)
+            if count > 0 and GalaxyState.SearchToken == searchToken then
+                GalaxyState.SearchRoot.Children = results
+                CurrentTab = "Search"
+                GalaxyState.CurrentTab = "Search"
+            end
+
+            results = results or {}
+            count = count or 0
+            seen = seen or {}
             local objectsChecked = 0
 
             local function scan(root)
+                if GalaxyState.SearchToken ~= searchToken then return end
                 if count >= 200 then return end
                 local children = DexSettings.GetChildren(root)
                 if not children then return end
+                GalaxyState.CacheDeepInstance(root, children)
 
                 for _, c in ipairs(children) do
+                    if GalaxyState.SearchToken ~= searchToken then return end
                     objectsChecked = objectsChecked + 1
-                    if objectsChecked % 400 == 0 then
+                    if objectsChecked % 150 == 0 then
                         task.wait()
                     end
 
@@ -1706,24 +1868,28 @@ local function PerformSearch()
                     end
 
                     if isMatch then
-                        local resultNode = CreateTreeNode(c, 1)
-                        RefreshNodeIdentity(resultNode, c)
-                        table.insert(results, resultNode)
-                        count = count + 1
+                        if not seen[c] then
+                            local resultNode = CreateTreeNode(c, 1)
+                            RefreshNodeIdentity(resultNode, c)
+                            table.insert(results, resultNode)
+                            seen[c] = true
+                            count = count + 1
+                        end
                     end
                     scan(c)
                 end
             end
 
             scan(game)
+            if GalaxyState.SearchToken ~= searchToken then return end
             GalaxyState.SearchRoot.Children = results
             CurrentTab = "Search"
             GalaxyState.CurrentTab = "Search"
 
             if count >= 200 then
-                ShowNotification("Limit: 200 Results!")
+                ShowNotification("Search: 200+ items")
             else
-                ShowNotification("Search Finished: " .. count .. " items")
+                ShowNotification("Search: " .. count .. " items")
             end
         end)
 
@@ -1738,6 +1904,7 @@ local function PerformSearch()
 end
 
 local function ClearSearch()
+    GalaxyState.SearchToken = (GalaxyState.SearchToken or 0) + 1
     GalaxyState.SearchQuery = ""
     GalaxyState.SearchRoot.Children = {}
     GalaxyState.SearchScrollY = 0
@@ -1748,6 +1915,9 @@ end
 
 local function RefreshExplorer()
     ClearSearch()
+    GalaxyState.EmptyRootScans = 0
+    GalaxyState.TreeRefreshRequested = nil
+    GalaxyState.LastTreeRefresh = 0
     GalaxyState.TreeRoot = CreateTreeNode(game, 0)
     PopulateNodeChildren(GalaxyState.TreeRoot)
     GalaxyState.TreeRoot.Expanded = true
@@ -2283,6 +2453,7 @@ local ClassIconWarmSlots = {
     Tween = 8,
     StopTween = 8,
     Archive = 8,
+    LoadMore = 8,
     CopyPath = 8,
     CopyName = 8,
     Dump = 8,
@@ -2294,8 +2465,11 @@ local ClassIconWarmSlots = {
     VisualsPanel = 2,
     Reference = 12,
     Warning = 12,
-    Lock = 12,
-    Modified = 12
+    Locked = 12,
+    Unlocked = 12,
+    Modified = 12,
+    Pause = 2,
+    Play1 = 2
 }
 
 local ClassIconAliases = {
@@ -2314,6 +2488,7 @@ local ClassIconAliases = {
     Tween = "instance/AlignPosition.png",
     StopTween = "instance/StopTween.png",
     Archive = "ui/Archive.png",
+    LoadMore = "ui/New.png",
     ColorPicker = "general/ColorPicker.png",
     Logo = "ui/Logo.png",
     ExplorerPanel = "general/Explorer.png",
@@ -2335,13 +2510,16 @@ local ClassIconAliases = {
     UIOff = "general/UIOff.png",
     Warning = "general/Warning.png",
     Reference = "general/Reference.png",
-    Lock = "general/Lock.png",
+    Locked = "general/Lock.png",
+    Unlocked = "general/Unlock.png",
     Modified = "general/Modified.png",
     TeleportService = "instance/TeleportService.png",
     Camera = "instance/Camera.png",
     Path = "instance/Path.png",
     ScriptDocument = "instance/ScriptDocument.png",
-    Instance = "instance/Instance.png"
+    Instance = "instance/Instance.png",
+    Pause = "general/Pause.png",
+    Play1 = "general/Play1.png"
 }
 
 local function GetClassIconPath(iconName)
@@ -2456,7 +2634,9 @@ local StartupIconNames = {
     "Logo",
     "ExplorerPanel",
     "PropertiesPanel",
-    "VisualsPanel"
+    "VisualsPanel",
+    "Pause",
+    "Play1"
 }
 
 local StartupIconsStarted = false
@@ -2524,7 +2704,7 @@ local function IsMouseAllowedFor(owner, id)
         return owner == "DexControl"
     end
     if GalaxyState.ContextMenu then
-        return owner == "ContextMenu" or (owner == "TextInput" and id == "Setting_TweenSpeed")
+        return owner == "ContextMenu" or (owner == "TextInput" and (id == "Setting_TweenSpeed" or id == "Setting_ChildrenLimit"))
     end
     return true
 end
@@ -2899,11 +3079,10 @@ local function RenderSelectedEsp(target, espPart)
         end
     end
 
-    local labelSize = math.floor(math.clamp(
-        SelectedEsp.TextSize * (SelectedEsp.LabelScaleDistance / math.max(distance, 10)),
-        SelectedEsp.MinTextSize,
-        SelectedEsp.TextSize
-    ) + 0.5)
+    local distanceFactor = math.clamp(distance / SelectedEsp.LabelScaleDistance, 0, 1)
+    local labelSize = math.floor(
+        SelectedEsp.TextSize - (SelectedEsp.TextSize - SelectedEsp.MinTextSize) * distanceFactor
+    + 0.5)
     local label = GetDisplayName(target)
     if #label > 32 then label = label:sub(1, 29) .. "..." end
     local distanceLabel = tostring(math.floor(distance)) .. "m"
@@ -3027,77 +3206,66 @@ PopulateNodeChildren = function(node, knownChildren, timestamp)
         node.ChildCount = #children
         node.HasChildren = node.ChildCount > 0
         node.LastChildCheck = timestamp or os.clock()
+        node.LoadedChildLimit = math.max(node.LoadedChildLimit or GalaxyState.GetChildrenPageSize(), GalaxyState.GetChildrenPageSize())
 
         local existingByInstance = {}
-        local existingByAddress = {}
+        local existingByStableKey = {}
         for _, childNode in ipairs(node.Children) do
-            if childNode.Instance then
+            if not childNode.IsLoadMore and childNode.Instance then
                 existingByInstance[childNode.Instance] = childNode
             end
-            if childNode.Address then
-                existingByAddress[childNode.Address] = childNode
+            if not childNode.IsLoadMore and childNode.StableKey then
+                existingByStableKey[childNode.StableKey] = childNode
             end
         end
 
         local newChildren = {}
-        for _, child in ipairs(children) do
-            local existingNode = existingByInstance[child]
-            if not existingNode then
-                local childAddress = GetInstanceAddress(child)
-                existingNode = childAddress and existingByAddress[childAddress]
+        local childOccurrences = {}
+        local renderLimit = math.min(#children, node.LoadedChildLimit)
+        local childEntries = GalaxyState.BuildChildEntries(children, renderLimit)
+        local signature = GalaxyState.ComputeChildrenSignature(childEntries, #children, renderLimit)
+        for index = 1, renderLimit do
+            local entry = childEntries[index]
+            local child = entry.Instance
+            local childName = entry.Name
+            local childClass = entry.ClassName
+            if GalaxyState.HideClassIcons ~= true then
+                RequestClassIcon(childClass)
             end
+            local occurrenceKey = childClass .. "\0" .. childName
+            childOccurrences[occurrenceKey] = (childOccurrences[occurrenceKey] or 0) + 1
+            local stableKey = occurrenceKey .. "\0" .. childOccurrences[occurrenceKey]
+            local existingNode = existingByInstance[child] or existingByStableKey[stableKey]
 
             if existingNode then
-                if GalaxyState.SelectedNode == existingNode or GalaxyState.Selected == existingNode.Instance then
+                if GalaxyState.SelectedNode == existingNode then
                     GalaxyState.Selected = child
                     GalaxyState.SelectedNode = existingNode
                     MarkSelectedChanged()
                 end
                 RefreshNodeIdentity(existingNode, child)
+                existingNode.SortIndex = index
+                existingNode.StableKey = stableKey
                 table.insert(newChildren, existingNode)
             else
                 local childNode = CreateTreeNode(child, node.Depth + 1)
                 RefreshNodeIdentity(childNode, child)
+                childNode.SortIndex = index
+                childNode.StableKey = stableKey
                 table.insert(newChildren, childNode)
             end
         end
 
-        table.sort(newChildren, function(a, b)
-            if DexSettings.IsRootServiceContainer(node.Instance) then
-                local o1 = ExplorerOrder[a.ClassName] or 99
-                local o2 = ExplorerOrder[b.ClassName] or 99
-                if o1 ~= o2 then return o1 < o2 end
-            end
-            if a.ClassName ~= b.ClassName then return a.ClassName < b.ClassName end
-            local aName = a.Name:lower()
-            local bName = b.Name:lower()
-            if aName ~= bName then return aName < bName end
-
-            local aAddress = tonumber(a.Address) or 0
-            local bAddress = tonumber(b.Address) or 0
-            if aAddress ~= bAddress then return aAddress < bAddress end
-
-            return tostring(a.Address or "") < tostring(b.Address or "")
-        end)
-
-        local nameCounts = {}
         for _, childNode in ipairs(newChildren) do
-            local key = childNode.ClassName .. "\0" .. childNode.Name
-            nameCounts[key] = (nameCounts[key] or 0) + 1
+            childNode.Suffix = nil
         end
 
-        local nameIndices = {}
-        for _, childNode in ipairs(newChildren) do
-            local key = childNode.ClassName .. "\0" .. childNode.Name
-            if nameCounts[key] > 1 then
-                nameIndices[key] = (nameIndices[key] or 0) + 1
-                childNode.Suffix = " [" .. nameIndices[key] .. "]"
-            else
-                childNode.Suffix = nil
-            end
+        if #children > renderLimit then
+            table.insert(newChildren, GalaxyState.CreateLoadMoreNode(node, #children - renderLimit))
         end
 
         node.Children = newChildren
+        node.ChildrenSignature = signature
     end
 end
 
@@ -3717,11 +3885,11 @@ local function ApplyProp(foc)
             pData.EditValue = pData.Value
 
             if pData.Name == "Name" then
-                local selectedAddress = GetInstanceAddress(GalaxyState.Selected)
-                GalaxyState.PendingRenameAddress = selectedAddress and tostring(selectedAddress) or nil
+                GalaxyState.PendingRenameAddress = nil
+                GalaxyState.PendingRenameInstance = GalaxyState.Selected
                 GalaxyState.PendingRenameName = tostring(newVal)
                 GalaxyState.PendingRenameUntil = os.clock() + 1
-                if GalaxyState.SelectedNode and tostring(GalaxyState.SelectedNode.Address) == tostring(selectedAddress) then
+                if GalaxyState.SelectedNode then
                     GalaxyState.SelectedNode.Name = tostring(newVal)
                 end
                 MarkSelectedChanged()
@@ -3731,6 +3899,7 @@ local function ApplyProp(foc)
                     task.wait(1)
                     if GalaxyState.PendingRenameUntil == renameUntil then
                         GalaxyState.PendingRenameAddress = nil
+                        GalaxyState.PendingRenameInstance = nil
                         GalaxyState.PendingRenameName = nil
                         GalaxyState.PendingRenameUntil = 0
                     end
@@ -3752,16 +3921,59 @@ local function ApplyProp(foc)
     end
 end
 
+function GalaxyState.FindChildIndex(children, target)
+    if not children or not target then return nil end
+    for index, child in ipairs(children) do
+        if IsSameInstance(child, target) then
+            return index
+        end
+    end
+    return nil
+end
+
+function GalaxyState.FindChildNode(parentNode, target)
+    if not parentNode or not target then return nil end
+    for _, childNode in ipairs(parentNode.Children or {}) do
+        if not childNode.IsLoadMore and IsSameInstance(childNode.Instance, target) then
+            return childNode
+        end
+    end
+    return nil
+end
+
+function GalaxyState.EnsureChildNodeLoaded(parentNode, target, timestamp)
+    if not parentNode or not target then return nil end
+    local children = DexSettings.GetChildren(parentNode.Instance)
+    if not children then return nil end
+
+    local index = GalaxyState.FindChildIndex(children, target)
+    if not index then
+        PopulateNodeChildren(parentNode, children, timestamp or os.clock())
+        return nil
+    end
+
+    parentNode.LoadedChildLimit = math.max(
+        parentNode.LoadedChildLimit or GalaxyState.GetChildrenPageSize(),
+        GalaxyState.GetChildrenPageSize(),
+        index
+    )
+    PopulateNodeChildren(parentNode, children, timestamp or os.clock())
+    return GalaxyState.FindChildNode(parentNode, target)
+end
+
 local function NavigateToInstance(target)
     if not target then return end
     CurrentTab = "Explorer"
+    GalaxyState.CurrentTab = "Explorer"
+    GalaxyState.IsDraggingSearchScroll = false
 
     if not GalaxyState.TreeRoot or GalaxyState.TreeRoot.Instance ~= game then
         GalaxyState.TreeRoot = CreateTreeNode(game, 0)
         GalaxyState.TreeRoot.Expanded = true
     end
-    if not GalaxyState.TreeRoot.Children or #GalaxyState.TreeRoot.Children == 0 then PopulateNodeChildren(GalaxyState
-        .TreeRoot) end
+    if not GalaxyState.TreeRoot.Children or #GalaxyState.TreeRoot.Children == 0 then
+        PopulateNodeChildren(GalaxyState.TreeRoot)
+    end
 
     local path = {}
     local current = target.Parent
@@ -3772,16 +3984,14 @@ local function NavigateToInstance(target)
     end
 
     local node = GalaxyState.TreeRoot
+    local now = os.clock()
     for i, ancestor in ipairs(path) do
-        local ancestorAddress = GetInstanceAddress(ancestor)
-        if not node.Children or #node.Children == 0 then PopulateNodeChildren(node) end
-        local found = nil
-        for _, child in ipairs(node.Children or {}) do
-            if child.Instance == ancestor or (ancestorAddress and child.Address == ancestorAddress) then
-                child.Expanded = true; found = child; break
-            end
-        end
+        local found = GalaxyState.FindChildNode(node, ancestor) or GalaxyState.EnsureChildNodeLoaded(node, ancestor, now)
         if found then
+            found.Expanded = true
+            if found.HasChildren and (#(found.Children or {}) == 0) then
+                PopulateNodeChildren(found, nil, now)
+            end
             node = found
         else
             break
@@ -3789,31 +3999,23 @@ local function NavigateToInstance(target)
     end
 
     local tName = ExecuteSafely(function() return target.Name end) or "Object"
-    local targetAddress = GetInstanceAddress(target)
-    if not node.Children or #node.Children == 0 then PopulateNodeChildren(node) end
-
-    local targetNode = nil
-    for _, child in ipairs(node.Children or {}) do
-        if child.Instance == target or (targetAddress and child.Address == targetAddress) then
-            child.Expanded = true
-            if child.HasChildren and (#(child.Children or {}) == 0) then PopulateNodeChildren(child) end
-            GalaxyState.Selected = child.Instance
-            GalaxyState.SelectedNode = child
-            MarkSelectedChanged()
-            targetNode = child
-            break
-        end
+    local targetNode = GalaxyState.FindChildNode(node, target) or GalaxyState.EnsureChildNodeLoaded(node, target, now)
+    if targetNode then
+        GalaxyState.Selected = targetNode.Instance
+        GalaxyState.SelectedNode = targetNode
+        MarkSelectedChanged()
     end
 
-    if not GalaxyState.Selected then
+    if not targetNode then
         GalaxyState.Selected = target
+        GalaxyState.SelectedNode = nil
         MarkSelectedChanged()
     end
 
     local function GetFlattenedIndex(nodes, goal, count)
         for _, n in ipairs(nodes) do
             count = count + 1
-            if n.Instance == goal then return count, true end
+            if not n.IsLoadMore and IsSameInstance(n.Instance, goal) then return count, true end
             if n.Expanded and n.Children then
                 local res, found = GetFlattenedIndex(n.Children, goal, count)
                 count = res
@@ -3826,15 +4028,13 @@ local function NavigateToInstance(target)
     local idx, found = GetFlattenedIndex(GalaxyState.TreeRoot.Children, GalaxyState.Selected, 0)
     if found then
         local targetY = (idx - 1) * 20
-        local scroll = (CurrentTab == "Search") and GalaxyState.SearchScrollY or GalaxyState.ScrollY
+        local scroll = GalaxyState.ScrollY or 0
         if not (targetY >= scroll and (targetY + 20) <= (scroll + 340)) then
-            if CurrentTab == "Search" then
-                GalaxyState.SearchScrollY = math.max(0, targetY - 100)
-            else
-                GalaxyState.ScrollY = math.max(0, targetY - 100)
-            end
+            GalaxyState.ScrollY = math.max(0, targetY - 100)
         end
         ShowNotification("Located: " .. tName)
+    else
+        ShowNotification("Selected: " .. tName)
     end
     UpdatePropertyPanel()
 end
@@ -3855,6 +4055,14 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
                 submenu = items
             })
         end
+    end
+
+    if includeGoto then
+        table.insert(buttons, {
+            n = "Goto Path",
+            i = "Path",
+            f = function() NavigateToInstance(GalaxyState.Selected) end
+        })
     end
 
     if spectateSubject then
@@ -3884,9 +4092,6 @@ local function AddSelectedActionButtons(buttons, selectedPart, includeGoto)
     end
     if hasPhysicalActionTarget then
         table.insert(positionActions, { n = "Bring", i = "Bring", f = function() BringObject(GalaxyState.Selected) end })
-    end
-    if includeGoto then
-        table.insert(positionActions, { n = "Goto Path", i = "Struct", f = function() NavigateToInstance(GalaxyState.Selected) end })
     end
     addActionGroup("Position", "Position", positionActions)
 
@@ -3965,9 +4170,33 @@ end
 local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWidth, scrollY)
     if not nodes then return logicalY end
     for _, node in ipairs(nodes) do
-        if IsInstanceValid(node.Instance) then
+        if node.IsLoadMore then
+            local screenY = startY + logicalY - scrollY
+            if screenY >= startY and screenY < endY then
+                node.LastVisible = os.clock()
+                local mouseBlocked = IsMouseBlockedFor("Explorer")
+                local hovered = (not mouseBlocked) and IsMouseOver(x, screenY, containerWidth, 20)
+                local rowX, rowW = x + 2, containerWidth - 2
+                if hovered then
+                    RenderSquare(rowX, screenY, rowW, 20, Theme.AccentSurface, true, 2, 5)
+                    RenderSquare(rowX, screenY, rowW, 20, Theme.AccentHover, false, 2, 6)
+                end
+
+                local iconX = x + (node.Depth * 14) + 20
+                RenderClassIcon("LoadMore", iconX, screenY + 2, 16, 16, 6, hovered and 1 or 0.92)
+                RenderText(node.Name, iconX + 22, screenY + 4, hovered and Theme.White or Theme.Text, 11, Drawing.Fonts.System, 6)
+                if not mouseBlocked and GalaxyState.IsMouseClicked and hovered and node.ParentNode then
+                    node.ParentNode.LoadedChildLimit = (node.ParentNode.LoadedChildLimit or GalaxyState.GetChildrenPageSize()) + GalaxyState.GetChildrenPageSize()
+                    PopulateNodeChildren(node.ParentNode)
+                    GalaxyState.RequestTreeRefresh("load more")
+                    GalaxyState.IsMouseClicked = false
+                end
+            end
+            logicalY = logicalY + 20
+        elseif IsInstanceValid(node.Instance) then
         local screenY = startY + logicalY - scrollY
         if screenY >= startY and screenY < endY then
+            node.LastVisible = os.clock()
             local isSelected = IsSelectedNode(node)
             local mouseBlocked = IsMouseBlockedFor("Explorer")
             local hovered = (not mouseBlocked) and IsMouseOver(x, screenY, containerWidth, 20)
@@ -3984,13 +4213,11 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
             local arrowY = screenY + 10
             local arrowHovered = (not mouseBlocked) and IsMouseOver(arrowX - 8, screenY, 16, 20)
 
-            local currentAddress = GetInstanceAddress(node.Instance)
             local currentName = GetDisplayName(node.Instance)
             if GalaxyState.PendingRenameUntil and os.clock() < GalaxyState.PendingRenameUntil and
-                tostring(currentAddress) == tostring(GalaxyState.PendingRenameAddress) then
+                (GalaxyState.PendingRenameInstance == node.Instance or GalaxyState.SelectedNode == node) then
                 currentName = GalaxyState.PendingRenameName
             end
-            if currentAddress then node.Address = currentAddress end
             if currentName and node.Name ~= currentName then node.Name = currentName end
 
             if node.HasChildren then
@@ -4033,7 +4260,7 @@ local function DisplayExplorerTree(nodes, x, logicalY, startY, endY, containerWi
                 Drawing.Fonts.System, 6)
 
             if not mouseBlocked and GalaxyState.IsMouseClicked and hovered and not arrowHovered then
-                local isSelecting = (GalaxyState.Selected ~= node.Instance)
+                local isSelecting = GalaxyState.SelectedNode ~= node
                 GalaxyState.Selected = isSelecting and node.Instance or nil
                 GalaxyState.SelectedNode = isSelecting and node or nil
                 MarkSelectedChanged()
@@ -4086,7 +4313,7 @@ local function RenderSettingsMenu()
 
     local width = 236
     local pickerOpen = GalaxyState.ColorPickerOpen == true
-    local height = pickerOpen and 518 or 398
+    local height = pickerOpen and 556 or 436
     local viewport = GetViewportSize()
     local x = math.clamp(menu.X or Mouse.X, 8, math.max(8, viewport.X - width - 8))
     local y = math.clamp(menu.Y or Mouse.Y, 8, math.max(8, viewport.Y - height - 8))
@@ -4144,26 +4371,58 @@ local function RenderSettingsMenu()
     end)
     cursorY = cursorY + 46
 
-    RenderText("Accent", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    local accentX = x + 12
+    local blockInputX = x + 12 + toggleW + gap
+    RenderText("Accent", accentX, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    RenderText("BlockInput", blockInputX, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
     cursorY = cursorY + 16
-    if CreateToolbarIconButton(x + 12, cursorY, 22, "ColorPicker", 84, "ContextMenu", nil, true, 14) then
+    if CreateToolbarIconButton(accentX, cursorY, 22, "ColorPicker", 84, "ContextMenu", nil, true, 14) then
         GalaxyState.ColorPickerOpen = not GalaxyState.ColorPickerOpen
     end
-    if CreateToolbarIconButton(x + 38, cursorY, 22, "Back", 84, "ContextMenu", nil, true, 14) then
+    if CreateToolbarIconButton(accentX + 26, cursorY, 22, "Back", 84, "ContextMenu", nil, true, 14) then
         ThemeAccent.H = 0.58
         ThemeAccent.S = 0.96
         ThemeAccent.V = 1
         ApplyThemeAccent()
         DexSettings.Save()
     end
-    RenderSquare(x + 64, cursorY, 22, 22, Theme.Accent, true, 5, 84, 1)
-    RenderSquare(x + 64, cursorY, 22, 22, Theme.Border, false, 5, 85)
+    RenderSquare(accentX + 52, cursorY, 22, 22, Theme.Accent, true, 5, 84, 1)
+    RenderSquare(accentX + 52, cursorY, 22, 22, Theme.Border, false, 5, 85)
+
+    local blockText = GalaxyState.BlockInput and "Locked" or "Unlocked"
+    local blockIcon = GalaxyState.BlockInput and "Locked" or "Unlocked"
+    if CreateInteractiveButton(blockInputX, cursorY, toggleW, 24, blockText,
+        GalaxyState.BlockInput and Theme.Accent or Theme.Section, nil, 84, "ContextMenu", blockIcon) then
+        GalaxyState.BlockInput = not GalaxyState.BlockInput
+        DexSettings.Save()
+        ShowNotification(GalaxyState.BlockInput and "BlockInput Locked" or "BlockInput Unlocked")
+    end
 
     cursorY = cursorY + 34
     if GalaxyState.ColorPickerOpen then
         cursorY = RenderAccentColorPicker(x + pad, cursorY, width - pad * 2, 84) + 12
     end
 
+    local childrenKey = "Setting_ChildrenLimit"
+    local childrenFocused = GalaxyState.FocusedElement == childrenKey
+    local childrenBoxW, childrenBoxH = width - 24, 22
+    RenderText("Children Limit", x + 12, cursorY, Theme.SubText, 10, Drawing.Fonts.System, 84)
+    cursorY = cursorY + 16
+    local childrenBoxX, childrenBoxY = x + 12, cursorY
+    RenderSquare(childrenBoxX, childrenBoxY, childrenBoxW, childrenBoxH,
+        childrenFocused and Color3.fromRGB(15, 15, 25) or Color3.fromRGB(25, 25, 35), true, 5, 84,
+        Theme.GlassStrong)
+    RenderSquare(childrenBoxX, childrenBoxY, childrenBoxW, childrenBoxH, childrenFocused and Theme.Accent or Theme.Border, false, 5, 85)
+    RenderText(FitTextToWidth(GalaxyState.ChildrenLimitText or tostring(GalaxyState.ChildrenLimit or 100), childrenBoxW - 10, 10),
+        childrenBoxX + 5, childrenBoxY + 4, Theme.Text, 10, Drawing.Fonts.System, 86)
+    RememberFocusRect(childrenKey, childrenBoxX, childrenBoxY, childrenBoxW, childrenBoxH)
+    if IsMouseAllowedFor("TextInput", childrenKey) and GalaxyState.IsMouseClicked and
+        IsMouseOver(childrenBoxX, childrenBoxY, childrenBoxW, childrenBoxH) then
+        GalaxyState.FocusedElement = childrenKey
+        GalaxyState.IsMouseClicked = false
+    end
+
+    cursorY = cursorY + 38
     local tweenKey = "Setting_TweenSpeed"
     local tweenFocused = GalaxyState.FocusedElement == tweenKey
     local tweenBoxW, tweenBoxH = width - 24, 22
@@ -4389,7 +4648,7 @@ GalaxyState.UpdatePropertyScan = function(currentTime, canScan)
     end
 
     if GalaxyState.PropertyRefreshRequested or not GalaxyState.LastPropertyUpdate or
-        currentTime - GalaxyState.LastPropertyUpdate > 0.25 then
+        currentTime - GalaxyState.LastPropertyUpdate > 0.75 then
         pcall(UpdatePropertyPanel)
         GalaxyState.LastPropertyUpdate = currentTime
         GalaxyState.PropertyRefreshRequested = nil
@@ -4399,37 +4658,77 @@ end
 GalaxyState.ScanTreeNode = function(node, currentTime, checksLeft)
     if checksLeft <= 0 or not node or not node.Instance then return checksLeft end
 
+    -- Closed nodes: Only fetch ONCE ever (cache strict)
     if not node.Expanded then
-        if not node.LastChildCheck or currentTime - node.LastChildCheck > 2.0 then
-            local children = DexSettings.GetChildren(node.Instance)
-            if children then
-                node.ChildCount = #children
-                node.HasChildren = node.ChildCount > 0
-                node.LastChildCheck = currentTime
-                checksLeft = checksLeft - 1
+        if node.LastChildCheck == nil or node.LastChildCheck == 0 then
+            if (node == GalaxyState.TreeRoot or GalaxyState.IsTreeBranchRecentlyVisible(node, currentTime)) then
+                local children = DexSettings.GetChildren(node.Instance)
+                if children then
+                    node.ChildCount = #children
+                    node.HasChildren = node.ChildCount > 0
+                    node.LastChildCheck = currentTime
+                    checksLeft = checksLeft - 1
+                end
             end
         end
         return checksLeft
     end
 
+    -- If Scan is Paused, we DO NOT renew, unless it has never been checked.
+    if not GalaxyState.ScanEnabled and node.LastChildCheck and node.LastChildCheck ~= 0 then
+        for _, child in ipairs(node.Children or {}) do
+            if checksLeft <= 0 then break end
+            if not child.IsLoadMore then
+                checksLeft = GalaxyState.ScanTreeNode(child, currentTime, checksLeft)
+            end
+        end
+        return checksLeft
+    end
+
+    if not GalaxyState.TreeRefreshRequested and not GalaxyState.IsTreeBranchRecentlyVisible(node, currentTime) then
+        return checksLeft
+    end
+
+    if not GalaxyState.TreeRefreshRequested and node.LastChildCheck then
+        local loadedLimit = math.max(node.LoadedChildLimit or GalaxyState.GetChildrenPageSize(), GalaxyState.GetChildrenPageSize())
+        local rescanDelay = (node.ChildCount or 0) > loadedLimit and 3.0 or 1.5
+        if currentTime - node.LastChildCheck < rescanDelay then
+            for _, child in ipairs(node.Children or {}) do
+                if checksLeft <= 0 then break end
+                if not child.IsLoadMore then
+                    checksLeft = GalaxyState.ScanTreeNode(child, currentTime, checksLeft)
+                end
+            end
+            return checksLeft
+        end
+    end
+
     local real = DexSettings.GetChildren(node.Instance) or {}
     checksLeft = checksLeft - 1
     local realCount = #real
+    local renderLimit = math.min(realCount, math.max(node.LoadedChildLimit or GalaxyState.GetChildrenPageSize(), GalaxyState.GetChildrenPageSize()))
+    local childEntries = GalaxyState.BuildChildEntries(real, renderLimit)
+    local signature = GalaxyState.ComputeChildrenSignature(childEntries, realCount, renderLimit)
     local needsRefresh = GalaxyState.TreeRefreshRequested or
-        (realCount ~= (node.ChildCount or #(node.Children or {}))) or
-        (realCount ~= #(node.Children or {}))
+        (realCount ~= (node.ChildCount or 0)) or
+        (signature ~= node.ChildrenSignature)
 
-    if not needsRefresh and currentTime - (node.LastDeepCheck or 0) > 3.0 then
+    if not needsRefresh and currentTime - (node.LastDeepCheck or 0) > 3.0 and
+        (currentTime - (node.LastVisible or 0) < 4.0 or node == GalaxyState.TreeRoot) then
         local childSet = {}
         for _, childNode in ipairs(node.Children or {}) do
-            if not IsInstanceValid(childNode.Instance) then
-                needsRefresh = true
-                break
+            if not childNode.IsLoadMore then
+                if not IsInstanceValid(childNode.Instance) then
+                    needsRefresh = true
+                    break
+                end
+                childSet[childNode.Instance] = true
             end
-            childSet[childNode.Instance] = true
         end
         if not needsRefresh then
-            for _, inst in ipairs(real) do
+            for index = 1, renderLimit do
+                local entry = childEntries[index]
+                local inst = entry and entry.Instance
                 if not childSet[inst] then
                     needsRefresh = true
                     break
@@ -4445,8 +4744,9 @@ GalaxyState.ScanTreeNode = function(node, currentTime, checksLeft)
         node.ChildCount = realCount
         node.HasChildren = realCount > 0
         node.LastChildCheck = currentTime
+        node.ChildrenSignature = signature
         for _, childNode in ipairs(node.Children or {}) do
-            if childNode.Instance and IsInstanceValid(childNode.Instance) then
+            if not childNode.IsLoadMore and childNode.Instance and IsInstanceValid(childNode.Instance) then
                 RefreshNodeIdentity(childNode, childNode.Instance)
             end
         end
@@ -4454,7 +4754,9 @@ GalaxyState.ScanTreeNode = function(node, currentTime, checksLeft)
 
     for _, child in ipairs(node.Children or {}) do
         if checksLeft <= 0 then break end
-        checksLeft = GalaxyState.ScanTreeNode(child, currentTime, checksLeft)
+        if not child.IsLoadMore then
+            checksLeft = GalaxyState.ScanTreeNode(child, currentTime, checksLeft)
+        end
     end
 
     return checksLeft
@@ -4463,16 +4765,38 @@ end
 GalaxyState.UpdateTreeScan = function(currentTime, canScan)
     if not canScan or GalaxyState.ShowExplorer == false or not GalaxyState.TreeRoot then return end
     if not GalaxyState.TreeRefreshRequested and GalaxyState.LastTreeRefresh and
-        currentTime - GalaxyState.LastTreeRefresh <= 0.35 then
+        currentTime - GalaxyState.LastTreeRefresh <= 0.75 then
         return
     end
 
     local checksLeft = GalaxyState.ScanTreeNode(GalaxyState.TreeRoot, currentTime,
-        GalaxyState.TreeRefreshRequested and 40 or 20)
+        GalaxyState.TreeRefreshRequested and 24 or 8)
+    if GalaxyState.TreeRoot.ChildCount == 0 then
+        GalaxyState.EmptyRootScans = (GalaxyState.EmptyRootScans or 0) + 1
+        if GalaxyState.EmptyRootScans >= 3 then
+            GalaxyState.PendingUnload = true
+            return
+        end
+    else
+        GalaxyState.EmptyRootScans = 0
+    end
     GalaxyState.LastTreeRefresh = currentTime
     if checksLeft > 0 then
         GalaxyState.TreeRefreshRequested = nil
     end
+end
+
+GalaxyState.IsUiInteracting = function(isDraggingWindow, isMousePressed)
+    return isDraggingWindow or GalaxyState.ResizeMode or GalaxyState.IsDraggingLayoutSplit or
+        GalaxyState.IsDraggingScroll or GalaxyState.IsDraggingSearchScroll or
+        GalaxyState.IsDraggingPropertyScroll or GalaxyState.IsDraggingPropertiesWindow or
+        GalaxyState.PropertiesResizeMode or isMousePressed
+end
+
+GalaxyState.CanRunScans = function(currentTime, isTyping, isCoolingDown, isInteracting)
+    return not isTyping and not isCoolingDown and not isInteracting and
+        (not GalaxyState.LastInputTime or currentTime - GalaxyState.LastInputTime > 0.25) and
+        (not GalaxyState.LastInteractionTime or currentTime - GalaxyState.LastInteractionTime > 0.45)
 end
 
 DexSettings.Load()
@@ -4540,6 +4864,10 @@ task.spawn(function()
         local IsRightMousePressed = ismouse2pressed()
         GalaxyState.IsRightMouseClicked = IsRightMousePressed and not PreviousRightMouseState
         PreviousRightMouseState = IsRightMousePressed
+        if (GalaxyState.SuppressMouseInputUntil or 0) > os.clock() then
+            GalaxyState.IsMouseClicked = false
+            GalaxyState.IsRightMouseClicked = false
+        end
 
         local now = os.clock()
         if now - (GalaxyState.LastSelectedCheck or 0) > 0.25 then
@@ -4550,11 +4878,17 @@ task.spawn(function()
         UpdateTweenState()
         local selectedPhysicalPart = GalaxyState.SelectedPhysicalPart
 
-        local shouldBlockRobloxInput = GalaxyState.FocusedElement ~= nil
+        local shouldBlockRobloxInput = IsVisible and (GalaxyState.BlockInput == true or GalaxyState.FocusedElement ~= nil)
+        local wasRobloxInputBlocked = GalaxyState.LastRobloxInputBlocked == true
         setrobloxinput(not shouldBlockRobloxInput)
-        if shouldBlockRobloxInput and not GalaxyState.LastRobloxInputBlocked then
+        if shouldBlockRobloxInput and not wasRobloxInputBlocked then
             task.wait(0.1)
             mouse1click()
+            GalaxyState.SuppressMouseInputUntil = os.clock() + 0.2
+        elseif not shouldBlockRobloxInput and wasRobloxInputBlocked then
+            task.wait(0.1)
+            mouse1click()
+            GalaxyState.SuppressMouseInputUntil = os.clock() + 0.2
         end
         GalaxyState.LastRobloxInputBlocked = shouldBlockRobloxInput
 
@@ -4588,6 +4922,14 @@ task.spawn(function()
                     GalaxyState.TweenSpeedText = v
                     local speed = tonumber(v)
                     if speed then GalaxyState.TweenSpeed = math.clamp(speed, 1, 10000) end
+                end
+            elseif GalaxyState.FocusedElement == "Setting_ChildrenLimit" then
+                currentVal = GalaxyState.ChildrenLimitText or tostring(GalaxyState.ChildrenLimit or 100)
+                setter = function(v)
+                    v = tostring(v or ""):gsub("[^%d]", "")
+                    GalaxyState.ChildrenLimitText = v
+                    local limit = tonumber(v)
+                    if limit then GalaxyState.ChildrenLimit = math.clamp(math.floor(limit + 0.5), 1, 10000) end
                 end
             elseif GalaxyState.FocusedElement:sub(1, 5) == "Prop_" then
                 local parts = {}
@@ -4630,6 +4972,13 @@ task.spawn(function()
                                 elseif k == 0x0D then
                                     if GalaxyState.FocusedElement == "SearchInput" then
                                         PerformSearch()
+                                    elseif GalaxyState.FocusedElement == "Setting_ChildrenLimit" then
+                                        local limit = tonumber(GalaxyState.ChildrenLimitText) or GalaxyState.ChildrenLimit or 100
+                                        GalaxyState.ChildrenLimit = math.clamp(math.floor(limit + 0.5), 1, 10000)
+                                        GalaxyState.ChildrenLimitText = tostring(GalaxyState.ChildrenLimit)
+                                        DexSettings.Save()
+                                        GalaxyState.RequestTreeRefresh("children limit")
+                                        ShowNotification("Children Limit: " .. GalaxyState.ChildrenLimitText)
                                     elseif GalaxyState.FocusedElement == "Setting_TweenSpeed" then
                                         local speed = tonumber(GalaxyState.TweenSpeedText) or GalaxyState.TweenSpeed or 320
                                         GalaxyState.TweenSpeed = math.clamp(speed, 1, 10000)
@@ -4873,15 +5222,18 @@ task.spawn(function()
         local ContainerX, ListWidth = PosX + 14, WindowWidth - 28
         local SearchY, SearchHeight = PosY + HeaderHeight + 10, 30
         local ContentY = showExplorer and (SearchY + SearchHeight + 10) or (PosY + HeaderHeight + 10)
+        local viewingSearch = CurrentTab == "Search"
         if showExplorer then
             local BtnSize, BtnGap = 22, 5
-            local ClearX = ContainerX + ListWidth - BtnSize - 5
+            local ScanBtnX = ContainerX + ListWidth - 30
+            local SearchWidth = ListWidth - 36
+            local ClearX = ContainerX + SearchWidth - BtnSize - 5
             local SearchBtnX = ClearX - BtnSize - BtnGap
             local TextX = ContainerX + 10
             local searchFocused = GalaxyState.FocusedElement == "SearchInput"
 
-            RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, Theme.Section, true, 6, 4, Theme.GlassStrong)
-            RenderSquare(ContainerX, SearchY, ListWidth, SearchHeight, searchFocused and Theme.Accent or Theme.BorderBright, false, 6, 5)
+            RenderSquare(ContainerX, SearchY, SearchWidth, SearchHeight, Theme.Section, true, 6, 4, Theme.GlassStrong)
+            RenderSquare(ContainerX, SearchY, SearchWidth, SearchHeight, searchFocused and Theme.Accent or Theme.BorderBright, false, 6, 5)
             RenderText(GalaxyState.SearchQuery == "" and "Search..." or FitTextToWidth(GalaxyState.SearchQuery, SearchBtnX - TextX - 8, 11),
                 TextX, SearchY + SearchHeight / 2 - 6,
                 GalaxyState.SearchQuery == "" and Theme.SubText or Theme.Text, 11, Drawing.Fonts.System, 6)
@@ -4903,8 +5255,14 @@ task.spawn(function()
                     ShowNotification("Search Cleared")
                 end)
             end
+
+            local scanIcon = GalaxyState.ScanEnabled and "Pause" or "Play1"
+            if CreateToolbarIconButton(ScanBtnX, SearchY, 30, scanIcon, 10, nil, nil, true, 16) then
+                GalaxyState.ScanEnabled = not GalaxyState.ScanEnabled
+                ShowNotification(GalaxyState.ScanEnabled and "Scan Resumed" or "Scan Paused")
+            end
         end
-        local viewingSearch = CurrentTab == "Search"
+
         local treeNodes = viewingSearch and GalaxyState.SearchRoot.Children or GalaxyState.TreeRoot.Children
         local propertiesDetached = showProperties and GalaxyState.PropertiesDetached == true
         local mainShowProperties = showProperties and not propertiesDetached
@@ -5307,7 +5665,7 @@ task.spawn(function()
                     propY = propY + lineHeight
                 else
                 local inputX, inputY, inputW, inputH = ContainerX + 10, propY + 10, PanelWidth - 28, 18
-                local stateIcon = pData.IsReadOnly and "Lock" or "Modified"
+                local stateIcon = pData.IsReadOnly and "Locked" or "Modified"
                 local stateAlpha = pData.IsReadOnly and 0.78 or 0.92
 
                 RenderText(FitTextToWidth(pData.Name, inputW, 10), inputX, propY, Theme.SubText, 10,
@@ -5435,16 +5793,11 @@ task.spawn(function()
             if isTyping then GalaxyState.LastInputTime = currentTime end
 
             local isCoolingDown = GalaxyState.LastEditTime and (currentTime - GalaxyState.LastEditTime < 0.5)
-            local isInteracting = IsDragging or GalaxyState.ResizeMode or GalaxyState.IsDraggingLayoutSplit or
-                GalaxyState.IsDraggingScroll or GalaxyState.IsDraggingSearchScroll or
-                GalaxyState.IsDraggingPropertyScroll or GalaxyState.IsDraggingPropertiesWindow or
-                GalaxyState.PropertiesResizeMode or IsMousePressed
+            local isInteracting = GalaxyState.IsUiInteracting(IsDragging, IsMousePressed)
             if isInteracting then
                 GalaxyState.LastInteractionTime = currentTime
             end
-            local canScan = not isTyping and not isCoolingDown and not isInteracting and
-                (not GalaxyState.LastInputTime or currentTime - GalaxyState.LastInputTime > 0.1) and
-                (not GalaxyState.LastInteractionTime or currentTime - GalaxyState.LastInteractionTime > 0.15)
+            local canScan = GalaxyState.CanRunScans(currentTime, isTyping, isCoolingDown, isInteracting)
 
             if canScan then
                 GalaxyState.UpdatePropertyScan(currentTime, true)
@@ -5456,5 +5809,69 @@ end)
 
 task.spawn(function()
     task.wait()
+
+    local playerName = ExecuteSafely(function() return LocalPlayer.Name end) or "Player"
+    ShowNotification("Hello " .. playerName .. "!")
+
     StartStartupIcons()
+
+    task.spawn(function()
+        local ok, err = pcall(function()
+        print("\n------------------------------------------\nGalax Dex: Explorer\nStatus:\nOffsets Loaded\nExplorer Loading\n------------------------------------------")
+
+            _G.GalaxDexDeepCache = {}
+            _G.GalaxDexDeepList = {}
+            _G.GalaxDexDeepScanComplete = false
+            local scanQueue = { game }
+            local scanHead = 1
+            local processedCount = 0
+            local startTime = tick()
+
+            while scanHead <= #scanQueue do
+                local inst = scanQueue[scanHead]
+                scanHead = scanHead + 1
+
+                local children
+                if inst == game then
+                    children = ExecuteSafely(function() return DexSettings.GetRootServices() end)
+                else
+                    local className = ExecuteSafely(function() return inst.ClassName end)
+                    if className and not ClassIconCache[className] then
+                        RequestClassIcon(className)
+                    end
+                    children = ExecuteSafely(function() return inst:GetChildren() end)
+                end
+
+                if children then
+                    local childCount = #children
+                    local name = ExecuteSafely(function() return inst.Name end) or "???"
+                    local className = ExecuteSafely(function() return inst.ClassName end) or "???"
+                    _G.GalaxDexDeepCache[inst] = {
+                        HasChildren = childCount > 0,
+                        ChildCount = childCount,
+                        Name = name,
+                        ClassName = className,
+                        LowerName = tostring(name):lower()
+                    }
+                    table.insert(_G.GalaxDexDeepList, inst)
+
+                    for _, child in ipairs(children) do
+                        table.insert(scanQueue, child)
+                    end
+                end
+
+                processedCount = processedCount + 1
+            end
+
+            local endTime = tick()
+            _G.GalaxDexDeepScanComplete = true
+            print("\n------------------------------------------\nGalax Dex: Explorer\nStatus:\nOffsets Loaded\nExplorer Loaded\nScanned " .. processedCount .. " items in " .. string.format("%.2f", endTime - startTime) .. " seconds\n------------------------------------------")
+            ShowNotification("Loaded!")
+        end)
+        if not ok then
+            _G.GalaxDexDeepScanComplete = true
+            print("\n------------------------------------------\nGalax Dex: Explorer\nStatus:\nOffsets Loaded\nExplorer Loaded With Scan Error\n" .. tostring(err) .. "\n------------------------------------------")
+            ShowNotification("Loaded!")
+        end
+    end)
 end)
