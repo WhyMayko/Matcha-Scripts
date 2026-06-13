@@ -1,0 +1,10 @@
+{
+  "textures": {
+    "TransparencyTexture": "assets/textures/TransparencyTexture.png",
+    "SaturationMap": "assets/textures/SaturationMap.png"
+  },
+  "icons": {
+    "check": "assets/icons/check.png",
+    "loading": "assets/icons/loading.png"
+  }
+}
