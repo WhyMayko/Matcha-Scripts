@@ -6,5 +6,8 @@
   "icons": {
     "check": "assets/icons/check.png",
     "loading": "assets/icons/loading.png"
+  },
+  "data": {
+    "keybinds": "data/keybinds.json"
   }
 }
