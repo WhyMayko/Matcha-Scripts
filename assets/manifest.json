@@ -1,0 +1,29 @@
+{
+  "textures": {
+    "TransparencyTexture": "assets/textures/TransparencyTexture.png",
+    "SaturationMap": "assets/textures/SaturationMap.png"
+  },
+  "icons": {
+    "check": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/check.svg",
+    "chevron-down": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-down.svg",
+    "chevron-right": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg",
+    "chevron-up": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-up.svg",
+    "key": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/key.svg",
+    "loading": "assets/icons/loading.png",
+    "move": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/move.svg",
+    "search": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/search.svg",
+    "settings": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/settings.svg",
+    "user": "https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/user.svg",
+    "lucideUsedByOriginal": [
+      "check",
+      "chevron-up",
+      "key",
+      "move",
+      "move-diagonal-2",
+      "search"
+    ]
+  },
+  "data": {
+    "keybinds": "data/keybinds.json"
+  }
+}
