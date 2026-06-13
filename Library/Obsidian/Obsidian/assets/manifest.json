@@ -1,0 +1,30 @@
+{
+  "textures": {
+    "TransparencyTexture": "assets/textures/TransparencyTexture.png",
+    "SaturationMap": "assets/textures/SaturationMap.png"
+  },
+  "icons": {
+    "check": "assets/icons/check.png",
+    "chevron-down": "assets/icons/chevron-down.png",
+    "chevron-right": "assets/icons/chevron-right.png",
+    "chevron-up": "assets/icons/chevron-up.png",
+    "key": "assets/icons/key.png",
+    "loading": "assets/icons/loading.png",
+    "move": "assets/icons/move.png",
+    "move-diagonal-2": "assets/icons/move-diagonal-2.png",
+    "search": "assets/icons/search.png",
+    "settings": "assets/icons/settings.png",
+    "user": "assets/icons/user.png",
+    "lucideUsedByOriginal": [
+      "check",
+      "chevron-up",
+      "key",
+      "move",
+      "move-diagonal-2",
+      "search"
+    ]
+  },
+  "data": {
+    "keybinds": "data/keybinds.json"
+  }
+}
