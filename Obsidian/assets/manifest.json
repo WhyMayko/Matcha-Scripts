@@ -1,0 +1,21 @@
+{
+  "textures": {
+    "TransparencyTexture": "assets/textures/TransparencyTexture.png",
+    "SaturationMap": "assets/textures/SaturationMap.png"
+  },
+  "icons": {
+    "check": "assets/icons/check.png",
+    "loading": "assets/icons/loading.png",
+    "lucideUsedByOriginal": [
+      "check",
+      "chevron-up",
+      "key",
+      "move",
+      "move-diagonal-2",
+      "search"
+    ]
+  },
+  "data": {
+    "keybinds": "data/keybinds.json"
+  }
+}
