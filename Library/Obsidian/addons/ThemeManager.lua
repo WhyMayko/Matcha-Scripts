@@ -1,18 +1,39 @@
 --[[
 	Theme Manager addon for Galax-Obsidian-Lib (Matcha)
 	Based on Obsidian's ThemeManager, adapted for Matcha's Drawing API.
-	No filesystem functions - themes are built-in or in-memory only.
+	Supports file I/O (writefile/readfile) if available, falls back to in-memory.
 ]]
 
 local ThemeManager = {}
 do
-	-- Field mapping: Obsidian Scheme -> Galax Theme
-	-- FontColor -> Text, MainColor -> Main, AccentColor -> Accent,
-	-- BackgroundColor -> Background, OutlineColor -> Outline
 	local ThemeFields = { "BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor" }
 
 	ThemeManager.Library = nil
 	ThemeManager.AppliedToTab = false
+	ThemeManager.Folder = "Galax/Obsidian/Settings"
+	ThemeManager.ThemesFolder = "Galax/Obsidian/Settings/Themes"
+
+	local function hasFS()
+		return type(writefile) == "function" and type(readfile) == "function" and type(isfile) == "function" and type(listfiles) == "function" and type(makefolder) == "function"
+	end
+
+	local function ensureDir(path)
+		if not hasFS() then return end
+		local parts = {}
+		for part in path:gmatch("[^/]+") do
+			table.insert(parts, part)
+			local dir = table.concat(parts, "/")
+			local ok, _ = pcall(function() makefolder(dir) end)
+		end
+	end
+
+	local function themeFilePath(name)
+		return ThemeManager.ThemesFolder .. "/" .. name:gsub("[^%w_%-%. ]", "") .. ".json"
+	end
+
+	local function defaultFilePath()
+		return ThemeManager.Folder .. "/default_theme.txt"
+	end
 
 	-- Built-in themes (hex colors)
 	ThemeManager.BuiltInThemes = {
@@ -90,7 +111,7 @@ do
 		},
 	}
 
-	-- In-memory custom themes (no filesystem available)
+	-- Custom themes (loaded from disk or in-memory)
 	ThemeManager.CustomThemes = {}
 
 	function ThemeManager:SetLibrary(library)
@@ -106,24 +127,20 @@ do
 		end
 
 		local themeTable = {}
-		-- Map Obsidian field names to our theme field names
 		themeTable.BackgroundColor = Color3.fromHex(data.BackgroundColor)
 		themeTable.MainColor = Color3.fromHex(data.MainColor)
 		themeTable.AccentColor = Color3.fromHex(data.AccentColor)
 		themeTable.OutlineColor = Color3.fromHex(data.OutlineColor)
 		themeTable.FontColor = Color3.fromHex(data.FontColor)
 
-		-- Set font face if specified
 		if data.FontFace then
 			themeTable.FontFace = data.FontFace
 		end
 
-		-- Apply to the active window
 		if self.Library.ActiveWindow then
 			self.Library.ActiveWindow:SetTheme(themeTable)
 		end
 
-		-- Update color picker UI if options exist
 		if self.Library.Options then
 			for _, field in ipairs(ThemeFields) do
 				if self.Library.Options[field] then
@@ -138,7 +155,6 @@ do
 	end
 
 	function ThemeManager:ThemeUpdate()
-		-- Read current color picker values and apply them
 		local themeTable = {}
 		for _, field in ipairs(ThemeFields) do
 			if self.Library.Options and self.Library.Options[field] then
@@ -154,9 +170,24 @@ do
 		end
 	end
 
-	-- In-memory custom theme operations (stubs that mimic file operations)
-	function ThemeManager:GetCustomTheme(file)
-		return self.CustomThemes[file]
+	-- Load all custom themes from disk
+	function ThemeManager:LoadCustomThemes()
+		self.CustomThemes = {}
+		if not hasFS() then return end
+		ensureDir(self.ThemesFolder)
+		local ok, files = pcall(listfiles, self.ThemesFolder)
+		if not ok then return end
+		for _, path in ipairs(files) do
+			if path:sub(-5) == ".json" then
+				local ok2, raw = pcall(readfile, path)
+				if ok2 and raw then
+					local decodeOk, data = pcall(function() return game:GetService("HttpService"):JSONDecode(raw) end)
+					if decodeOk and type(data) == "table" and data.ThemeName then
+						self.CustomThemes[data.ThemeName] = data
+					end
+				end
+			end
+		end
 	end
 
 	function ThemeManager:SaveCustomTheme(file)
@@ -167,7 +198,7 @@ do
 			return
 		end
 
-		local theme = {}
+		local theme = { ThemeName = file }
 		for _, field in ipairs(ThemeFields) do
 			if self.Library.Options and self.Library.Options[field] then
 				local color = self.Library.Options[field]:Get()
@@ -181,6 +212,14 @@ do
 		end
 
 		self.CustomThemes[file] = theme
+
+		if hasFS() then
+			ensureDir(self.ThemesFolder)
+			local ok, json = pcall(function() return game:GetService("HttpService"):JSONEncode(theme) end)
+			if ok and json then
+				pcall(writefile, themeFilePath(file), json)
+			end
+		end
 	end
 
 	function ThemeManager:Delete(name)
@@ -188,11 +227,19 @@ do
 			return false, "invalid file"
 		end
 		self.CustomThemes[name] = nil
+		if hasFS() then
+			local path = themeFilePath(name)
+			if isfile(path) then
+				pcall(delfile, path)
+			end
+		end
 		return true
 	end
 
 	function ThemeManager:ReloadCustomThemes()
-		-- Return the list of in-memory custom theme names
+		if hasFS() then
+			self:LoadCustomThemes()
+		end
 		local out = {}
 		for name, _ in pairs(self.CustomThemes) do
 			table.insert(out, name)
@@ -201,10 +248,19 @@ do
 		return out
 	end
 
-	-- Load/Save default theme (in-memory)
+	-- Load/Save default theme
 	ThemeManager.DefaultThemeName = nil
 
 	function ThemeManager:LoadDefault()
+		if hasFS() then
+			local path = defaultFilePath()
+			if isfile(path) then
+				local ok, raw = pcall(readfile, path)
+				if ok and raw and raw ~= "" then
+					self.DefaultThemeName = raw
+				end
+			end
+		end
 		local theme = self.DefaultThemeName or "Default"
 		if self.Library.Options and self.Library.Options.ThemeManager_ThemeList then
 			self.Library.Options.ThemeManager_ThemeList:SetValue(theme)
@@ -213,10 +269,16 @@ do
 
 	function ThemeManager:SaveDefault(theme)
 		self.DefaultThemeName = theme
+		if hasFS() then
+			ensureDir(self.Folder)
+			pcall(writefile, defaultFilePath(), tostring(theme))
+		end
 	end
 
 	-- GUI builder
 	function ThemeManager:CreateThemeManager(groupbox)
+		self:LoadCustomThemes()
+
 		groupbox
 			:AddLabel("Background color")
 			:AddColorPicker("BackgroundColor", { Default = Color3.fromHex("0f0f0f") })
@@ -227,7 +289,6 @@ do
 			:AddColorPicker("OutlineColor", { Default = Color3.fromHex("282828") })
 		groupbox:AddLabel("Font color"):AddColorPicker("FontColor", { Default = Color3.fromHex("ffffff") })
 
-		-- Font face dropdown using available fonts from our library
 		local fontValues = {}
 		if self.Library.FontMap then
 			for name, _ in pairs(self.Library.FontMap) do
@@ -244,7 +305,6 @@ do
 			Values = fontValues,
 		})
 
-		-- Built-in theme selector
 		local ThemesArray = {}
 		for Name, _ in pairs(self.BuiltInThemes) do
 			table.insert(ThemesArray, Name)
@@ -267,7 +327,6 @@ do
 			self:ApplyTheme(self.Library.Options.ThemeManager_ThemeList.Value)
 		end)
 
-		-- Custom theme section (in-memory)
 		groupbox:AddDivider()
 
 		groupbox:AddInput("ThemeManager_CustomThemeName", { Text = "Custom theme name" })
@@ -331,7 +390,6 @@ do
 		self:LoadDefault()
 		self.AppliedToTab = true
 
-		-- Hook color picker changes to live-update the theme
 		local function UpdateTheme()
 			self:ThemeUpdate()
 		end
