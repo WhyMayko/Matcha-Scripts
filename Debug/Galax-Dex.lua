@@ -27,11 +27,16 @@ local function load_offsets()
         return _G.GalaxOffsets
     end
 
-    local primaryUrl = "https://offsets.imtheo.lol/Offsets.json"
-    local secondaryUrl = "https://raw.githubusercontent.com/WhyMayko/Matcha-Scripts/refs/heads/main/Offsets/Offsets.json"
-    
-    local data = fetchJSON(primaryUrl)
-    if not data then data = fetchJSON(secondaryUrl) end
+    local urls = {
+        "https://offsets.imtheo.lol/Offsets.json",
+        "https://offsets.femboythighs.org/Offsets.json",
+        "https://raw.githubusercontent.com/WhyMayko/Matcha-Scripts/refs/heads/main/Offsets/Offsets.json",
+    }
+    local data
+    for _, url in ipairs(urls) do
+        data = fetchJSON(url)
+        if data then break end
+    end
 
     if not data or not data.Offsets then
         error("Galax Hub: Offsets load failed!")
