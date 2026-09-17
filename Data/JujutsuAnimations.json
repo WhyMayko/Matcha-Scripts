@@ -1,0 +1,3402 @@
+{
+  "game": "Jujutsu Shenanigans",
+  "version": "1.0.0",
+  "total_attacks": 485,
+  "attacks": {
+    "9443519528": {
+      "character": "Misc",
+      "name": "DashFront",
+      "attack_type": "dash",
+      "heavy": false,
+      "delay": 0.15
+    },
+    "75203303352791": {
+      "character": "Misc",
+      "name": "DashRight",
+      "attack_type": "dash",
+      "heavy": false,
+      "delay": 0.15
+    },
+    "117223862448096": {
+      "character": "Misc",
+      "name": "DashLeft",
+      "attack_type": "dash",
+      "heavy": false,
+      "delay": 0.15
+    },
+    "134581973800784": {
+      "character": "Misc",
+      "name": "DashBack",
+      "attack_type": "dash",
+      "heavy": false,
+      "delay": 0.15
+    },
+    "127851700400958": {
+      "character": "Gojo",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "72548435296350": {
+      "character": "Gojo",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "84547415708554": {
+      "character": "Gojo",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "134243365075812": {
+      "character": "Gojo",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "92966188946988": {
+      "character": "Gojo",
+      "name": "Down",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "110978068388232": {
+      "character": "Gojo",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "104749346956269": {
+      "character": "Gojo",
+      "name": "TwofoldKick",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "95421145178968": {
+      "character": "Gojo",
+      "name": "RapidPunches",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "137865634124104": {
+      "character": "Gojo",
+      "name": "LapseBlue",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "137654778575373": {
+      "character": "Gojo",
+      "name": "ReversalRed",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "132748613906344": {
+      "character": "Gojo",
+      "name": "HollowPurple",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "101162958113766": {
+      "character": "Gojo",
+      "name": "LapseBlueMaximum",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "124937162378188": {
+      "character": "Gojo",
+      "name": "ReversalRedMaximum",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "95295463826732": {
+      "character": "Itadori",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "105077924973072": {
+      "character": "Ryu",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "124862357369335": {
+      "character": "Itadori",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "81630213087988": {
+      "character": "Itadori",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "110146909061402": {
+      "character": "Itadori",
+      "name": "Melee1Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "123414935051274": {
+      "character": "Itadori",
+      "name": "Melee2Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "108636011034323": {
+      "character": "Itadori",
+      "name": "Melee3Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "105376952884290": {
+      "character": "Itadori",
+      "name": "Melee4Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "124901309160375": {
+      "character": "Itadori",
+      "name": "CrushingBlow",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "77200218033775": {
+      "character": "Itadori",
+      "name": "CursedStrike",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "82987093810211": {
+      "character": "Itadori",
+      "name": "ManjiKick",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "121923107958102": {
+      "character": "Itadori",
+      "name": "SlaughterDemon",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "131506102901134": {
+      "character": "Itadori",
+      "name": "Dismantle",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "111593784328268": {
+      "character": "Itadori",
+      "name": "Cleave",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "137611726964398": {
+      "character": "Itadori",
+      "name": "FlameArrow",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "107554693613496": {
+      "character": "Itadori",
+      "name": "Rush",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "100962226150441": {
+      "character": "Itadori",
+      "name": "DivergentFist1",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "95852624447551": {
+      "character": "Itadori",
+      "name": "DivergentFist2",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "74145636023952": {
+      "character": "Itadori",
+      "name": "DivergentFist3",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "123171106092050": {
+      "character": "Itadori",
+      "name": "DivergentFist4",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "96327114254575": {
+      "character": "Todo",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "107029561762376": {
+      "character": "Todo",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "117831239064143": {
+      "character": "Todo",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "84737448668938": {
+      "character": "Todo",
+      "name": "SwiftKick",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "136536827155962": {
+      "character": "Todo",
+      "name": "BruteForce",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "111720035828971": {
+      "character": "Todo",
+      "name": "PebbleThrow",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "115042679536959": {
+      "character": "Todo",
+      "name": "ElbowDrop",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "84448423136678": {
+      "character": "Todo",
+      "name": "ClimaxJump",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "94588892125071": {
+      "character": "Hakari",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "97868312130612": {
+      "character": "Hakari",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "140588454098230": {
+      "character": "Hakari",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "138826758216894": {
+      "character": "Hakari",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "109299799610861": {
+      "character": "Hakari",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "99451940496871": {
+      "character": "Hakari",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "72063002791216": {
+      "character": "Hakari",
+      "name": "ShutterDoors",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "92529934565092": {
+      "character": "Hakari",
+      "name": "Counter",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "72467492674240": {
+      "character": "Hakari",
+      "name": "RoughEnergy",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "82541714192027": {
+      "character": "Hakari",
+      "name": "ReserveBalls",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "95901746347992": {
+      "character": "Hakari",
+      "name": "LuckyVolley",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "132281807148575": {
+      "character": "Hakari",
+      "name": "LuckyRushdown",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "120480195428173": {
+      "character": "Hakari",
+      "name": "OverLuck",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "108123475959041": {
+      "character": "Hakari",
+      "name": "FeverBreaker",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "91984445049000": {
+      "character": "Hakari",
+      "name": "EnergySurge",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "96185406489877": {
+      "character": "Choso",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "119042572747325": {
+      "character": "Choso",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "105287938257399": {
+      "character": "Choso",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "100446064103831": {
+      "character": "Choso",
+      "name": "BloodEdge",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "127171275866632": {
+      "character": "Choso",
+      "name": "PiercingBlood",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "85569553424083": {
+      "character": "Choso",
+      "name": "Supernova",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "117045209683198": {
+      "character": "Choso",
+      "name": "SupernovaCounter",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "114321791577837": {
+      "character": "Choso",
+      "name": "SlicingExorcism",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "117371289990421": {
+      "character": "Choso",
+      "name": "BloodRain",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "107067953428369": {
+      "character": "Choso",
+      "name": "PlasmaWave",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "95097480425566": {
+      "character": "Choso",
+      "name": "WingKing",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "75337033003776": {
+      "character": "Megumi",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "138489871864252": {
+      "character": "Megumi",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "109718372214725": {
+      "character": "Megumi",
+      "name": "Melee1Mahoraga",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "121800365664070": {
+      "character": "Megumi",
+      "name": "Melee2Mahoraga",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "96513213736303": {
+      "character": "Megumi",
+      "name": "Melee3Mahoraga",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "79037514387169": {
+      "character": "Megumi",
+      "name": "Melee4Mahoraga",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "132653290201368": {
+      "character": "Megumi",
+      "name": "RabbitEscape",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "111077341852080": {
+      "character": "Megumi",
+      "name": "Nue",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "116432619539029": {
+      "character": "Megumi",
+      "name": "Toad",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "72424828296871": {
+      "character": "Megumi",
+      "name": "ShadowSwarm",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "81112033595734": {
+      "character": "Megumi",
+      "name": "DivineDog",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "75390215999547": {
+      "character": "Megumi",
+      "name": "GreatSerpent",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "131219281339199": {
+      "character": "Megumi",
+      "name": "MaxElephant",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "115683433001643": {
+      "character": "Megumi",
+      "name": "DivinePummel",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "85024950165903": {
+      "character": "Megumi",
+      "name": "Earthquake",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "135894053646223": {
+      "character": "Megumi",
+      "name": "WorldSlash",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "126277739156443": {
+      "character": "Mahito",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "99710481887795": {
+      "character": "Mahito",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "121322029260156": {
+      "character": "Ryu",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "122655618588472": {
+      "character": "Mahito",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "98845475810982": {
+      "character": "Mahito",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "89092734635186": {
+      "character": "Mahito",
+      "name": "Soulfire",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "72475960800126": {
+      "character": "Mahito",
+      "name": "FocusStrike",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "108319980293313": {
+      "character": "Mahito",
+      "name": "BodyRepel",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "76313364850487": {
+      "character": "Mahito",
+      "name": "WideStrike",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "105068005007692": {
+      "character": "Mahito",
+      "name": "FaceBlitz",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "89888040037257": {
+      "character": "Mahito",
+      "name": "CrushingRushdown",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "94223344057046": {
+      "character": "Mahito",
+      "name": "HeartPiercer",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "128779949980528": {
+      "character": "Mahito",
+      "name": "DrillSplit",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "127727754867974": {
+      "character": "Mahito",
+      "name": "SpikeWrath",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "86073608599582": {
+      "character": "Mahito",
+      "name": "HeadSplitter",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "131826588098422": {
+      "character": "Heian",
+      "name": "Dismantle",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "110906451704074": {
+      "character": "Heian",
+      "name": "Cleave",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "70840150456007": {
+      "character": "Heian",
+      "name": "FlameArrow",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "137007125977081": {
+      "character": "Heian",
+      "name": "Kamutoke",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "88215274584883": {
+      "character": "Heian",
+      "name": "WCS",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "85068785050521": {
+      "character": "Locust",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "79086910454958": {
+      "character": "Locust",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "108027796023968": {
+      "character": "Locust",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "99205259396653": {
+      "character": "Locust",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "130284226842903": {
+      "character": "Locust",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "129132347098646": {
+      "character": "Locust",
+      "name": "BlackMucus",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "129678103897608": {
+      "character": "Locust",
+      "name": "FourArmed",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "134777193523837": {
+      "character": "Locust",
+      "name": "SnapChomp",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "133936641185614": {
+      "character": "Hiromi",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "122573730331631": {
+      "character": "Hiromi",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "82400997593751": {
+      "character": "Hiromi",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "118634493886688": {
+      "character": "Hiromi",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "115586282387431": {
+      "character": "Hiromi",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "132855702748568": {
+      "character": "Hiromi",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "139280948741186": {
+      "character": "Hiromi",
+      "name": "Melee1Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "109340494549365": {
+      "character": "Hiromi",
+      "name": "Melee2Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "98577624776161": {
+      "character": "Hiromi",
+      "name": "Melee3Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "120951759618134": {
+      "character": "Hiromi",
+      "name": "ChaseUlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "89652378115594": {
+      "character": "Hiromi",
+      "name": "ExtendSwing",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "76519264603956": {
+      "character": "Hiromi",
+      "name": "JusticeServed",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "71186534081075": {
+      "character": "Hiromi",
+      "name": "Grapple",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "132704398648016": {
+      "character": "Hiromi",
+      "name": "Execution",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "124340599144108": {
+      "character": "Hiromi",
+      "name": "TwirlingStrikes",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "106649604455931": {
+      "character": "Hiromi",
+      "name": "FinalJudgement",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "124243904748268": {
+      "character": "Hiromi",
+      "name": "TripleSentence",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "124759375124281": {
+      "character": "Hiromi",
+      "name": "JudgeReach",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "133869529005453": {
+      "character": "Hiromi",
+      "name": "JudgeReach2",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "86362077638309": {
+      "character": "Hiromi",
+      "name": "GavelThrow",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "135411487367370": {
+      "character": "Hiromi",
+      "name": "PressingCharges",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "131909724908049": {
+      "character": "Yuki",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "72575786212990": {
+      "character": "Yuki",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "119248903710146": {
+      "character": "Yuki",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "123168328205349": {
+      "character": "Yuki",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "115097960689033": {
+      "character": "Yuki",
+      "name": "GarudaRebound",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "104793932628579": {
+      "character": "Yuki",
+      "name": "MassBreaker",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "94347210073500": {
+      "character": "Yuki",
+      "name": "RisingStar",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "77833820443705": {
+      "character": "Yuki",
+      "name": "GarudaStab",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "104087365067491": {
+      "character": "Goku",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "97215638330770": {
+      "character": "Goku",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "100474683542881": {
+      "character": "Goku",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "131279921755936": {
+      "character": "Goku",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "96433049733325": {
+      "character": "Goku",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "84989753395518": {
+      "character": "Goku",
+      "name": "Down",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "124777463468279": {
+      "character": "Goku",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "81971779090581": {
+      "character": "Goku",
+      "name": "Kamehameha",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "117318845383884": {
+      "character": "Goku",
+      "name": "StaffUppercut",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "76273288374330": {
+      "character": "Goku",
+      "name": "M2Downslam",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "87481059409847": {
+      "character": "Goku",
+      "name": "StaffExtend",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "128537969081721": {
+      "character": "Goku",
+      "name": "KiSpam",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "133240987753043": {
+      "character": "Yuta",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "130806585141471": {
+      "character": "Yuta",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "131967150738931": {
+      "character": "Yuta",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "84442064935420": {
+      "character": "Yuta",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "73456086297777": {
+      "character": "Yuta",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "111750364977569": {
+      "character": "Yuta",
+      "name": "Down",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "130135202362252": {
+      "character": "Yuta",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "109432265703187": {
+      "character": "Yuta",
+      "name": "Melee1Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "137919635923292": {
+      "character": "Yuta",
+      "name": "Melee2Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "135256592475167": {
+      "character": "Yuta",
+      "name": "Melee3Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "121403322067812": {
+      "character": "Yuta",
+      "name": "Melee4Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "88911658010897": {
+      "character": "Yuta",
+      "name": "Revolve",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "89582140026963": {
+      "character": "Yuta",
+      "name": "ResoluteSlash",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "104824728032437": {
+      "character": "Yuta",
+      "name": "SeveringPath",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "117178057848472": {
+      "character": "Yuta",
+      "name": "Veilstep",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "115432081398704": {
+      "character": "Yuta",
+      "name": "VeilstepDive",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "140595869234331": {
+      "character": "Yuta",
+      "name": "SeveringPathAir",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "71783955283661": {
+      "character": "Yuta",
+      "name": "LoveBeam",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "73482562876920": {
+      "character": "Yuta",
+      "name": "JacobLadder",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "93796567192197": {
+      "character": "Yuta",
+      "name": "ElbowBeatdown",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "88005970155216": {
+      "character": "Yuta",
+      "name": "CursedSpeech",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "131031842057158": {
+      "character": "Yuta",
+      "name": "EnergyRipple",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "109069266611522": {
+      "character": "Yuta",
+      "name": "QuickdrawAerial",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "95077220586856": {
+      "character": "Yuta",
+      "name": "Outburst",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "125904281673524": {
+      "character": "Yuta",
+      "name": "SeveringSwing",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "125689391910002": {
+      "character": "Charles",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "84080901810314": {
+      "character": "Charles",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "139833047658617": {
+      "character": "Charles",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "79271374075726": {
+      "character": "Charles",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "140597320237985": {
+      "character": "Charles",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "103013818601982": {
+      "character": "Charles",
+      "name": "Despair",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "72933571933445": {
+      "character": "Charles",
+      "name": "EyeCatch",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "72932825817330": {
+      "character": "Charles",
+      "name": "Sacrilegious",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "98783064085844": {
+      "character": "Mechamaru",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "85148168523745": {
+      "character": "Mechamaru",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "108686045412945": {
+      "character": "Mechamaru",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "79718433989469": {
+      "character": "Mechamaru",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "80504019426174": {
+      "character": "Mechamaru",
+      "name": "Melee1Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "100835844904897": {
+      "character": "Mechamaru",
+      "name": "Melee2Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "101862938993177": {
+      "character": "Mechamaru",
+      "name": "Melee3Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "100919783371339": {
+      "character": "Mechamaru",
+      "name": "Melee4Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "120136894011461": {
+      "character": "Mechamaru",
+      "name": "UltraSpin",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "93901924492394": {
+      "character": "Mechamaru",
+      "name": "UltraCannon",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "80465501985014": {
+      "character": "Mechamaru",
+      "name": "MiracleCannon",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "89009042593684": {
+      "character": "Mechamaru",
+      "name": "PigeonViola",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "114277419400774": {
+      "character": "Mechamaru",
+      "name": "HeatEmission",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "137638103122538": {
+      "character": "Mechamaru",
+      "name": "AbsoluteDestruction",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "101283990868172": {
+      "character": "Naoya",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "108708446862011": {
+      "character": "Naoya",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "77583711129628": {
+      "character": "Naoya",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "116910683335467": {
+      "character": "Ryu",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "97207871642820": {
+      "character": "Naoya",
+      "name": "Melee4Frame",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "77284264481284": {
+      "character": "Naoya",
+      "name": "Melee1Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "108376755316792": {
+      "character": "Naoya",
+      "name": "Melee2Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "74580112757879": {
+      "character": "Naoya",
+      "name": "Melee3Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "101107501526373": {
+      "character": "Naoya",
+      "name": "Melee4Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "91853462087608": {
+      "character": "Naoya",
+      "name": "UpUlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "86109053396974": {
+      "character": "Naoya",
+      "name": "DownUlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "101079657277587": {
+      "character": "Naoya",
+      "name": "ProjectionBreaker",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.15
+    },
+    "105121164520635": {
+      "character": "Naoya",
+      "name": "OldProjectionBreaker",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.15
+    },
+    "118607369830566": {
+      "character": "Naoya",
+      "name": "Bleedout",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "86045680364061": {
+      "character": "Naoya",
+      "name": "DecisiveStrike",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "122607727974119": {
+      "character": "Naoya",
+      "name": "Flicker",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "119211164876773": {
+      "character": "Naoya",
+      "name": "CursoryImpact",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "115589615022077": {
+      "character": "Naoya",
+      "name": "FlashFreezing",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "84359513001979": {
+      "character": "Nanami",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "79436586236026": {
+      "character": "Nanami",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "102285403332509": {
+      "character": "Nanami",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "104137631480391": {
+      "character": "Nanami",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "78540777177847": {
+      "character": "Nanami",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "81708642912019": {
+      "character": "Nanami",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "114913455544468": {
+      "character": "Nanami",
+      "name": "Melee1Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "84602523265622": {
+      "character": "Nanami",
+      "name": "Melee2Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "102085681670810": {
+      "character": "Nanami",
+      "name": "Melee3Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "115446267797335": {
+      "character": "Nanami",
+      "name": "Melee4Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "89394375446962": {
+      "character": "Nanami",
+      "name": "UpUlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "94781366396051": {
+      "character": "Nanami",
+      "name": "DownUlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "81210313723714": {
+      "character": "Nanami",
+      "name": "CleavingWhirlwind",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "130957217409359": {
+      "character": "Nanami",
+      "name": "SeveranceKick",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "113359849246757": {
+      "character": "Nanami",
+      "name": "Stabilize",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "100811576955331": {
+      "character": "Nanami",
+      "name": "BluntCut",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "122015481201264": {
+      "character": "Nanami",
+      "name": "Collapse",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "89891294371787": {
+      "character": "Nanami",
+      "name": "Interrogate",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "133447840605824": {
+      "character": "Haruta",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "113963875117859": {
+      "character": "Haruta",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "106282708121342": {
+      "character": "Haruta",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "101681158700275": {
+      "character": "Haruta",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "119152716475706": {
+      "character": "Haruta",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "100040983719699": {
+      "character": "Haruta",
+      "name": "Down",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "122074769949629": {
+      "character": "Haruta",
+      "name": "MeleeChase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "134917827147266": {
+      "character": "Haruta",
+      "name": "SwordChase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "118076716434659": {
+      "character": "Haruta",
+      "name": "SwordCatch",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "115616081167949": {
+      "character": "Haruta",
+      "name": "SwordJump",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "133303451091615": {
+      "character": "Haruta",
+      "name": "Backstab",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "76957377224584": {
+      "character": "Haruta",
+      "name": "CheapShot",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "102053631728986": {
+      "character": "Haruta",
+      "name": "Trip",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "95494223368246": {
+      "character": "Haruta",
+      "name": "Stinger",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "120914276661831": {
+      "character": "Haruta",
+      "name": "Ambush",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "108865650924154": {
+      "character": "Haruta",
+      "name": "DirtyPlay",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "114985590391235": {
+      "character": "MeiMei",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "108449614447004": {
+      "character": "MeiMei",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "122170399962557": {
+      "character": "MeiMei",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "117638619792450": {
+      "character": "MeiMei",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "136978371933277": {
+      "character": "MeiMei",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "87792276744794": {
+      "character": "MeiMei",
+      "name": "Down",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "128267680345523": {
+      "character": "MeiMei",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "139956651661073": {
+      "character": "MeiMei",
+      "name": "Bounding",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "96397814657727": {
+      "character": "MeiMei",
+      "name": "Flock",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "92081142332466": {
+      "character": "MeiMei",
+      "name": "ImpetusUpdraft",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "90781290293652": {
+      "character": "MeiMei",
+      "name": "Circling",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "72157009600725": {
+      "character": "MeiMei",
+      "name": "GlidingFlight",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "126362899488198": {
+      "character": "MeiMei",
+      "name": "ImpetusNew",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "81007905598407": {
+      "character": "MeiMei",
+      "name": "Murmurate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "111083699259354": {
+      "character": "Hanami",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "88849926869776": {
+      "character": "Hanami",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "89537672683114": {
+      "character": "Hanami",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "109598602517674": {
+      "character": "Hanami",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "138169151223960": {
+      "character": "Hanami",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "115781423162319": {
+      "character": "Hanami",
+      "name": "Melee1Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "106245594701442": {
+      "character": "Hanami",
+      "name": "Melee2Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "139925289573265": {
+      "character": "Hanami",
+      "name": "Melee3Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "128437228548370": {
+      "character": "Hanami",
+      "name": "Melee4Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "113722638806911": {
+      "character": "Hanami",
+      "name": "RootSwarm",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "102221764735089": {
+      "character": "Hanami",
+      "name": "FlowerField",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "96466374346823": {
+      "character": "Hanami",
+      "name": "BudShot",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "81953935260783": {
+      "character": "Hanami",
+      "name": "DefenseResponse",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "92595499555055": {
+      "character": "Hanami",
+      "name": "SurgingThorns",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "89977758316911": {
+      "character": "Hanami",
+      "name": "CursedBudsTree",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "100108404823407": {
+      "character": "Hanami",
+      "name": "CursedBuds",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "124427228784862": {
+      "character": "Hanami",
+      "name": "RootRampage",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "139392154233011": {
+      "character": "Hanami",
+      "name": "RootSurf",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "136338232194928": {
+      "character": "Hanami",
+      "name": "EvilTreeThrow",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "92698956945928": {
+      "character": "Ryu",
+      "name": "Melee3_2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "83782195794718": {
+      "character": "Ryu",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "73243807139765": {
+      "character": "Ryu",
+      "name": "GraniteBlast",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "114822879878184": {
+      "character": "Ryu",
+      "name": "Unsatisfied",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "99818212174021": {
+      "character": "Ryu",
+      "name": "HadNoIdea",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "70394890117813": {
+      "character": "Ryu",
+      "name": "Appetizer",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "86568794583359": {
+      "character": "Ryu",
+      "name": "WhatAreYouAfter",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "138826705245289": {
+      "character": "Ryu",
+      "name": "SecondHelping",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "131917532383382": {
+      "character": "Ryu",
+      "name": "ThisDessert",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "86463226245064": {
+      "character": "Ryu",
+      "name": "WerentInvited",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "105961366724096": {
+      "character": "Kurourushi",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "86519781516542": {
+      "character": "Kurourushi",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "123591522021548": {
+      "character": "Kurourushi",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "124726819047447": {
+      "character": "Kurourushi",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "129583539805939": {
+      "character": "Kurourushi",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "136466703751033": {
+      "character": "Kurourushi",
+      "name": "Down",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "105571879949076": {
+      "character": "Kurourushi",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "92045676155777": {
+      "character": "Kurourushi",
+      "name": "Melee2Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "75985296743258": {
+      "character": "Kurourushi",
+      "name": "Melee3Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "128247404669136": {
+      "character": "Kurourushi",
+      "name": "Melee4Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "90926294837924": {
+      "character": "Kurourushi",
+      "name": "UpAlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "105028055041290": {
+      "character": "Kurourushi",
+      "name": "DownAlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "76470718091246": {
+      "character": "Kurourushi",
+      "name": "ChaseAlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "93880529089759": {
+      "character": "Kurourushi",
+      "name": "Melee1Var",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "131033861605339": {
+      "character": "Kurourushi",
+      "name": "Melee2Var",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "118433412162663": {
+      "character": "Kurourushi",
+      "name": "Melee3Var",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "110425977429691": {
+      "character": "Kurourushi",
+      "name": "Melee4Var",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "97901397284754": {
+      "character": "Kurourushi",
+      "name": "Melee1Var2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "135686778593679": {
+      "character": "Kurourushi",
+      "name": "Melee2Var2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "92796867394473": {
+      "character": "Kurourushi",
+      "name": "Melee3Var2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "81426568444338": {
+      "character": "Kurourushi",
+      "name": "Melee4Var2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "83430571986421": {
+      "character": "Kurourushi",
+      "name": "FesteringStrikes",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "93751660565233": {
+      "character": "Kurourushi",
+      "name": "EarthenTrance",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "85938446097801": {
+      "character": "Kurourushi",
+      "name": "Chokehold",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "116119661056362": {
+      "character": "Kurourushi",
+      "name": "RoachSwarm",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "104597702149205": {
+      "character": "Kurourushi",
+      "name": "Eat",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "94093535314017": {
+      "character": "Kurourushi",
+      "name": "Parthenogenesis",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "106892235857467": {
+      "character": "Reggie",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "93623649598782": {
+      "character": "Reggie",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "128057999506702": {
+      "character": "Reggie",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "76372421343979": {
+      "character": "Reggie",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "106478217686775": {
+      "character": "Reggie",
+      "name": "GushingWound",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "77161050579175": {
+      "character": "Reggie",
+      "name": "Coupon",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "80552926761100": {
+      "character": "Reggie",
+      "name": "Homerun",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "86293749971049": {
+      "character": "Reggie",
+      "name": "PianoDrop",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "132615896981226": {
+      "character": "Reggie",
+      "name": "Littering",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "108407413391495": {
+      "character": "Reggie",
+      "name": "GarageSale",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "103659500760745": {
+      "character": "Reggie",
+      "name": "BluntTrauma",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "133042937840159": {
+      "character": "Reggie",
+      "name": "SpeedCrash",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "84063127664904": {
+      "character": "Reggie",
+      "name": "Fleche",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "72249315151281": {
+      "character": "Reggie",
+      "name": "PoleVault",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "100778093235310": {
+      "character": "Reggie",
+      "name": "HouseDrop",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "90157434123044": {
+      "character": "Reggie",
+      "name": "Mayhem",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "109787638891072": {
+      "character": "Reggie",
+      "name": "PassengerCars",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "98816967040955": {
+      "character": "Reggie",
+      "name": "Arson",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "107852433150124": {
+      "character": "Uro",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "80809423999548": {
+      "character": "Uro",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "135805825263494": {
+      "character": "Uro",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "110958607174992": {
+      "character": "Uro",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "106224500692893": {
+      "character": "Uro",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "134622175293378": {
+      "character": "Uro",
+      "name": "Melee1Sky",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "95738371652260": {
+      "character": "Uro",
+      "name": "Melee2Sky",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "139549374008097": {
+      "character": "Uro",
+      "name": "Melee3Sky",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "89465788843211": {
+      "character": "Uro",
+      "name": "Melee4Sky",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "84784070267976": {
+      "character": "Uro",
+      "name": "BlindRage",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "127457641316758": {
+      "character": "Uro",
+      "name": "ThinIceBreaker",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "71262912144187": {
+      "character": "Uro",
+      "name": "ThinIceBreaker2",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "136658834297626": {
+      "character": "Uro",
+      "name": "ThinIceBreaker2Sky",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "105191773344078": {
+      "character": "Uro",
+      "name": "SkyDistortion",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "115220151812065": {
+      "character": "Chara",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "114648729358082": {
+      "character": "Chara",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "95002584969527": {
+      "character": "Chara",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "90981055255583": {
+      "character": "Chara",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "92424708306981": {
+      "character": "Chara",
+      "name": "Down",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "83843118463884": {
+      "character": "Chara",
+      "name": "Up",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "129392532939530": {
+      "character": "Chara",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "124812814978068": {
+      "character": "Chara",
+      "name": "NormalWindup",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "128524425761051": {
+      "character": "Chara",
+      "name": "GroundWindup",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "84413496769668": {
+      "character": "Chara",
+      "name": "AerialWindup",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "135190329919676": {
+      "character": "Chara",
+      "name": "FightWindup",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "88914702281555": {
+      "character": "Chara",
+      "name": "Push",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "139078698020363": {
+      "character": "Chara",
+      "name": "CursedRemedy",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "75425383606016": {
+      "character": "Mokou",
+      "name": "Melee1",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "75961842881209": {
+      "character": "Mokou",
+      "name": "Melee2",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "140487289646129": {
+      "character": "Mokou",
+      "name": "Melee3",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "72211631197834": {
+      "character": "Mokou",
+      "name": "Melee4",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "104148378077935": {
+      "character": "Mokou",
+      "name": "Chase",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "104951711387356": {
+      "character": "Mokou",
+      "name": "Mokou1",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "131092994606135": {
+      "character": "Mokou",
+      "name": "Mokou2",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "109547804780499": {
+      "character": "Mokou",
+      "name": "Mokou3",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "98369133797604": {
+      "character": "Mokou",
+      "name": "Mokou4",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "86921355180233": {
+      "character": "Mokou",
+      "name": "MokouSpec",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "79860101129549": {
+      "character": "Charles",
+      "name": "ShutUp",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "86313167610953": {
+      "character": "Charles",
+      "name": "WarstaffMark",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "101956908324027": {
+      "character": "Charles",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "108374320117834": {
+      "character": "Choso",
+      "name": "Exorcise",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "132928484483887": {
+      "character": "Choso",
+      "name": "Hairpin",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "96047028540271": {
+      "character": "Choso",
+      "name": "QuickDraw",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "120319825505172": {
+      "character": "Choso",
+      "name": "Convergence",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "84039122607068": {
+      "character": "Choso",
+      "name": "RedScale",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "87805684702890": {
+      "character": "Choso",
+      "name": "RedScaleAir",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "105826208784475": {
+      "character": "Choso",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "84716311536982": {
+      "character": "Gojo",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "132725601768618": {
+      "character": "Gojo",
+      "name": "InfiniteVoid",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "116811846715462": {
+      "character": "Gojo",
+      "name": "ShortVoid",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "123236749567737": {
+      "character": "Goku",
+      "name": "Melee1Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "74550814125588": {
+      "character": "Goku",
+      "name": "Melee2Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "114375152692460": {
+      "character": "Goku",
+      "name": "Melee3Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.18
+    },
+    "105878146832347": {
+      "character": "Goku",
+      "name": "Melee4Ult",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "86626502434817": {
+      "character": "Goku",
+      "name": "ChaseUlt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "136161556678024": {
+      "character": "Goku",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "136948942223547": {
+      "character": "Hakari",
+      "name": "Rhythm",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "115525391286129": {
+      "character": "Hanami",
+      "name": "ArmStrike",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "115580881672346": {
+      "character": "Hanami",
+      "name": "CursedBudsTree",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "131904892480473": {
+      "character": "Hanami",
+      "name": "SolarBeam",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "84712031901002": {
+      "character": "Hanami",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "105801749091005": {
+      "character": "Hanami",
+      "name": "Domain",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "103960582499076": {
+      "character": "Haruta",
+      "name": "AnkleCutter",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "78453184359132": {
+      "character": "Haruta",
+      "name": "Spin",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "93028763593631": {
+      "character": "Haruta",
+      "name": "HighTime",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "118326207788271": {
+      "character": "Haruta",
+      "name": "Jawbreaker",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "118483280891531": {
+      "character": "Haruta",
+      "name": "BackstabFinisher",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "139479927693015": {
+      "character": "Heian",
+      "name": "ArmsBarrage",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "129035777318346": {
+      "character": "Heian",
+      "name": "ChantArms",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "73048386765082": {
+      "character": "Heian",
+      "name": "MalevolentShrine",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "78087255738802": {
+      "character": "Hiromi",
+      "name": "PancakeSlam",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "132754851925571": {
+      "character": "Hiromi",
+      "name": "Verdict",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "101617544363219": {
+      "character": "Hiromi",
+      "name": "DeadlySentence",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "80922461169812": {
+      "character": "Hiromi",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "130206074036010": {
+      "character": "Itadori",
+      "name": "Instincts",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "112577421904593": {
+      "character": "Itadori",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "81633998750531": {
+      "character": "Itadori",
+      "name": "UltimateEnchain",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "121984128639453": {
+      "character": "Itadori",
+      "name": "MalevolentShrine",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "84748541392167": {
+      "character": "Kurourushi",
+      "name": "EatArms",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "118813489101356": {
+      "character": "Kurourushi",
+      "name": "FesteringStrikes",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "74958629631023": {
+      "character": "Kurourushi",
+      "name": "Parthenogenesis",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "135048320277030": {
+      "character": "Kurourushi",
+      "name": "EarthenTrance",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "115001703805775": {
+      "character": "Locust",
+      "name": "FlightDash",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "121550561336691": {
+      "character": "Locust",
+      "name": "BugFlight",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "94590184881876": {
+      "character": "Locust",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "139105275342427": {
+      "character": "Mechamaru",
+      "name": "PuppetBarrageUser",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "130123540243667": {
+      "character": "Mechamaru",
+      "name": "PuppetKick",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "85699847295318": {
+      "character": "Mechamaru",
+      "name": "AbsoluteDropkick",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "139899183181812": {
+      "character": "Mechamaru",
+      "name": "AbsoluteMelee4Alt",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "112445967418621": {
+      "character": "Mechamaru",
+      "name": "AbsoluteKick",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "118652212972529": {
+      "character": "Mechamaru",
+      "name": "AbsoluteGunShot",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "121239701968766": {
+      "character": "Mechamaru",
+      "name": "AbsoluteDestructionAir",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.32
+    },
+    "136523051723440": {
+      "character": "Mechamaru",
+      "name": "MiracleCannon",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "77826020629176": {
+      "character": "Megumi",
+      "name": "ShadowSwarm1",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "124644660953423": {
+      "character": "Megumi",
+      "name": "ShadowSwarm2",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "119434039452526": {
+      "character": "Megumi",
+      "name": "MahoragaUp",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "114797198964940": {
+      "character": "Megumi",
+      "name": "MahoragaDown",
+      "attack_type": "melee",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "138852224035589": {
+      "character": "Megumi",
+      "name": "MahoragaPitch",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "84870056161157": {
+      "character": "Megumi",
+      "name": "MahoragaTakedown",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "74442134184452": {
+      "character": "Megumi",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "99180695169591": {
+      "character": "MeiMei",
+      "name": "BirdCall",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "122952270797174": {
+      "character": "MeiMei",
+      "name": "BirdStrike",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "130209038947701": {
+      "character": "MeiMei",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "78578012001859": {
+      "character": "Nanami",
+      "name": "RatioBreak1",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "137451357351000": {
+      "character": "Nanami",
+      "name": "RatioBreak2",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "86618245908620": {
+      "character": "Nanami",
+      "name": "RatioBreak3",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "131948591638044": {
+      "character": "Nanami",
+      "name": "RatioBreak4",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "108695775669287": {
+      "character": "Nanami",
+      "name": "UltimateCollapse",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "70890372338556": {
+      "character": "Naoya",
+      "name": "TopSpeed",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "129944486689528": {
+      "character": "Naoya",
+      "name": "Acceleration",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "82149987460883": {
+      "character": "Naoya",
+      "name": "TendrilGrab",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "115561023870463": {
+      "character": "Naoya",
+      "name": "MoonPalace",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "94616006376147": {
+      "character": "Naoya",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "70619893542373": {
+      "character": "Reggie",
+      "name": "DroneStrikeStart",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "92971045548861": {
+      "character": "Reggie",
+      "name": "DroneStrike",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "119713012645788": {
+      "character": "Reggie",
+      "name": "DroneFollow",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "132307745371357": {
+      "character": "Reggie",
+      "name": "BigMovesContract",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "84458677375099": {
+      "character": "Reggie",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "113479860283691": {
+      "character": "Ryu",
+      "name": "UltimateGranite",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "131358603583212": {
+      "character": "Todo",
+      "name": "Clap1",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "91074768993486": {
+      "character": "Todo",
+      "name": "Clap2",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "116040503139675": {
+      "character": "Todo",
+      "name": "Clap3",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "121572833341748": {
+      "character": "Todo",
+      "name": "IdolDebut",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "77323960817460": {
+      "character": "Todo",
+      "name": "Ultimate",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "124099249547203": {
+      "character": "Uro",
+      "name": "UltimateThinIce",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "79717812541463": {
+      "character": "Yuki",
+      "name": "UltimateBlackHole",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "140288981168553": {
+      "character": "Yuta",
+      "name": "RikaSmash",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "76270924601362": {
+      "character": "Yuta",
+      "name": "RikaLaunchGround",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "99516000246972": {
+      "character": "Yuta",
+      "name": "RikaHaymaker",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "110326542726854": {
+      "character": "Yuta",
+      "name": "RikaDownslam",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "117465720955224": {
+      "character": "Yuta",
+      "name": "RikaDownslamNew",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.3
+    },
+    "116737527523542": {
+      "character": "Yuta",
+      "name": "RikaLoveBeam",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "74676954665401": {
+      "character": "Yuta",
+      "name": "RikaSlam",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "127731068580260": {
+      "character": "Yuta",
+      "name": "RikaGrab",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "117844331774372": {
+      "character": "Yuta",
+      "name": "RikaThrow",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "130834106305514": {
+      "character": "Yuta",
+      "name": "SeveringPathAir",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.28
+    },
+    "99942519870898": {
+      "character": "Yuta",
+      "name": "LaunchGroundMelee",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "102532077942921": {
+      "character": "Yuta",
+      "name": "ThirdWheelKatana",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "91916094481547": {
+      "character": "Yuta",
+      "name": "ThirdWheelRika",
+      "attack_type": "skill",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "111952952886712": {
+      "character": "Yuta",
+      "name": "UltimateManifest",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.35
+    },
+    "125335594549446": {
+      "character": "Yuta",
+      "name": "DomainExpansion1",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "83241775239139": {
+      "character": "Yuta",
+      "name": "DomainExpansion2",
+      "attack_type": "skill",
+      "heavy": true,
+      "delay": 0.4
+    }
+  }
+}
