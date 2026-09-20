@@ -1,0 +1,688 @@
+{
+  "game": "Gakuran",
+  "version": "1.0.0",
+  "total_styles": 18,
+  "styles": {
+    "karate": {
+      "name": "Karate",
+      "moves": {
+        "m1_first": {
+          "id": "136346659171696",
+          "name": "1st M1",
+          "delay": 0.19,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "137514920199894",
+          "name": "2nd M1",
+          "delay": 0.21,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "72779501873271",
+          "name": "3rd M1",
+          "delay": 0.25,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "127487637547915",
+          "name": "4th M1",
+          "delay": 0.29,
+          "heavy": false
+        },
+        "m2": {
+          "id": "96466099895892",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "basic": {
+      "name": "Basic",
+      "moves": {
+        "m1_first": {
+          "id": "100661797632126",
+          "name": "1st M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "117315538657801",
+          "name": "2nd M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "83771012317903",
+          "name": "3rd M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "129031831390386",
+          "name": "4th M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m2": {
+          "id": "80331331149375",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "wrestling": {
+      "name": "Wrestling",
+      "moves": {
+        "m1_first": {
+          "id": "124808151650835",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "79996486219181",
+          "name": "2nd M1",
+          "delay": 0.2,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "115207134396914",
+          "name": "3rd M1",
+          "delay": 0.22,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "74020075116139",
+          "name": "4th M1",
+          "delay": 0.24,
+          "heavy": false
+        },
+        "m2": {
+          "id": "91419261625463",
+          "name": "M2",
+          "delay": [
+            0.42,
+            0.95
+          ],
+          "heavy": true
+        },
+        "m2_success": {
+          "id": "99774162066012",
+          "name": "M2 Slam",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "muay_thai": {
+      "name": "Muay Thai",
+      "moves": {
+        "m1_first": {
+          "id": "110917888708142",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "136830198456192",
+          "name": "2nd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "103717575086418",
+          "name": "3rd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "90445272780399",
+          "name": "4th M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m2": {
+          "id": "74462376752922",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "boxing": {
+      "name": "Boxing",
+      "moves": {
+        "m1_first": {
+          "id": "132913269853139",
+          "name": "1st M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "76033376851583",
+          "name": "2nd M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "126463147281440",
+          "name": "3rd M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "75666664304014",
+          "name": "4th M1",
+          "delay": 0.2,
+          "heavy": false
+        },
+        "m2": {
+          "id": "128921678079615",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "hakari": {
+      "name": "Hakari",
+      "moves": {
+        "m1_first": {
+          "id": "123215666398014",
+          "name": "1st M1",
+          "delay": 0.24,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "100249628136368",
+          "name": "2nd M1",
+          "delay": 0.25,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "101160496635774",
+          "name": "3rd M1",
+          "delay": 0.21,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "76458394174684",
+          "name": "4th M1",
+          "delay": 0.26,
+          "heavy": false
+        },
+        "m2": {
+          "id": "78127273702521",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        },
+        "momentum_m2": {
+          "id": "137954350192006",
+          "name": "Momentum M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "hakari_variant": {
+      "name": "Hakari (Variant)",
+      "moves": {
+        "m1_first": {
+          "id": "117925051452801",
+          "name": "1st M1",
+          "delay": 0.24,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "122040023429227",
+          "name": "2nd M1",
+          "delay": 0.25,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "126306184412990",
+          "name": "3rd M1",
+          "delay": 0.21,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "85805632651129",
+          "name": "4th M1",
+          "delay": 0.26,
+          "heavy": false
+        },
+        "m2": {
+          "id": "127394334888645",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        },
+        "momentum_m2": {
+          "id": "106589382211868",
+          "name": "Momentum M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "capoeira": {
+      "name": "Capoeira",
+      "moves": {
+        "m1_first": {
+          "id": "91953931348325",
+          "name": "1st M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "127465095270110",
+          "name": "2nd M1",
+          "delay": 0.22,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "79017113400162",
+          "name": "3rd M1",
+          "delay": 0.18,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "98872276178039",
+          "name": "4th M1",
+          "delay": 0.14,
+          "heavy": false
+        },
+        "m2": {
+          "id": "101740002500802",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "slugger": {
+      "name": "Slugger",
+      "moves": {
+        "m1_first": {
+          "id": "78852386182257",
+          "name": "1st M1",
+          "delay": 0.33,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "89706363973188",
+          "name": "2nd M1",
+          "delay": 0.3,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "127941398150401",
+          "name": "3rd M1",
+          "delay": 0.3,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "97696355281722",
+          "name": "4th M1",
+          "delay": 0.26,
+          "heavy": false
+        },
+        "m2": {
+          "id": "86882821333237",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "kure": {
+      "name": "Kure",
+      "moves": {
+        "m1_first": {
+          "id": "89598700542051",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "84100769626105",
+          "name": "2nd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "75725487794798",
+          "name": "3rd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "103586798765773",
+          "name": "4th M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m2": {
+          "id": "128246407698779",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        },
+        "crit_startup": {
+          "id": "83588777426626",
+          "name": "Crit Startup",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "ali": {
+      "name": "Ali",
+      "moves": {
+        "m1_first": {
+          "id": "103211517133243",
+          "name": "1st M1",
+          "delay": 0.2,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "88548871262625",
+          "name": "2nd M1",
+          "delay": 0.25,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "104356393941647",
+          "name": "3rd M1",
+          "delay": 0.27,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "109925400698635",
+          "name": "4th M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m2": {
+          "id": "92831721340116",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        },
+        "m2_right": {
+          "id": "81488798354194",
+          "name": "M2 Right",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "wing_chun": {
+      "name": "Wing Chun",
+      "moves": {
+        "m1_first": {
+          "id": "94976161225956",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "130903067566077",
+          "name": "2nd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "139503477666199",
+          "name": "3rd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "135699957281468",
+          "name": "4th M1",
+          "delay": 0.38,
+          "heavy": false
+        },
+        "m2": {
+          "id": "125237241325107",
+          "name": "M2",
+          "delay": [
+            0.42,
+            0.95
+          ],
+          "heavy": true
+        },
+        "m2_success": {
+          "id": "140240091451745",
+          "name": "M2 Finisher",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "striker": {
+      "name": "Striker",
+      "moves": {
+        "m1_first": {
+          "id": "79224782278508",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "74337052553355",
+          "name": "2nd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "121264916189386",
+          "name": "3rd M1",
+          "delay": 0.11,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "125556631043249",
+          "name": "4th M1",
+          "delay": 0.05,
+          "heavy": false
+        },
+        "m2": {
+          "id": "128600830397859",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "kickboxing": {
+      "name": "Kickboxing",
+      "moves": {
+        "m1_first": {
+          "id": "127679697578124",
+          "name": "1st M1",
+          "delay": 0.14,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "111648334200984",
+          "name": "2nd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "109134308246065",
+          "name": "3rd M1",
+          "delay": 0.23,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "123237866254734",
+          "name": "4th M1",
+          "delay": 0.29,
+          "heavy": false
+        },
+        "m2": {
+          "id": "119415047601579",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        },
+        "m2_success": {
+          "id": "140240091451745",
+          "name": "M2 Finisher",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "kyokushin": {
+      "name": "Kyokushin",
+      "moves": {
+        "m1_first": {
+          "id": "108157433609067",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "139691512657916",
+          "name": "2nd M1",
+          "delay": 0.21,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "94267870513016",
+          "name": "3rd M1",
+          "delay": 0.21,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "107365196082362",
+          "name": "4th M1",
+          "delay": 0.33,
+          "heavy": false
+        },
+        "m2": {
+          "id": "128363063231486",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "cqc": {
+      "name": "CQC",
+      "moves": {
+        "m1_first": {
+          "id": "80051878176163",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "112809686330315",
+          "name": "2nd M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "96690751054332",
+          "name": "3rd M1",
+          "delay": 0.12,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "75394567475187",
+          "name": "4th M1",
+          "delay": 0.22,
+          "heavy": false
+        },
+        "m2": {
+          "id": "136636440521127",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    },
+    "mishima": {
+      "name": "Mishima",
+      "moves": {
+        "m1_first": {
+          "id": "122564675454774",
+          "name": "1st M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "124288660244802",
+          "name": "2nd M1",
+          "delay": 0.16,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "116344736444569",
+          "name": "3rd M1",
+          "delay": 0.23,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "109354190051977",
+          "name": "4th M1",
+          "delay": 0.24,
+          "heavy": false
+        },
+        "m2": {
+          "id": "113531813891302",
+          "name": "M2",
+          "delay": [
+            0.42,
+            0.95
+          ],
+          "heavy": true
+        }
+      }
+    },
+    "lethwei": {
+      "name": "Lethwei",
+      "moves": {
+        "m1_first": {
+          "id": "126845586831338",
+          "name": "1st M1",
+          "delay": 0.23,
+          "heavy": false
+        },
+        "m1_second": {
+          "id": "111506889308405",
+          "name": "2nd M1",
+          "delay": 0.23,
+          "heavy": false
+        },
+        "m1_third": {
+          "id": "93862547414782",
+          "name": "3rd M1",
+          "delay": 0.2,
+          "heavy": false
+        },
+        "m1_fourth": {
+          "id": "81747456615347",
+          "name": "4th M1",
+          "delay": 0.17,
+          "heavy": false
+        },
+        "m2": {
+          "id": "98256190530845",
+          "name": "M2",
+          "delay": 0.3,
+          "heavy": true
+        }
+      }
+    }
+  }
+}
