@@ -1,8 +1,5 @@
 {
-  "game": "Jujutsu Shenanigans",
-  "version": "1.0.0",
-  "total_attacks": 485,
-  "attacks": {
+  "anims": {
     "9443519528": {
       "character": "Misc",
       "name": "DashFront",

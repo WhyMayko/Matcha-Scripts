@@ -1,8 +1,5 @@
 {
-  "game": "Dueling Grounds",
-  "version": "1.0.0",
-  "total_attacks": 83,
-  "attacks": {
+  "anims": {
     "74403441228298": { "weapon": "Katana", "name": "DashLight", "heavy": false, "delay": 0.22 },
     "93515445716459": { "weapon": "Katana", "name": "Light01", "heavy": false, "delay": 0.26 },
     "119842405213948": { "weapon": "Katana", "name": "Light02", "heavy": false, "delay": 0.24 },

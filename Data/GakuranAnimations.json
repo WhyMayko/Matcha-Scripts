@@ -1,8 +1,5 @@
 {
-  "game": "Gakuran",
-  "version": "2.0.0",
-  "total_styles": 23,
-  "styles": {
+  "anims": {
     "karate": {
       "name": "Karate",
       "moves": {
