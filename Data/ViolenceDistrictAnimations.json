@@ -1,0 +1,79 @@
+{
+  "killers": {
+    "Veil": {
+      "119367394383893": {
+        "name": "Basic Attack",
+        "delay": 0.25,
+        "heavy": false
+      },
+      "134595759785108": {
+        "name": "Spear Lunge",
+        "delay": 0.35,
+        "heavy": true
+      }
+    },
+    "Killer": {
+      "119367394383893": {
+        "name": "Machete Slash",
+        "delay": 0.25,
+        "heavy": false
+      }
+    },
+    "Slasher": {
+      "119367394383894": {
+        "name": "Pickaxe Strike",
+        "delay": 0.26,
+        "heavy": false
+      }
+    },
+    "Masked": {
+      "119367394383895": {
+        "name": "Baseball Bat Swing",
+        "delay": 0.24,
+        "heavy": false
+      }
+    },
+    "Stalker": {
+      "119367394383896": {
+        "name": "Chef Knife Slash",
+        "delay": 0.22,
+        "heavy": false
+      }
+    },
+    "Hidden": {
+      "119367394383897": {
+        "name": "Tanto Stab",
+        "delay": 0.20,
+        "heavy": false
+      }
+    },
+    "Abysswalker": {
+      "119367394383898": {
+        "name": "Abyss Greatsword Slash",
+        "delay": 0.28,
+        "heavy": false
+      }
+    },
+    "Cure": {
+      "119367394383899": {
+        "name": "Plague Staff Strike",
+        "delay": 0.25,
+        "heavy": false
+      }
+    }
+  },
+  "anims": {
+    "119367394383893": {
+      "killer": "Veil",
+      "name": "Basic Attack",
+      "delay": 0.25,
+      "heavy": false
+    },
+    "134595759785108": {
+      "killer": "Veil",
+      "name": "Spear Lunge",
+      "delay": 0.35,
+      "heavy": true
+    }
+  }
+}
