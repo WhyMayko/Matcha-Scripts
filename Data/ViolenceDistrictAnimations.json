@@ -74,6 +74,42 @@
       "name": "Spear Lunge",
       "delay": 0.35,
       "heavy": true
+    },
+    "119367394383894": {
+      "killer": "Slasher",
+      "name": "Pickaxe Strike",
+      "delay": 0.26,
+      "heavy": false
+    },
+    "119367394383895": {
+      "killer": "Masked",
+      "name": "Baseball Bat Swing",
+      "delay": 0.24,
+      "heavy": false
+    },
+    "119367394383896": {
+      "killer": "Stalker",
+      "name": "Chef Knife Slash",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "119367394383897": {
+      "killer": "Hidden",
+      "name": "Tanto Stab",
+      "delay": 0.20,
+      "heavy": false
+    },
+    "119367394383898": {
+      "killer": "Abysswalker",
+      "name": "Abyss Greatsword Slash",
+      "delay": 0.28,
+      "heavy": false
+    },
+    "119367394383899": {
+      "killer": "Cure",
+      "name": "Plague Staff Strike",
+      "delay": 0.25,
+      "heavy": false
     }
   }
 }
