@@ -1,6 +1,4 @@
 {
-  "name": "Jujutsu Shenanigans Master Navigation Data",
-  "version": 3,
   "doors_and_buildings": {
     "candy_shop": {
       "door": [1534.5, 127.0, 836.0],
