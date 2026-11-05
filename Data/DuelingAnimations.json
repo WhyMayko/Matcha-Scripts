@@ -1019,6 +1019,354 @@
       "name": "Thrust",
       "heavy": true,
       "delay": 0.7
+    },
+    "118208862815838": {
+      "weapon": "Katana",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://118208862815838": {
+      "weapon": "Katana",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "91816989522207": {
+      "weapon": "Katana",
+      "name": "CriticalStrikeOld",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://91816989522207": {
+      "weapon": "Katana",
+      "name": "CriticalStrikeOld",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "99859676410156": {
+      "weapon": "Daggers",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://99859676410156": {
+      "weapon": "Daggers",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "123149832686507": {
+      "weapon": "Naginata",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://123149832686507": {
+      "weapon": "Naginata",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "127868602661551": {
+      "weapon": "Gauntlets",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://127868602661551": {
+      "weapon": "Gauntlets",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "121541273698348": {
+      "weapon": "Kusarigama",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://121541273698348": {
+      "weapon": "Kusarigama",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "135973827489295": {
+      "weapon": "Warhammer",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://135973827489295": {
+      "weapon": "Warhammer",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "110499295975638": {
+      "weapon": "CurvedBlades",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://110499295975638": {
+      "weapon": "CurvedBlades",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "94458519972908": {
+      "weapon": "BoStaff",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://94458519972908": {
+      "weapon": "BoStaff",
+      "name": "CriticalStrike",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "137721925992166": {
+      "weapon": "Katana",
+      "name": "AirborneSlashes",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://137721925992166": {
+      "weapon": "Katana",
+      "name": "AirborneSlashes",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "78204010052638": {
+      "weapon": "Katana",
+      "name": "AirborneSlashesOld",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://78204010052638": {
+      "weapon": "Katana",
+      "name": "AirborneSlashesOld",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "112831353714985": {
+      "weapon": "Daggers",
+      "name": "RapidCuts",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://112831353714985": {
+      "weapon": "Daggers",
+      "name": "RapidCuts",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "115119869384608": {
+      "weapon": "Naginata",
+      "name": "ImpaleAndThrow",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://115119869384608": {
+      "weapon": "Naginata",
+      "name": "ImpaleAndThrow",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "83085323083915": {
+      "weapon": "Gauntlets",
+      "name": "DragCombo",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://83085323083915": {
+      "weapon": "Gauntlets",
+      "name": "DragCombo",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "119531169187861": {
+      "weapon": "Kusarigama",
+      "name": "AirborneSlashes",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://119531169187861": {
+      "weapon": "Kusarigama",
+      "name": "AirborneSlashes",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "118748425657893": {
+      "weapon": "Warhammer",
+      "name": "ImpaleAndThrow",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://118748425657893": {
+      "weapon": "Warhammer",
+      "name": "ImpaleAndThrow",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "79798629757162": {
+      "weapon": "CurvedBlades",
+      "name": "RapidCuts",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://79798629757162": {
+      "weapon": "CurvedBlades",
+      "name": "RapidCuts",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "139049315066822": {
+      "weapon": "BoStaff",
+      "name": "PoleSwingBeatdown",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://139049315066822": {
+      "weapon": "BoStaff",
+      "name": "PoleSwingBeatdown",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "74087630493845": {
+      "weapon": "Katana",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://74087630493845": {
+      "weapon": "Katana",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "129710759656704": {
+      "weapon": "Daggers",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://129710759656704": {
+      "weapon": "Daggers",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "99968127662743": {
+      "weapon": "Naginata",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://99968127662743": {
+      "weapon": "Naginata",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "106097708494581": {
+      "weapon": "Kusarigama",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://106097708494581": {
+      "weapon": "Kusarigama",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "99622105488556": {
+      "weapon": "CurvedBlades",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://99622105488556": {
+      "weapon": "CurvedBlades",
+      "name": "JumpPrepareAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "110710461554589": {
+      "weapon": "Katana",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://110710461554589": {
+      "weapon": "Katana",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "137757125252188": {
+      "weapon": "Daggers",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://137757125252188": {
+      "weapon": "Daggers",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "132070498370416": {
+      "weapon": "Naginata",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://132070498370416": {
+      "weapon": "Naginata",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "123821250743511": {
+      "weapon": "Gauntlets",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://123821250743511": {
+      "weapon": "Gauntlets",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "95900508113349": {
+      "weapon": "Kusarigama",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://95900508113349": {
+      "weapon": "Kusarigama",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "104206672458988": {
+      "weapon": "CurvedBlades",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://104206672458988": {
+      "weapon": "CurvedBlades",
+      "name": "Clash",
+      "heavy": false,
+      "delay": 0.25
     }
   }
 }
