@@ -1,88 +1,1024 @@
 {
   "anims": {
-    "74403441228298": { "weapon": "Katana", "name": "DashLight", "heavy": false, "delay": 0.22 },
-    "93515445716459": { "weapon": "Katana", "name": "Light01", "heavy": false, "delay": 0.26 },
-    "119842405213948": { "weapon": "Katana", "name": "Light02", "heavy": false, "delay": 0.24 },
-    "97176121424159": { "weapon": "Katana", "name": "Light03", "heavy": false, "delay": 0.28 },
-    "109321801209648": { "weapon": "Katana", "name": "Heavy01", "heavy": true, "delay": 0.52 },
-    "73439709828142": { "weapon": "Katana", "name": "Heavy02", "heavy": true, "delay": 0.48 },
-    "111284077568141": { "weapon": "Katana", "name": "Heavy03", "heavy": true, "delay": 0.55 },
-    "108832195987314": { "weapon": "Katana", "name": "DashHeavy", "heavy": true, "delay": 0.46 },
-    "123369167570700": { "weapon": "Katana", "name": "JumpAttack", "heavy": false, "delay": 0.25 },
-    "102122450227302": { "weapon": "Katana", "name": "Ultimate", "heavy": true, "delay": 0.65 },
-
-    "107963319682279": { "weapon": "Daggers", "name": "DashLight", "heavy": false, "delay": 0.20 },
-    "127311786048603": { "weapon": "Daggers", "name": "Light01", "heavy": false, "delay": 0.20 },
-    "89610232249623": { "weapon": "Daggers", "name": "Light02", "heavy": false, "delay": 0.22 },
-    "115164081806660": { "weapon": "Daggers", "name": "Light03", "heavy": false, "delay": 0.24 },
-    "96741422271663": { "weapon": "Daggers", "name": "Heavy01", "heavy": true, "delay": 0.45 },
-    "128316715681692": { "weapon": "Daggers", "name": "Heavy02", "heavy": true, "delay": 0.42 },
-    "91124305626795": { "weapon": "Daggers", "name": "Heavy03", "heavy": true, "delay": 0.48 },
-    "73361409255399": { "weapon": "Daggers", "name": "DashHeavy", "heavy": true, "delay": 0.40 },
-    "109133369465429": { "weapon": "Daggers", "name": "JumpAttack", "heavy": false, "delay": 0.22 },
-    "94573342662552": { "weapon": "Daggers", "name": "Ultimate", "heavy": true, "delay": 0.60 },
-
-    "108222933263469": { "weapon": "Naginata", "name": "DashLight", "heavy": false, "delay": 0.24 },
-    "98466636899590": { "weapon": "Naginata", "name": "Light01", "heavy": false, "delay": 0.30 },
-    "90003774710548": { "weapon": "Naginata", "name": "Light02", "heavy": false, "delay": 0.28 },
-    "99435541516414": { "weapon": "Naginata", "name": "Light03", "heavy": false, "delay": 0.32 },
-    "109655851960189": { "weapon": "Naginata", "name": "Heavy01", "heavy": true, "delay": 0.55 },
-    "102820062437799": { "weapon": "Naginata", "name": "Heavy02", "heavy": true, "delay": 0.52 },
-    "122451600603497": { "weapon": "Naginata", "name": "Heavy03", "heavy": true, "delay": 0.58 },
-    "79096474514305": { "weapon": "Naginata", "name": "DashHeavy", "heavy": true, "delay": 0.50 },
-    "99929180188292": { "weapon": "Naginata", "name": "JumpAttack", "heavy": false, "delay": 0.28 },
-    "98468931006356": { "weapon": "Naginata", "name": "Ultimate", "heavy": true, "delay": 0.70 },
-
-    "85588843063115": { "weapon": "Gauntlets", "name": "DashLight", "heavy": false, "delay": 0.20 },
-    "114233490038156": { "weapon": "Gauntlets", "name": "Light01", "heavy": false, "delay": 0.22 },
-    "70996199874970": { "weapon": "Gauntlets", "name": "Light02", "heavy": false, "delay": 0.24 },
-    "107599271422592": { "weapon": "Gauntlets", "name": "Light03", "heavy": false, "delay": 0.26 },
-    "100517580312019": { "weapon": "Gauntlets", "name": "Heavy01", "heavy": true, "delay": 0.48 },
-    "81874649599328": { "weapon": "Gauntlets", "name": "Heavy02", "heavy": true, "delay": 0.45 },
-    "87168733390593": { "weapon": "Gauntlets", "name": "Heavy03", "heavy": true, "delay": 0.50 },
-    "91795693448817": { "weapon": "Gauntlets", "name": "DashHeavy", "heavy": true, "delay": 0.44 },
-    "133226971151982": { "weapon": "Gauntlets", "name": "JumpAttack", "heavy": false, "delay": 0.24 },
-    "130587625542750": { "weapon": "Gauntlets", "name": "Ultimate", "heavy": true, "delay": 0.65 },
-
-    "82777928858190": { "weapon": "Kusarigama", "name": "DashLight", "heavy": false, "delay": 0.25 },
-    "108256463633979": { "weapon": "Kusarigama", "name": "Light01", "heavy": false, "delay": 0.32 },
-    "86525874946841": { "weapon": "Kusarigama", "name": "Light02", "heavy": false, "delay": 0.30 },
-    "81790656646212": { "weapon": "Kusarigama", "name": "Light03", "heavy": false, "delay": 0.34 },
-    "107149600191875": { "weapon": "Kusarigama", "name": "Heavy01", "heavy": true, "delay": 0.55 },
-    "108646504483237": { "weapon": "Kusarigama", "name": "Heavy02", "heavy": true, "delay": 0.52 },
-    "132379792547914": { "weapon": "Kusarigama", "name": "Heavy03", "heavy": true, "delay": 0.58 },
-    "75706777353316": { "weapon": "Kusarigama", "name": "DashHeavy", "heavy": true, "delay": 0.48 },
-    "116165713843036": { "weapon": "Kusarigama", "name": "JumpAttack", "heavy": false, "delay": 0.26 },
-    "103177314511400": { "weapon": "Kusarigama", "name": "Ultimate", "heavy": true, "delay": 0.70 },
-
-    "107246505824576": { "weapon": "Warhammer", "name": "DashLight", "heavy": false, "delay": 0.28 },
-    "77454112428544": { "weapon": "Warhammer", "name": "Light01", "heavy": false, "delay": 0.36 },
-    "92919401996642": { "weapon": "Warhammer", "name": "Light02", "heavy": false, "delay": 0.34 },
-    "107795085520230": { "weapon": "Warhammer", "name": "Light03", "heavy": false, "delay": 0.38 },
-    "76098115425645": { "weapon": "Warhammer", "name": "Heavy01", "heavy": true, "delay": 0.65 },
-    "140070043917868": { "weapon": "Warhammer", "name": "Heavy02", "heavy": true, "delay": 0.60 },
-    "112398041629866": { "weapon": "Warhammer", "name": "Heavy03", "heavy": true, "delay": 0.68 },
-    "80242084926159": { "weapon": "Warhammer", "name": "DashHeavy", "heavy": true, "delay": 0.55 },
-
-    "84071072327159": { "weapon": "CurvedBlades", "name": "DashLight", "heavy": false, "delay": 0.22 },
-    "73527029352799": { "weapon": "CurvedBlades", "name": "Light01", "heavy": false, "delay": 0.24 },
-    "93762398868547": { "weapon": "CurvedBlades", "name": "Light02", "heavy": false, "delay": 0.24 },
-    "95355733564830": { "weapon": "CurvedBlades", "name": "Light03", "heavy": false, "delay": 0.26 },
-    "127180131469622": { "weapon": "CurvedBlades", "name": "Heavy01", "heavy": true, "delay": 0.50 },
-    "98914778292429": { "weapon": "CurvedBlades", "name": "Heavy02", "heavy": true, "delay": 0.48 },
-    "130030572213466": { "weapon": "CurvedBlades", "name": "Heavy03", "heavy": true, "delay": 0.54 },
-    "71987077183997": { "weapon": "CurvedBlades", "name": "DashHeavy", "heavy": true, "delay": 0.45 },
-    "84191138620223": { "weapon": "CurvedBlades", "name": "JumpAttack", "heavy": false, "delay": 0.24 },
-    "96626265437694": { "weapon": "CurvedBlades", "name": "Ultimate", "heavy": true, "delay": 0.65 },
-
-    "89290545786183": { "weapon": "BoStaff", "name": "DashLight", "heavy": false, "delay": 0.24 },
-    "139894343103589": { "weapon": "BoStaff", "name": "Light01", "heavy": false, "delay": 0.28 },
-    "73496609261257": { "weapon": "BoStaff", "name": "Light02", "heavy": false, "delay": 0.26 },
-    "112506534899435": { "weapon": "BoStaff", "name": "Light03", "heavy": false, "delay": 0.30 },
-    "109634711613700": { "weapon": "BoStaff", "name": "Heavy01", "heavy": true, "delay": 0.52 },
-    "139097549949939": { "weapon": "BoStaff", "name": "Heavy02", "heavy": true, "delay": 0.50 },
-    "80336054579822": { "weapon": "BoStaff", "name": "Heavy03", "heavy": true, "delay": 0.55 },
-    "131801277819866": { "weapon": "BoStaff", "name": "DashHeavy", "heavy": true, "delay": 0.48 },
-    "123017094262369": { "weapon": "BoStaff", "name": "Ultimate", "heavy": true, "delay": 0.70 }
+    "rbxassetid://74403441228298": {
+      "weapon": "Katana",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "74403441228298": {
+      "weapon": "Katana",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "rbxassetid://93515445716459": {
+      "weapon": "Katana",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "93515445716459": {
+      "weapon": "Katana",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://119842405213948": {
+      "weapon": "Katana",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "119842405213948": {
+      "weapon": "Katana",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://97176121424159": {
+      "weapon": "Katana",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "97176121424159": {
+      "weapon": "Katana",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "rbxassetid://109321801209648": {
+      "weapon": "Katana",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "109321801209648": {
+      "weapon": "Katana",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "rbxassetid://73439709828142": {
+      "weapon": "Katana",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "73439709828142": {
+      "weapon": "Katana",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "rbxassetid://111284077568141": {
+      "weapon": "Katana",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "111284077568141": {
+      "weapon": "Katana",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "rbxassetid://108832195987314": {
+      "weapon": "Katana",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.46
+    },
+    "108832195987314": {
+      "weapon": "Katana",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.46
+    },
+    "rbxassetid://123369167570700": {
+      "weapon": "Katana",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "123369167570700": {
+      "weapon": "Katana",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://102122450227302": {
+      "weapon": "Katana",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "102122450227302": {
+      "weapon": "Katana",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "rbxassetid://107963319682279": {
+      "weapon": "Daggers",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "107963319682279": {
+      "weapon": "Daggers",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "rbxassetid://127311786048603": {
+      "weapon": "Daggers",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "127311786048603": {
+      "weapon": "Daggers",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "rbxassetid://89610232249623": {
+      "weapon": "Daggers",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "89610232249623": {
+      "weapon": "Daggers",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "rbxassetid://115164081806660": {
+      "weapon": "Daggers",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "115164081806660": {
+      "weapon": "Daggers",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://96741422271663": {
+      "weapon": "Daggers",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "96741422271663": {
+      "weapon": "Daggers",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "rbxassetid://128316715681692": {
+      "weapon": "Daggers",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.42
+    },
+    "128316715681692": {
+      "weapon": "Daggers",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.42
+    },
+    "rbxassetid://91124305626795": {
+      "weapon": "Daggers",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "91124305626795": {
+      "weapon": "Daggers",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "rbxassetid://73361409255399": {
+      "weapon": "Daggers",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "73361409255399": {
+      "weapon": "Daggers",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.4
+    },
+    "rbxassetid://109133369465429": {
+      "weapon": "Daggers",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "109133369465429": {
+      "weapon": "Daggers",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "rbxassetid://94573342662552": {
+      "weapon": "Daggers",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.6
+    },
+    "94573342662552": {
+      "weapon": "Daggers",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.6
+    },
+    "rbxassetid://108222933263469": {
+      "weapon": "Naginata",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "108222933263469": {
+      "weapon": "Naginata",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://98466636899590": {
+      "weapon": "Naginata",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.3
+    },
+    "98466636899590": {
+      "weapon": "Naginata",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.3
+    },
+    "rbxassetid://90003774710548": {
+      "weapon": "Naginata",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "90003774710548": {
+      "weapon": "Naginata",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "rbxassetid://99435541516414": {
+      "weapon": "Naginata",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.32
+    },
+    "99435541516414": {
+      "weapon": "Naginata",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.32
+    },
+    "rbxassetid://109655851960189": {
+      "weapon": "Naginata",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "109655851960189": {
+      "weapon": "Naginata",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "rbxassetid://102820062437799": {
+      "weapon": "Naginata",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "102820062437799": {
+      "weapon": "Naginata",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "rbxassetid://122451600603497": {
+      "weapon": "Naginata",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.58
+    },
+    "122451600603497": {
+      "weapon": "Naginata",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.58
+    },
+    "rbxassetid://79096474514305": {
+      "weapon": "Naginata",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "79096474514305": {
+      "weapon": "Naginata",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://99929180188292": {
+      "weapon": "Naginata",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "99929180188292": {
+      "weapon": "Naginata",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "rbxassetid://98468931006356": {
+      "weapon": "Naginata",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "98468931006356": {
+      "weapon": "Naginata",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "rbxassetid://85588843063115": {
+      "weapon": "Gauntlets",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "85588843063115": {
+      "weapon": "Gauntlets",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.2
+    },
+    "rbxassetid://114233490038156": {
+      "weapon": "Gauntlets",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "114233490038156": {
+      "weapon": "Gauntlets",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "rbxassetid://70996199874970": {
+      "weapon": "Gauntlets",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "70996199874970": {
+      "weapon": "Gauntlets",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://107599271422592": {
+      "weapon": "Gauntlets",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "107599271422592": {
+      "weapon": "Gauntlets",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://100517580312019": {
+      "weapon": "Gauntlets",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "100517580312019": {
+      "weapon": "Gauntlets",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "rbxassetid://81874649599328": {
+      "weapon": "Gauntlets",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "81874649599328": {
+      "weapon": "Gauntlets",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "rbxassetid://87168733390593": {
+      "weapon": "Gauntlets",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "87168733390593": {
+      "weapon": "Gauntlets",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://91795693448817": {
+      "weapon": "Gauntlets",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.44
+    },
+    "91795693448817": {
+      "weapon": "Gauntlets",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.44
+    },
+    "rbxassetid://133226971151982": {
+      "weapon": "Gauntlets",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "133226971151982": {
+      "weapon": "Gauntlets",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://130587625542750": {
+      "weapon": "Gauntlets",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "130587625542750": {
+      "weapon": "Gauntlets",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "rbxassetid://82777928858190": {
+      "weapon": "Kusarigama",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "82777928858190": {
+      "weapon": "Kusarigama",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.25
+    },
+    "rbxassetid://108256463633979": {
+      "weapon": "Kusarigama",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.32
+    },
+    "108256463633979": {
+      "weapon": "Kusarigama",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.32
+    },
+    "rbxassetid://86525874946841": {
+      "weapon": "Kusarigama",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.3
+    },
+    "86525874946841": {
+      "weapon": "Kusarigama",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.3
+    },
+    "rbxassetid://81790656646212": {
+      "weapon": "Kusarigama",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.34
+    },
+    "81790656646212": {
+      "weapon": "Kusarigama",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.34
+    },
+    "rbxassetid://107149600191875": {
+      "weapon": "Kusarigama",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "107149600191875": {
+      "weapon": "Kusarigama",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "rbxassetid://108646504483237": {
+      "weapon": "Kusarigama",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "108646504483237": {
+      "weapon": "Kusarigama",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "rbxassetid://132379792547914": {
+      "weapon": "Kusarigama",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.58
+    },
+    "132379792547914": {
+      "weapon": "Kusarigama",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.58
+    },
+    "rbxassetid://75706777353316": {
+      "weapon": "Kusarigama",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "75706777353316": {
+      "weapon": "Kusarigama",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "rbxassetid://116165713843036": {
+      "weapon": "Kusarigama",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "116165713843036": {
+      "weapon": "Kusarigama",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://103177314511400": {
+      "weapon": "Kusarigama",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "103177314511400": {
+      "weapon": "Kusarigama",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "rbxassetid://107246505824576": {
+      "weapon": "Warhammer",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "107246505824576": {
+      "weapon": "Warhammer",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "rbxassetid://77454112428544": {
+      "weapon": "Warhammer",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.36
+    },
+    "77454112428544": {
+      "weapon": "Warhammer",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.36
+    },
+    "rbxassetid://92919401996642": {
+      "weapon": "Warhammer",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.34
+    },
+    "92919401996642": {
+      "weapon": "Warhammer",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.34
+    },
+    "rbxassetid://107795085520230": {
+      "weapon": "Warhammer",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.38
+    },
+    "107795085520230": {
+      "weapon": "Warhammer",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.38
+    },
+    "rbxassetid://76098115425645": {
+      "weapon": "Warhammer",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "76098115425645": {
+      "weapon": "Warhammer",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "rbxassetid://140070043917868": {
+      "weapon": "Warhammer",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.6
+    },
+    "140070043917868": {
+      "weapon": "Warhammer",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.6
+    },
+    "rbxassetid://112398041629866": {
+      "weapon": "Warhammer",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.68
+    },
+    "112398041629866": {
+      "weapon": "Warhammer",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.68
+    },
+    "rbxassetid://80242084926159": {
+      "weapon": "Warhammer",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "80242084926159": {
+      "weapon": "Warhammer",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "rbxassetid://84071072327159": {
+      "weapon": "CurvedBlades",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "84071072327159": {
+      "weapon": "CurvedBlades",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.22
+    },
+    "rbxassetid://73527029352799": {
+      "weapon": "CurvedBlades",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "73527029352799": {
+      "weapon": "CurvedBlades",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://93762398868547": {
+      "weapon": "CurvedBlades",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "93762398868547": {
+      "weapon": "CurvedBlades",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://95355733564830": {
+      "weapon": "CurvedBlades",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "95355733564830": {
+      "weapon": "CurvedBlades",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://127180131469622": {
+      "weapon": "CurvedBlades",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "127180131469622": {
+      "weapon": "CurvedBlades",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://98914778292429": {
+      "weapon": "CurvedBlades",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "98914778292429": {
+      "weapon": "CurvedBlades",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "rbxassetid://130030572213466": {
+      "weapon": "CurvedBlades",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.54
+    },
+    "130030572213466": {
+      "weapon": "CurvedBlades",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.54
+    },
+    "rbxassetid://71987077183997": {
+      "weapon": "CurvedBlades",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "71987077183997": {
+      "weapon": "CurvedBlades",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.45
+    },
+    "rbxassetid://84191138620223": {
+      "weapon": "CurvedBlades",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "84191138620223": {
+      "weapon": "CurvedBlades",
+      "name": "JumpAttack",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://96626265437694": {
+      "weapon": "CurvedBlades",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "96626265437694": {
+      "weapon": "CurvedBlades",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.65
+    },
+    "rbxassetid://89290545786183": {
+      "weapon": "BoStaff",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "89290545786183": {
+      "weapon": "BoStaff",
+      "name": "DashLight",
+      "heavy": false,
+      "delay": 0.24
+    },
+    "rbxassetid://139894343103589": {
+      "weapon": "BoStaff",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "139894343103589": {
+      "weapon": "BoStaff",
+      "name": "Light01",
+      "heavy": false,
+      "delay": 0.28
+    },
+    "rbxassetid://73496609261257": {
+      "weapon": "BoStaff",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "73496609261257": {
+      "weapon": "BoStaff",
+      "name": "Light02",
+      "heavy": false,
+      "delay": 0.26
+    },
+    "rbxassetid://112506534899435": {
+      "weapon": "BoStaff",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.3
+    },
+    "112506534899435": {
+      "weapon": "BoStaff",
+      "name": "Light03",
+      "heavy": false,
+      "delay": 0.3
+    },
+    "rbxassetid://109634711613700": {
+      "weapon": "BoStaff",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "109634711613700": {
+      "weapon": "BoStaff",
+      "name": "Heavy01",
+      "heavy": true,
+      "delay": 0.52
+    },
+    "rbxassetid://139097549949939": {
+      "weapon": "BoStaff",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "139097549949939": {
+      "weapon": "BoStaff",
+      "name": "Heavy02",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://80336054579822": {
+      "weapon": "BoStaff",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "80336054579822": {
+      "weapon": "BoStaff",
+      "name": "Heavy03",
+      "heavy": true,
+      "delay": 0.55
+    },
+    "rbxassetid://131801277819866": {
+      "weapon": "BoStaff",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "131801277819866": {
+      "weapon": "BoStaff",
+      "name": "DashHeavy",
+      "heavy": true,
+      "delay": 0.48
+    },
+    "rbxassetid://123017094262369": {
+      "weapon": "BoStaff",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "123017094262369": {
+      "weapon": "BoStaff",
+      "name": "Ultimate",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "rbxassetid://114813595215444": {
+      "weapon": "Jack",
+      "name": "FirePillar",
+      "heavy": true,
+      "delay": 0.6
+    },
+    "114813595215444": {
+      "weapon": "Jack",
+      "name": "FirePillar",
+      "heavy": true,
+      "delay": 0.6
+    },
+    "rbxassetid://76046020036209": {
+      "weapon": "Nephra",
+      "name": "CastStorm",
+      "heavy": true,
+      "delay": 0.8
+    },
+    "76046020036209": {
+      "weapon": "Nephra",
+      "name": "CastStorm",
+      "heavy": true,
+      "delay": 0.8
+    },
+    "rbxassetid://91267308297458": {
+      "weapon": "Nephra",
+      "name": "CastShield",
+      "heavy": false,
+      "delay": 0.5
+    },
+    "91267308297458": {
+      "weapon": "Nephra",
+      "name": "CastShield",
+      "heavy": false,
+      "delay": 0.5
+    },
+    "rbxassetid://104657092023141": {
+      "weapon": "Benkei",
+      "name": "WeaponSwap",
+      "heavy": false,
+      "delay": 0.4
+    },
+    "104657092023141": {
+      "weapon": "Benkei",
+      "name": "WeaponSwap",
+      "heavy": false,
+      "delay": 0.4
+    },
+    "rbxassetid://117245992591992": {
+      "weapon": "Tremor",
+      "name": "Clash",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "117245992591992": {
+      "weapon": "Tremor",
+      "name": "Clash",
+      "heavy": true,
+      "delay": 0.5
+    },
+    "rbxassetid://92495762907665": {
+      "weapon": "Boss",
+      "name": "Ichimonji",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "92495762907665": {
+      "weapon": "Boss",
+      "name": "Ichimonji",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "rbxassetid://136075870985960": {
+      "weapon": "Boss",
+      "name": "SheathedTripleCut",
+      "heavy": true,
+      "delay": 1.86
+    },
+    "136075870985960": {
+      "weapon": "Boss",
+      "name": "SheathedTripleCut",
+      "heavy": true,
+      "delay": 1.86
+    },
+    "rbxassetid://105204844534745": {
+      "weapon": "Boss",
+      "name": "Thrust",
+      "heavy": true,
+      "delay": 0.7
+    },
+    "105204844534745": {
+      "weapon": "Boss",
+      "name": "Thrust",
+      "heavy": true,
+      "delay": 0.7
+    }
   }
 }
