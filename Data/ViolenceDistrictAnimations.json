@@ -2,7 +2,7 @@
   "killers": {
     "Veil": {
       "119367394383893": {
-        "name": "Basic Attack",
+        "name": "Spear Melee Slash",
         "delay": 0.25
       }
     },
@@ -13,15 +13,31 @@
       }
     },
     "Slasher": {
-      "119367394383894": {
+      "77647134875637": {
         "name": "Pickaxe Strike",
         "delay": 0.26
+      },
+      "113691709436161": {
+        "name": "Pickaxe Slash",
+        "delay": 0.24
       }
     },
     "Masked": {
-      "119367394383895": {
-        "name": "Baseball Bat Swing",
+      "115244153053858": {
+        "name": "Bat Swing 1",
         "delay": 0.24
+      },
+      "130593238885843": {
+        "name": "Bat Swing 2",
+        "delay": 0.24
+      },
+      "105374834496520": {
+        "name": "Heavy Bat Smash",
+        "delay": 0.26
+      },
+      "111920872708571": {
+        "name": "Bat Finisher",
+        "delay": 0.25
       }
     },
     "Stalker": {
@@ -31,9 +47,13 @@
       }
     },
     "Hidden": {
-      "119367394383897": {
-        "name": "Tanto Stab",
+      "74968262036854": {
+        "name": "Tanto Slash",
         "delay": 0.20
+      },
+      "98163597193511": {
+        "name": "Tanto Heavy Strike",
+        "delay": 0.22
       }
     },
     "Abysswalker": {
@@ -50,30 +70,55 @@
     }
   },
   "anims": {
+    "74968262036854": {
+      "killer": "Hidden",
+      "name": "Tanto Slash",
+      "delay": 0.20
+    },
+    "98163597193511": {
+      "killer": "Hidden",
+      "name": "Tanto Heavy Strike",
+      "delay": 0.22
+    },
+    "77647134875637": {
+      "killer": "Slasher",
+      "name": "Pickaxe Strike",
+      "delay": 0.26
+    },
+    "113691709436161": {
+      "killer": "Slasher",
+      "name": "Pickaxe Slash",
+      "delay": 0.24
+    },
+    "115244153053858": {
+      "killer": "Masked",
+      "name": "Bat Swing 1",
+      "delay": 0.24
+    },
+    "130593238885843": {
+      "killer": "Masked",
+      "name": "Bat Swing 2",
+      "delay": 0.24
+    },
+    "105374834496520": {
+      "killer": "Masked",
+      "name": "Heavy Bat Smash",
+      "delay": 0.26
+    },
+    "111920872708571": {
+      "killer": "Masked",
+      "name": "Bat Finisher",
+      "delay": 0.25
+    },
     "119367394383893": {
       "killer": "Veil",
       "name": "Basic Attack",
       "delay": 0.25
     },
-    "119367394383894": {
-      "killer": "Slasher",
-      "name": "Pickaxe Strike",
-      "delay": 0.26
-    },
-    "119367394383895": {
-      "killer": "Masked",
-      "name": "Baseball Bat Swing",
-      "delay": 0.24
-    },
     "119367394383896": {
       "killer": "Stalker",
       "name": "Chef Knife Slash",
       "delay": 0.22
-    },
-    "119367394383897": {
-      "killer": "Hidden",
-      "name": "Tanto Stab",
-      "delay": 0.20
     },
     "119367394383898": {
       "killer": "Abysswalker",
