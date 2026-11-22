@@ -1,121 +1,1431 @@
 {
+  "styles": {
+    "Karate": {
+      "136346659171696": {
+        "name": "1st M1",
+        "delay": 0.19,
+        "heavy": false
+      },
+      "137514920199894": {
+        "name": "2nd M1",
+        "delay": 0.21,
+        "heavy": false
+      },
+      "72779501873271": {
+        "name": "3rd M1",
+        "delay": 0.25,
+        "heavy": false
+      },
+      "127487637547915": {
+        "name": "4th M1",
+        "delay": 0.29,
+        "heavy": false
+      },
+      "116278224437295": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Basic": {
+      "100661797632126": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "117315538657801": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "83771012317903": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "129031831390386": {
+        "name": "4th M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "80331331149375": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Wrestling": {
+      "124808151650835": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "79996486219181": {
+        "name": "2nd M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "115207134396914": {
+        "name": "3rd M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "74020075116139": {
+        "name": "4th M1",
+        "delay": 0.24,
+        "heavy": false
+      },
+      "91419261625463": {
+        "name": "M2",
+        "delay": [
+          0.42,
+          0.95
+        ],
+        "heavy": true
+      },
+      "135984725924501": {
+        "name": "M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "99774162066012": {
+        "name": "M2 Slam",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Muay Thai": {
+      "110917888708142": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "136830198456192": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "103717575086418": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "90445272780399": {
+        "name": "4th M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "137299369381761": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Boxing": {
+      "132913269853139": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "76033376851583": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "126463147281440": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "75666664304014": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "128921678079615": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Hakari": {
+      "123215666398014": {
+        "name": "1st M1",
+        "delay": 0.24,
+        "heavy": false
+      },
+      "100249628136368": {
+        "name": "2nd M1",
+        "delay": 0.25,
+        "heavy": false
+      },
+      "101160496635774": {
+        "name": "3rd M1",
+        "delay": 0.21,
+        "heavy": false
+      },
+      "76458394174684": {
+        "name": "4th M1",
+        "delay": 0.26,
+        "heavy": false
+      },
+      "78127273702521": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "137954350192006": {
+        "name": "Momentum M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Hakari (Variant)": {
+      "117925051452801": {
+        "name": "1st M1",
+        "delay": 0.24,
+        "heavy": false
+      },
+      "122040023429227": {
+        "name": "2nd M1",
+        "delay": 0.25,
+        "heavy": false
+      },
+      "126306184412990": {
+        "name": "3rd M1",
+        "delay": 0.21,
+        "heavy": false
+      },
+      "85805632651129": {
+        "name": "4th M1",
+        "delay": 0.26,
+        "heavy": false
+      },
+      "127394334888645": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "106589382211868": {
+        "name": "Momentum M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Capoeira": {
+      "91953931348325": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "127465095270110": {
+        "name": "2nd M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "79017113400162": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "98872276178039": {
+        "name": "4th M1",
+        "delay": 0.14,
+        "heavy": false
+      },
+      "101740002500802": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Slugger": {
+      "78852386182257": {
+        "name": "1st M1",
+        "delay": 0.33,
+        "heavy": false
+      },
+      "89706363973188": {
+        "name": "2nd M1",
+        "delay": 0.3,
+        "heavy": false
+      },
+      "127941398150401": {
+        "name": "3rd M1",
+        "delay": 0.3,
+        "heavy": false
+      },
+      "97696355281722": {
+        "name": "4th M1",
+        "delay": 0.26,
+        "heavy": false
+      },
+      "86882821333237": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Kure": {
+      "89598700542051": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "84100769626105": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "75725487794798": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "103586798765773": {
+        "name": "4th M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "128246407698779": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "83588777426626": {
+        "name": "Crit Startup",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "104060526539640": {
+        "name": "M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Ali": {
+      "103211517133243": {
+        "name": "1st M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "88548871262625": {
+        "name": "2nd M1",
+        "delay": 0.25,
+        "heavy": false
+      },
+      "104356393941647": {
+        "name": "3rd M1",
+        "delay": 0.27,
+        "heavy": false
+      },
+      "109925400698635": {
+        "name": "4th M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "92831721340116": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "81488798354194": {
+        "name": "M2 Right",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Wing Chun": {
+      "94976161225956": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "130903067566077": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "139503477666199": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "135699957281468": {
+        "name": "4th M1",
+        "delay": 0.38,
+        "heavy": false
+      },
+      "125237241325107": {
+        "name": "M2",
+        "delay": [
+          0.42,
+          0.95
+        ],
+        "heavy": true
+      }
+    },
+    "Kickboxing": {
+      "138270482936731": {
+        "name": "M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "140240091451745": {
+        "name": "M2 Finisher",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "127679697578124": {
+        "name": "1st M1",
+        "delay": 0.14,
+        "heavy": false
+      },
+      "111648334200984": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "109134308246065": {
+        "name": "3rd M1",
+        "delay": 0.23,
+        "heavy": false
+      },
+      "123237866254734": {
+        "name": "4th M1",
+        "delay": 0.29,
+        "heavy": false
+      },
+      "119415047601579": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Striker": {
+      "79224782278508": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "74337052553355": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "121264916189386": {
+        "name": "3rd M1",
+        "delay": 0.11,
+        "heavy": false
+      },
+      "125556631043249": {
+        "name": "4th M1",
+        "delay": 0.05,
+        "heavy": false
+      },
+      "128600830397859": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "84849479349093": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      }
+    },
+    "Kyokushin": {
+      "108157433609067": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "139691512657916": {
+        "name": "2nd M1",
+        "delay": 0.21,
+        "heavy": false
+      },
+      "94267870513016": {
+        "name": "3rd M1",
+        "delay": 0.21,
+        "heavy": false
+      },
+      "107365196082362": {
+        "name": "4th M1",
+        "delay": 0.33,
+        "heavy": false
+      },
+      "80822959210741": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "123745954146403": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "114512282674579": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "130425467895214": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      }
+    },
+    "CQC": {
+      "80051878176163": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "112809686330315": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "96690751054332": {
+        "name": "3rd M1",
+        "delay": 0.12,
+        "heavy": false
+      },
+      "75394567475187": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "136636440521127": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Mishima": {
+      "122564675454774": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "124288660244802": {
+        "name": "2nd M1",
+        "delay": 0.16,
+        "heavy": false
+      },
+      "116344736444569": {
+        "name": "3rd M1",
+        "delay": 0.23,
+        "heavy": false
+      },
+      "109354190051977": {
+        "name": "4th M1",
+        "delay": 0.24,
+        "heavy": false
+      },
+      "113531813891302": {
+        "name": "M2",
+        "delay": [
+          0.42,
+          0.95
+        ],
+        "heavy": true
+      },
+      "103143860489962": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "110185869183678": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    },
+    "Lethwei": {
+      "126845586831338": {
+        "name": "1st M1",
+        "delay": 0.23,
+        "heavy": false
+      },
+      "111506889308405": {
+        "name": "2nd M1",
+        "delay": 0.23,
+        "heavy": false
+      },
+      "93862547414782": {
+        "name": "3rd M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "81747456615347": {
+        "name": "4th M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "98256190530845": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "CopyCat": {
+      "84055640813946": {
+        "name": "1st M1",
+        "delay": 0.19,
+        "heavy": false
+      },
+      "95173956739250": {
+        "name": "2nd M1",
+        "delay": 0.15,
+        "heavy": false
+      },
+      "70530995058811": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "82940625976948": {
+        "name": "4th M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "134804100456499": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Taekwondo": {
+      "127162724647231": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "74741725976396": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "120810373659991": {
+        "name": "3rd M1",
+        "delay": 0.11,
+        "heavy": false
+      },
+      "88180036756573": {
+        "name": "4th M1",
+        "delay": 0.27,
+        "heavy": false
+      },
+      "116055164693814": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Judo": {
+      "131676325229431": {
+        "name": "1st M1",
+        "delay": 0.25,
+        "heavy": false
+      },
+      "102601773653434": {
+        "name": "2nd M1",
+        "delay": 0.33,
+        "heavy": false
+      },
+      "107243109261247": {
+        "name": "3rd M1",
+        "delay": 0.27,
+        "heavy": false
+      },
+      "140395542309510": {
+        "name": "4th M1",
+        "delay": 0.16,
+        "heavy": false
+      },
+      "105631504597837": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "111990692180770": {
+        "name": "M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "124483626693051": {
+        "name": "M2 Success",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Dragon": {
+      "90632031214738": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "129870265426519": {
+        "name": "2nd M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "103119271372106": {
+        "name": "3rd M1",
+        "delay": 0.14,
+        "heavy": false
+      },
+      "81350056849630": {
+        "name": "4th M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "101059515516534": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "101850612921423": {
+        "name": "M2 Miss",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Jin": {
+      "89404705737555": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "126407816250012": {
+        "name": "2nd M1",
+        "delay": 0.3,
+        "heavy": false
+      },
+      "111599179234006": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "115508221180588": {
+        "name": "4th M1",
+        "delay": 0.31,
+        "heavy": false
+      },
+      "90986005545750": {
+        "name": "M2",
+        "delay": [
+          0.28,
+          0.83
+        ],
+        "heavy": true
+      }
+    },
+    "Taijutsu": {
+      "112772003891760": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "120968355159054": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "134363734889174": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "140439623648569": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "70666956463595": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Aikido": {
+      "101667835774312": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "72100016327641": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "86622096544948": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "116579071175823": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "113723231962801": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "107454499541345": {
+        "name": "M2 Success",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "130029540124933": {
+        "name": "M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Hikaken": {
+      "109471728828625": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "92152402802393": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "139736320509560": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "80033824766939": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "94916233438251": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Giovanna": {
+      "135716459366783": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "128178940723536": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "133339208745195": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "129619149164145": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "84500842912133": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "117772381560003": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    },
+    "Perfect Copy": {
+      "89266206062347": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "118618177788645": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "92563642848078": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "129685126037621": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "84779382426562": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "123851034848865": {
+        "name": "M2 Success",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "137225244692889": {
+        "name": "M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Senbonzakura": {
+      "126358896579477": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "127267155580119": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "91120009064764": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "93473540765727": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "105229788987423": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Hyoga": {
+      "139206768214496": {
+        "name": "1st M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "129020734841822": {
+        "name": "2nd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "138116754294271": {
+        "name": "3rd M1",
+        "delay": 0.17,
+        "heavy": false
+      },
+      "114411300017160": {
+        "name": "4th M1",
+        "delay": 0.2,
+        "heavy": false
+      },
+      "133838614198966": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Grappling": {
+      "123886678066843": {
+        "name": "Attacker",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "127871355254284": {
+        "name": "Dirty Attacker",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Awakened": {
+      "84606073717547": {
+        "name": "Karate M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "100495393065612": {
+        "name": "Lethwei M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "98093690066880": {
+        "name": "Lethwei M2 Part 2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "83352556099235": {
+        "name": "Wrestling M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "75242679689255": {
+        "name": "Wrestling M2 Success",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "96555514012404": {
+        "name": "Wrestling M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "85984892267786": {
+        "name": "Jin M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "132891856788045": {
+        "name": "Boxing M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "82076026376495": {
+        "name": "Hakari M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "139458993289546": {
+        "name": "Taijutsu M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "124394929276448": {
+        "name": "Muay Thai M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "121882498328395": {
+        "name": "Muay Thai M2 Success",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "110601508550096": {
+        "name": "Muay Thai M2 EHit",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "MuayThai": {
+      "137299369381761": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "90445272780399": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "103717575086418": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "136830198456192": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "110917888708142": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    },
+    "HakariOther": {
+      "117925051452801": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "122040023429227": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "126306184412990": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "85805632651129": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "106589382211868": {
+        "name": "MomentumM2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "127394334888645": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "WingChun": {
+      "94976161225956": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "130903067566077": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "139503477666199": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "135699957281468": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "125237241325107": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "140240091451745": {
+        "name": "M2Success",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "PerfectCopy": {
+      "78435737457559": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "89266206062347": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "92563642848078": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "84779382426562": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "118618177788645": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "123851034848865": {
+        "name": "M2Success",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "oldmuay": {
+      "137299369381761": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "90445272780399": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "103717575086418": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "136830198456192": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "110917888708142": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    },
+    "Jason": {
+      "135722461405541": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "82283056520077": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "123296684889576": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "84522026560534": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "90118089036149": {
+        "name": "M2Success",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "75200474410240": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    },
+    "Scarecrow": {
+      "128821858025718": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "139246007357357": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "95983866404215": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "123471654597927": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "76756133671287": {
+        "name": "M2Success",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "117642625192689": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    },
+    "Ryu": {
+      "89749221319778": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "112331620334430": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "81373523550212": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "140443516062692": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "107752287503360": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Systema": {
+      "76045135315166": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "83610050585769": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "109017842170619": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "93070056502857": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "108186708485538": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      }
+    },
+    "Taekwondo (Rework)": {
+      "81612363053071": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "110426908435012": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "127510427843488": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "139008725129787": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "114488544822098": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    },
+    "Capoeira (Rework)": {
+      "99380833762687": {
+        "name": "4th M1",
+        "delay": 0.22,
+        "heavy": false
+      },
+      "71582570861439": {
+        "name": "1st M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "91757066701454": {
+        "name": "2nd M1",
+        "delay": 0.18,
+        "heavy": false
+      },
+      "74499278694296": {
+        "name": "M2",
+        "delay": 0.3,
+        "heavy": true
+      },
+      "114440706066705": {
+        "name": "3rd M1",
+        "delay": 0.18,
+        "heavy": false
+      }
+    }
+  },
   "anims": {
     "136346659171696": {
-      "style_key": "karate",
-      "style_name": "Karate",
-      "move_key": "m1_first",
+      "style": "Karate",
       "name": "1st M1",
       "delay": 0.19,
       "heavy": false
     },
     "137514920199894": {
-      "style_key": "karate",
-      "style_name": "Karate",
-      "move_key": "m1_second",
+      "style": "Karate",
       "name": "2nd M1",
       "delay": 0.21,
       "heavy": false
     },
     "72779501873271": {
-      "style_key": "karate",
-      "style_name": "Karate",
-      "move_key": "m1_third",
+      "style": "Karate",
       "name": "3rd M1",
       "delay": 0.25,
       "heavy": false
     },
     "127487637547915": {
-      "style_key": "karate",
-      "style_name": "Karate",
-      "move_key": "m1_fourth",
+      "style": "Karate",
       "name": "4th M1",
       "delay": 0.29,
       "heavy": false
     },
     "116278224437295": {
-      "style_key": "karate",
-      "style_name": "Karate",
-      "move_key": "m2",
+      "style": "Karate",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "100661797632126": {
-      "style_key": "basic",
-      "style_name": "Basic",
-      "move_key": "m1_first",
+      "style": "Basic",
       "name": "1st M1",
       "delay": 0.18,
       "heavy": false
     },
     "117315538657801": {
-      "style_key": "basic",
-      "style_name": "Basic",
-      "move_key": "m1_second",
+      "style": "Basic",
       "name": "2nd M1",
       "delay": 0.18,
       "heavy": false
     },
     "83771012317903": {
-      "style_key": "basic",
-      "style_name": "Basic",
-      "move_key": "m1_third",
+      "style": "Basic",
       "name": "3rd M1",
       "delay": 0.18,
       "heavy": false
     },
     "129031831390386": {
-      "style_key": "basic",
-      "style_name": "Basic",
-      "move_key": "m1_fourth",
+      "style": "Basic",
       "name": "4th M1",
       "delay": 0.18,
       "heavy": false
     },
     "80331331149375": {
-      "style_key": "basic",
-      "style_name": "Basic",
-      "move_key": "m2",
+      "style": "Basic",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "124808151650835": {
-      "style_key": "wrestling",
-      "style_name": "Wrestling",
-      "move_key": "m1_first",
+      "style": "Wrestling",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "79996486219181": {
-      "style_key": "wrestling",
-      "style_name": "Wrestling",
-      "move_key": "m1_second",
+      "style": "Wrestling",
       "name": "2nd M1",
       "delay": 0.2,
       "heavy": false
     },
     "115207134396914": {
-      "style_key": "wrestling",
-      "style_name": "Wrestling",
-      "move_key": "m1_third",
+      "style": "Wrestling",
       "name": "3rd M1",
       "delay": 0.22,
       "heavy": false
     },
     "74020075116139": {
-      "style_key": "wrestling",
-      "style_name": "Wrestling",
-      "move_key": "m1_fourth",
+      "style": "Wrestling",
       "name": "4th M1",
       "delay": 0.24,
       "heavy": false
     },
     "91419261625463": {
-      "style_key": "wrestling",
-      "style_name": "Wrestling",
-      "move_key": "m2",
+      "style": "Wrestling",
       "name": "M2",
       "delay": [
         0.42,
@@ -124,417 +1434,313 @@
       "heavy": true
     },
     "135984725924501": {
-      "style_key": "wrestling",
-      "style_name": "Wrestling",
-      "move_key": "m2ehit",
+      "style": "Wrestling",
       "name": "M2 EHit",
       "delay": 0.3,
       "heavy": true
     },
     "99774162066012": {
-      "style_key": "wrestling",
-      "style_name": "Wrestling",
-      "move_key": "m2success",
+      "style": "Wrestling",
       "name": "M2 Slam",
       "delay": 0.3,
       "heavy": true
     },
     "110917888708142": {
-      "style_key": "muay_thai",
-      "style_name": "Muay Thai",
-      "move_key": "m1_first",
+      "style": "Muay Thai",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "136830198456192": {
-      "style_key": "muay_thai",
-      "style_name": "Muay Thai",
-      "move_key": "m1_second",
+      "style": "Muay Thai",
       "name": "2nd M1",
       "delay": 0.17,
       "heavy": false
     },
     "103717575086418": {
-      "style_key": "muay_thai",
-      "style_name": "Muay Thai",
-      "move_key": "m1_third",
+      "style": "Muay Thai",
       "name": "3rd M1",
       "delay": 0.17,
       "heavy": false
     },
     "90445272780399": {
-      "style_key": "muay_thai",
-      "style_name": "Muay Thai",
-      "move_key": "m1_fourth",
+      "style": "Muay Thai",
       "name": "4th M1",
       "delay": 0.17,
       "heavy": false
     },
     "137299369381761": {
-      "style_key": "muay_thai",
-      "style_name": "Muay Thai",
-      "move_key": "m2",
+      "style": "Muay Thai",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "132913269853139": {
-      "style_key": "boxing",
-      "style_name": "Boxing",
-      "move_key": "m1_first",
+      "style": "Boxing",
       "name": "1st M1",
       "delay": 0.18,
       "heavy": false
     },
     "76033376851583": {
-      "style_key": "boxing",
-      "style_name": "Boxing",
-      "move_key": "m1_second",
+      "style": "Boxing",
       "name": "2nd M1",
       "delay": 0.18,
       "heavy": false
     },
     "126463147281440": {
-      "style_key": "boxing",
-      "style_name": "Boxing",
-      "move_key": "m1_third",
+      "style": "Boxing",
       "name": "3rd M1",
       "delay": 0.18,
       "heavy": false
     },
     "75666664304014": {
-      "style_key": "boxing",
-      "style_name": "Boxing",
-      "move_key": "m1_fourth",
+      "style": "Boxing",
       "name": "4th M1",
       "delay": 0.2,
       "heavy": false
     },
     "128921678079615": {
-      "style_key": "boxing",
-      "style_name": "Boxing",
-      "move_key": "m2",
+      "style": "Boxing",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "123215666398014": {
-      "style_key": "hakari",
-      "style_name": "Hakari",
-      "move_key": "m1_first",
+      "style": "Hakari",
       "name": "1st M1",
       "delay": 0.24,
       "heavy": false
     },
     "100249628136368": {
-      "style_key": "hakari",
-      "style_name": "Hakari",
-      "move_key": "m1_second",
+      "style": "Hakari",
       "name": "2nd M1",
       "delay": 0.25,
       "heavy": false
     },
     "101160496635774": {
-      "style_key": "hakari",
-      "style_name": "Hakari",
-      "move_key": "m1_third",
+      "style": "Hakari",
       "name": "3rd M1",
       "delay": 0.21,
       "heavy": false
     },
     "76458394174684": {
-      "style_key": "hakari",
-      "style_name": "Hakari",
-      "move_key": "m1_fourth",
+      "style": "Hakari",
       "name": "4th M1",
       "delay": 0.26,
       "heavy": false
     },
     "78127273702521": {
-      "style_key": "hakari",
-      "style_name": "Hakari",
-      "move_key": "m2",
+      "style": "Hakari",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "137954350192006": {
-      "style_key": "hakari",
-      "style_name": "Hakari",
-      "move_key": "momentumm2",
+      "style": "Hakari",
       "name": "Momentum M2",
       "delay": 0.3,
       "heavy": true
     },
     "117925051452801": {
-      "style_key": "hakari_variant",
-      "style_name": "Hakari (Variant)",
-      "move_key": "m1_first",
+      "style": "Hakari (Variant)",
       "name": "1st M1",
       "delay": 0.24,
       "heavy": false
     },
     "122040023429227": {
-      "style_key": "hakari_variant",
-      "style_name": "Hakari (Variant)",
-      "move_key": "m1_second",
+      "style": "Hakari (Variant)",
       "name": "2nd M1",
       "delay": 0.25,
       "heavy": false
     },
     "126306184412990": {
-      "style_key": "hakari_variant",
-      "style_name": "Hakari (Variant)",
-      "move_key": "m1_third",
+      "style": "Hakari (Variant)",
       "name": "3rd M1",
       "delay": 0.21,
       "heavy": false
     },
     "85805632651129": {
-      "style_key": "hakari_variant",
-      "style_name": "Hakari (Variant)",
-      "move_key": "m1_fourth",
+      "style": "Hakari (Variant)",
       "name": "4th M1",
       "delay": 0.26,
       "heavy": false
     },
     "127394334888645": {
-      "style_key": "hakari_variant",
-      "style_name": "Hakari (Variant)",
-      "move_key": "m2",
+      "style": "Hakari (Variant)",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "106589382211868": {
-      "style_key": "hakari_variant",
-      "style_name": "Hakari (Variant)",
-      "move_key": "momentumm2",
+      "style": "Hakari (Variant)",
       "name": "Momentum M2",
       "delay": 0.3,
       "heavy": true
     },
     "91953931348325": {
-      "style_key": "capoeira",
-      "style_name": "Capoeira",
-      "move_key": "m1_first",
+      "style": "Capoeira",
       "name": "1st M1",
       "delay": 0.18,
       "heavy": false
     },
     "127465095270110": {
-      "style_key": "capoeira",
-      "style_name": "Capoeira",
-      "move_key": "m1_second",
+      "style": "Capoeira",
       "name": "2nd M1",
       "delay": 0.22,
       "heavy": false
     },
     "79017113400162": {
-      "style_key": "capoeira",
-      "style_name": "Capoeira",
-      "move_key": "m1_third",
+      "style": "Capoeira",
       "name": "3rd M1",
       "delay": 0.18,
       "heavy": false
     },
     "98872276178039": {
-      "style_key": "capoeira",
-      "style_name": "Capoeira",
-      "move_key": "m1_fourth",
+      "style": "Capoeira",
       "name": "4th M1",
       "delay": 0.14,
       "heavy": false
     },
     "101740002500802": {
-      "style_key": "capoeira",
-      "style_name": "Capoeira",
-      "move_key": "m2",
+      "style": "Capoeira",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "78852386182257": {
-      "style_key": "slugger",
-      "style_name": "Slugger",
-      "move_key": "m1_first",
+      "style": "Slugger",
       "name": "1st M1",
       "delay": 0.33,
       "heavy": false
     },
     "89706363973188": {
-      "style_key": "slugger",
-      "style_name": "Slugger",
-      "move_key": "m1_second",
+      "style": "Slugger",
       "name": "2nd M1",
       "delay": 0.3,
       "heavy": false
     },
     "127941398150401": {
-      "style_key": "slugger",
-      "style_name": "Slugger",
-      "move_key": "m1_third",
+      "style": "Slugger",
       "name": "3rd M1",
       "delay": 0.3,
       "heavy": false
     },
     "97696355281722": {
-      "style_key": "slugger",
-      "style_name": "Slugger",
-      "move_key": "m1_fourth",
+      "style": "Slugger",
       "name": "4th M1",
       "delay": 0.26,
       "heavy": false
     },
     "86882821333237": {
-      "style_key": "slugger",
-      "style_name": "Slugger",
-      "move_key": "m2",
+      "style": "Slugger",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "89598700542051": {
-      "style_key": "kure",
-      "style_name": "Kure",
-      "move_key": "m1_first",
+      "style": "Kure",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "84100769626105": {
-      "style_key": "kure",
-      "style_name": "Kure",
-      "move_key": "m1_second",
+      "style": "Kure",
       "name": "2nd M1",
       "delay": 0.17,
       "heavy": false
     },
     "75725487794798": {
-      "style_key": "kure",
-      "style_name": "Kure",
-      "move_key": "m1_third",
+      "style": "Kure",
       "name": "3rd M1",
       "delay": 0.17,
       "heavy": false
     },
     "103586798765773": {
-      "style_key": "kure",
-      "style_name": "Kure",
-      "move_key": "m1_fourth",
+      "style": "Kure",
       "name": "4th M1",
       "delay": 0.17,
       "heavy": false
     },
     "128246407698779": {
-      "style_key": "kure",
-      "style_name": "Kure",
-      "move_key": "m2",
+      "style": "Kure",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "83588777426626": {
-      "style_key": "kure",
-      "style_name": "Kure",
-      "move_key": "crit_startup",
+      "style": "Kure",
       "name": "Crit Startup",
       "delay": 0.3,
       "heavy": true
     },
     "104060526539640": {
-      "style_key": "kure",
-      "style_name": "Kure",
-      "move_key": "m2ehit",
+      "style": "Kure",
       "name": "M2 EHit",
       "delay": 0.3,
       "heavy": true
     },
     "103211517133243": {
-      "style_key": "ali",
-      "style_name": "Ali",
-      "move_key": "m1_first",
+      "style": "Ali",
       "name": "1st M1",
       "delay": 0.2,
       "heavy": false
     },
     "88548871262625": {
-      "style_key": "ali",
-      "style_name": "Ali",
-      "move_key": "m1_second",
+      "style": "Ali",
       "name": "2nd M1",
       "delay": 0.25,
       "heavy": false
     },
     "104356393941647": {
-      "style_key": "ali",
-      "style_name": "Ali",
-      "move_key": "m1_third",
+      "style": "Ali",
       "name": "3rd M1",
       "delay": 0.27,
       "heavy": false
     },
     "109925400698635": {
-      "style_key": "ali",
-      "style_name": "Ali",
-      "move_key": "m1_fourth",
+      "style": "Ali",
       "name": "4th M1",
       "delay": 0.17,
       "heavy": false
     },
     "92831721340116": {
-      "style_key": "ali",
-      "style_name": "Ali",
-      "move_key": "m2",
+      "style": "Ali",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "81488798354194": {
-      "style_key": "ali",
-      "style_name": "Ali",
-      "move_key": "m2right",
+      "style": "Ali",
       "name": "M2 Right",
       "delay": 0.3,
       "heavy": true
     },
     "94976161225956": {
-      "style_key": "wing_chun",
-      "style_name": "Wing Chun",
-      "move_key": "m1_first",
+      "style": "Wing Chun",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "130903067566077": {
-      "style_key": "wing_chun",
-      "style_name": "Wing Chun",
-      "move_key": "m1_second",
+      "style": "Wing Chun",
       "name": "2nd M1",
       "delay": 0.17,
       "heavy": false
     },
     "139503477666199": {
-      "style_key": "wing_chun",
-      "style_name": "Wing Chun",
-      "move_key": "m1_third",
+      "style": "Wing Chun",
       "name": "3rd M1",
       "delay": 0.17,
       "heavy": false
     },
     "135699957281468": {
-      "style_key": "wing_chun",
-      "style_name": "Wing Chun",
-      "move_key": "m1_fourth",
+      "style": "Wing Chun",
       "name": "4th M1",
       "delay": 0.38,
       "heavy": false
     },
     "125237241325107": {
-      "style_key": "wing_chun",
-      "style_name": "Wing Chun",
-      "move_key": "m2",
+      "style": "Wing Chun",
       "name": "M2",
       "delay": [
         0.42,
@@ -543,217 +1749,163 @@
       "heavy": true
     },
     "138270482936731": {
-      "style_key": "kickboxing",
-      "style_name": "Kickboxing",
-      "move_key": "m2ehit",
+      "style": "Kickboxing",
       "name": "M2 EHit",
       "delay": 0.3,
       "heavy": true
     },
     "140240091451745": {
-      "style_key": "kickboxing",
-      "style_name": "Kickboxing",
-      "move_key": "m2success",
+      "style": "Kickboxing",
       "name": "M2 Finisher",
       "delay": 0.3,
       "heavy": true
     },
-    "79224782278508": {
-      "style_key": "striker",
-      "style_name": "Striker",
-      "move_key": "m1_first",
-      "name": "1st M1",
-      "delay": 0.17,
-      "heavy": false
-    },
-    "74337052553355": {
-      "style_key": "striker",
-      "style_name": "Striker",
-      "move_key": "m1_second",
-      "name": "2nd M1",
-      "delay": 0.17,
-      "heavy": false
-    },
-    "121264916189386": {
-      "style_key": "striker",
-      "style_name": "Striker",
-      "move_key": "m1_third",
-      "name": "3rd M1",
-      "delay": 0.11,
-      "heavy": false
-    },
-    "125556631043249": {
-      "style_key": "striker",
-      "style_name": "Striker",
-      "move_key": "m1_fourth",
-      "name": "4th M1",
-      "delay": 0.05,
-      "heavy": false
-    },
-    "128600830397859": {
-      "style_key": "striker",
-      "style_name": "Striker",
-      "move_key": "m2",
-      "name": "M2",
-      "delay": 0.3,
-      "heavy": true
-    },
     "127679697578124": {
-      "style_key": "kickboxing",
-      "style_name": "Kickboxing",
-      "move_key": "m1_first",
+      "style": "Kickboxing",
       "name": "1st M1",
       "delay": 0.14,
       "heavy": false
     },
     "111648334200984": {
-      "style_key": "kickboxing",
-      "style_name": "Kickboxing",
-      "move_key": "m1_second",
+      "style": "Kickboxing",
       "name": "2nd M1",
       "delay": 0.17,
       "heavy": false
     },
     "109134308246065": {
-      "style_key": "kickboxing",
-      "style_name": "Kickboxing",
-      "move_key": "m1_third",
+      "style": "Kickboxing",
       "name": "3rd M1",
       "delay": 0.23,
       "heavy": false
     },
     "123237866254734": {
-      "style_key": "kickboxing",
-      "style_name": "Kickboxing",
-      "move_key": "m1_fourth",
+      "style": "Kickboxing",
       "name": "4th M1",
       "delay": 0.29,
       "heavy": false
     },
     "119415047601579": {
-      "style_key": "kickboxing",
-      "style_name": "Kickboxing",
-      "move_key": "m2",
+      "style": "Kickboxing",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "79224782278508": {
+      "style": "Striker",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "74337052553355": {
+      "style": "Striker",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "121264916189386": {
+      "style": "Striker",
+      "name": "3rd M1",
+      "delay": 0.11,
+      "heavy": false
+    },
+    "125556631043249": {
+      "style": "Striker",
+      "name": "4th M1",
+      "delay": 0.05,
+      "heavy": false
+    },
+    "128600830397859": {
+      "style": "Striker",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "108157433609067": {
-      "style_key": "kyokushin",
-      "style_name": "Kyokushin",
-      "move_key": "m1_first",
+      "style": "Kyokushin",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "139691512657916": {
-      "style_key": "kyokushin",
-      "style_name": "Kyokushin",
-      "move_key": "m1_second",
+      "style": "Kyokushin",
       "name": "2nd M1",
       "delay": 0.21,
       "heavy": false
     },
     "94267870513016": {
-      "style_key": "kyokushin",
-      "style_name": "Kyokushin",
-      "move_key": "m1_third",
+      "style": "Kyokushin",
       "name": "3rd M1",
       "delay": 0.21,
       "heavy": false
     },
     "107365196082362": {
-      "style_key": "kyokushin",
-      "style_name": "Kyokushin",
-      "move_key": "m1_fourth",
+      "style": "Kyokushin",
       "name": "4th M1",
       "delay": 0.33,
       "heavy": false
     },
     "80822959210741": {
-      "style_key": "kyokushin",
-      "style_name": "Kyokushin",
-      "move_key": "m2",
+      "style": "Kyokushin",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "80051878176163": {
-      "style_key": "cqc",
-      "style_name": "CQC",
-      "move_key": "m1_first",
+      "style": "CQC",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "112809686330315": {
-      "style_key": "cqc",
-      "style_name": "CQC",
-      "move_key": "m1_second",
+      "style": "CQC",
       "name": "2nd M1",
       "delay": 0.17,
       "heavy": false
     },
     "96690751054332": {
-      "style_key": "cqc",
-      "style_name": "CQC",
-      "move_key": "m1_third",
+      "style": "CQC",
       "name": "3rd M1",
       "delay": 0.12,
       "heavy": false
     },
     "75394567475187": {
-      "style_key": "cqc",
-      "style_name": "CQC",
-      "move_key": "m1_fourth",
+      "style": "CQC",
       "name": "4th M1",
       "delay": 0.22,
       "heavy": false
     },
     "136636440521127": {
-      "style_key": "cqc",
-      "style_name": "CQC",
-      "move_key": "m2",
+      "style": "CQC",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "122564675454774": {
-      "style_key": "mishima",
-      "style_name": "Mishima",
-      "move_key": "m1_first",
+      "style": "Mishima",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "124288660244802": {
-      "style_key": "mishima",
-      "style_name": "Mishima",
-      "move_key": "m1_second",
+      "style": "Mishima",
       "name": "2nd M1",
       "delay": 0.16,
       "heavy": false
     },
     "116344736444569": {
-      "style_key": "mishima",
-      "style_name": "Mishima",
-      "move_key": "m1_third",
+      "style": "Mishima",
       "name": "3rd M1",
       "delay": 0.23,
       "heavy": false
     },
     "109354190051977": {
-      "style_key": "mishima",
-      "style_name": "Mishima",
-      "move_key": "m1_fourth",
+      "style": "Mishima",
       "name": "4th M1",
       "delay": 0.24,
       "heavy": false
     },
     "113531813891302": {
-      "style_key": "mishima",
-      "style_name": "Mishima",
-      "move_key": "m2",
+      "style": "Mishima",
       "name": "M2",
       "delay": [
         0.42,
@@ -762,1162 +1914,769 @@
       "heavy": true
     },
     "126845586831338": {
-      "style_key": "lethwei",
-      "style_name": "Lethwei",
-      "move_key": "m1_first",
+      "style": "Lethwei",
       "name": "1st M1",
       "delay": 0.23,
       "heavy": false
     },
     "111506889308405": {
-      "style_key": "lethwei",
-      "style_name": "Lethwei",
-      "move_key": "m1_second",
+      "style": "Lethwei",
       "name": "2nd M1",
       "delay": 0.23,
       "heavy": false
     },
     "93862547414782": {
-      "style_key": "lethwei",
-      "style_name": "Lethwei",
-      "move_key": "m1_third",
+      "style": "Lethwei",
       "name": "3rd M1",
       "delay": 0.2,
       "heavy": false
     },
     "81747456615347": {
-      "style_key": "lethwei",
-      "style_name": "Lethwei",
-      "move_key": "m1_fourth",
+      "style": "Lethwei",
       "name": "4th M1",
       "delay": 0.17,
       "heavy": false
     },
     "98256190530845": {
-      "style_key": "lethwei",
-      "style_name": "Lethwei",
-      "move_key": "m2",
+      "style": "Lethwei",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "84055640813946": {
-      "style_key": "copycat",
-      "style_name": "CopyCat",
-      "move_key": "m1_first",
+      "style": "CopyCat",
       "name": "1st M1",
       "delay": 0.19,
       "heavy": false
     },
     "95173956739250": {
-      "style_key": "copycat",
-      "style_name": "CopyCat",
-      "move_key": "m1_second",
+      "style": "CopyCat",
       "name": "2nd M1",
       "delay": 0.15,
       "heavy": false
     },
     "70530995058811": {
-      "style_key": "copycat",
-      "style_name": "CopyCat",
-      "move_key": "m1_third",
+      "style": "CopyCat",
       "name": "3rd M1",
       "delay": 0.17,
       "heavy": false
     },
     "82940625976948": {
-      "style_key": "copycat",
-      "style_name": "CopyCat",
-      "move_key": "m1_fourth",
+      "style": "CopyCat",
       "name": "4th M1",
       "delay": 0.17,
       "heavy": false
     },
     "134804100456499": {
-      "style_key": "copycat",
-      "style_name": "CopyCat",
-      "move_key": "m2",
+      "style": "CopyCat",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "127162724647231": {
-      "style_key": "taekwondo",
-      "style_name": "Taekwondo",
-      "move_key": "m1_first",
+      "style": "Taekwondo",
       "name": "1st M1",
       "delay": 0.18,
       "heavy": false
     },
     "74741725976396": {
-      "style_key": "taekwondo",
-      "style_name": "Taekwondo",
-      "move_key": "m1_second",
+      "style": "Taekwondo",
       "name": "2nd M1",
       "delay": 0.17,
       "heavy": false
     },
     "120810373659991": {
-      "style_key": "taekwondo",
-      "style_name": "Taekwondo",
-      "move_key": "m1_third",
+      "style": "Taekwondo",
       "name": "3rd M1",
       "delay": 0.11,
       "heavy": false
     },
     "88180036756573": {
-      "style_key": "taekwondo",
-      "style_name": "Taekwondo",
-      "move_key": "m1_fourth",
+      "style": "Taekwondo",
       "name": "4th M1",
       "delay": 0.27,
       "heavy": false
     },
     "116055164693814": {
-      "style_key": "taekwondo",
-      "style_name": "Taekwondo",
-      "move_key": "m2",
+      "style": "Taekwondo",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "131676325229431": {
-      "style_key": "judo",
-      "style_name": "Judo",
-      "move_key": "m1_first",
+      "style": "Judo",
       "name": "1st M1",
       "delay": 0.25,
       "heavy": false
     },
     "102601773653434": {
-      "style_key": "judo",
-      "style_name": "Judo",
-      "move_key": "m1_second",
+      "style": "Judo",
       "name": "2nd M1",
       "delay": 0.33,
       "heavy": false
     },
     "107243109261247": {
-      "style_key": "judo",
-      "style_name": "Judo",
-      "move_key": "m1_third",
+      "style": "Judo",
       "name": "3rd M1",
       "delay": 0.27,
       "heavy": false
     },
     "140395542309510": {
-      "style_key": "judo",
-      "style_name": "Judo",
-      "move_key": "m1_fourth",
+      "style": "Judo",
       "name": "4th M1",
       "delay": 0.16,
       "heavy": false
     },
     "105631504597837": {
-      "style_key": "judo",
-      "style_name": "Judo",
-      "move_key": "m2",
+      "style": "Judo",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "111990692180770": {
-      "style_key": "judo",
-      "style_name": "Judo",
-      "move_key": "m2ehit",
+      "style": "Judo",
       "name": "M2 EHit",
       "delay": 0.3,
       "heavy": true
     },
     "124483626693051": {
-      "style_key": "judo",
-      "style_name": "Judo",
-      "move_key": "m2success",
+      "style": "Judo",
       "name": "M2 Success",
       "delay": 0.3,
       "heavy": true
     },
     "90632031214738": {
-      "style_key": "dragon",
-      "style_name": "Dragon",
-      "move_key": "m1_first",
+      "style": "Dragon",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "129870265426519": {
-      "style_key": "dragon",
-      "style_name": "Dragon",
-      "move_key": "m1_second",
+      "style": "Dragon",
       "name": "2nd M1",
       "delay": 0.2,
       "heavy": false
     },
     "103119271372106": {
-      "style_key": "dragon",
-      "style_name": "Dragon",
-      "move_key": "m1_third",
+      "style": "Dragon",
       "name": "3rd M1",
       "delay": 0.14,
       "heavy": false
     },
     "81350056849630": {
-      "style_key": "dragon",
-      "style_name": "Dragon",
-      "move_key": "m1_fourth",
+      "style": "Dragon",
       "name": "4th M1",
       "delay": 0.17,
       "heavy": false
     },
     "101059515516534": {
-      "style_key": "dragon",
-      "style_name": "Dragon",
-      "move_key": "m2",
+      "style": "Dragon",
       "name": "M2",
       "delay": 0.3,
       "heavy": true
     },
     "101850612921423": {
-      "style_key": "dragon",
-      "style_name": "Dragon",
-      "move_key": "m2miss",
+      "style": "Dragon",
       "name": "M2 Miss",
       "delay": 0.3,
       "heavy": true
     },
     "89404705737555": {
-      "style_key": "jin",
-      "style_name": "Jin",
-      "move_key": "m1_first",
+      "style": "Jin",
       "name": "1st M1",
       "delay": 0.17,
       "heavy": false
     },
     "126407816250012": {
-      "style_key": "jin",
-      "style_name": "Jin",
-      "move_key": "m1_second",
+      "style": "Jin",
       "name": "2nd M1",
       "delay": 0.3,
       "heavy": false
     },
     "111599179234006": {
-      "style_key": "jin",
-      "style_name": "Jin",
-      "move_key": "m1_third",
+      "style": "Jin",
       "name": "3rd M1",
       "delay": 0.18,
       "heavy": false
     },
     "115508221180588": {
-      "style_key": "jin",
-      "style_name": "Jin",
-      "move_key": "m1_fourth",
+      "style": "Jin",
       "name": "4th M1",
       "delay": 0.31,
       "heavy": false
     },
     "90986005545750": {
-      "style_key": "jin",
-      "style_name": "Jin",
-      "move_key": "m2",
+      "style": "Jin",
       "name": "M2",
       "delay": [
         0.28,
         0.83
       ],
       "heavy": true
-    }
-  },
-  "styles": {
-    "karate": {
-      "name": "Karate",
-      "moves": {
-        "m1_first": {
-          "id": "136346659171696",
-          "name": "1st M1",
-          "delay": 0.19,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "137514920199894",
-          "name": "2nd M1",
-          "delay": 0.21,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "72779501873271",
-          "name": "3rd M1",
-          "delay": 0.25,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "127487637547915",
-          "name": "4th M1",
-          "delay": 0.29,
-          "heavy": false
-        },
-        "m2": {
-          "id": "116278224437295",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
     },
-    "basic": {
-      "name": "Basic",
-      "moves": {
-        "m1_first": {
-          "id": "100661797632126",
-          "name": "1st M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "117315538657801",
-          "name": "2nd M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "83771012317903",
-          "name": "3rd M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "129031831390386",
-          "name": "4th M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m2": {
-          "id": "80331331149375",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "112772003891760": {
+      "style": "Taijutsu",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "wrestling": {
-      "name": "Wrestling",
-      "moves": {
-        "m1_first": {
-          "id": "124808151650835",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "79996486219181",
-          "name": "2nd M1",
-          "delay": 0.2,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "115207134396914",
-          "name": "3rd M1",
-          "delay": 0.22,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "74020075116139",
-          "name": "4th M1",
-          "delay": 0.24,
-          "heavy": false
-        },
-        "m2": {
-          "id": "91419261625463",
-          "name": "M2",
-          "delay": [
-            0.42,
-            0.95
-          ],
-          "heavy": true
-        },
-        "m2ehit": {
-          "id": "135984725924501",
-          "name": "M2 EHit",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m2success": {
-          "id": "99774162066012",
-          "name": "M2 Slam",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "120968355159054": {
+      "style": "Taijutsu",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "muay_thai": {
-      "name": "Muay Thai",
-      "moves": {
-        "m1_first": {
-          "id": "110917888708142",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "136830198456192",
-          "name": "2nd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "103717575086418",
-          "name": "3rd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "90445272780399",
-          "name": "4th M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m2": {
-          "id": "137299369381761",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "134363734889174": {
+      "style": "Taijutsu",
+      "name": "3rd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "boxing": {
-      "name": "Boxing",
-      "moves": {
-        "m1_first": {
-          "id": "132913269853139",
-          "name": "1st M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "76033376851583",
-          "name": "2nd M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "126463147281440",
-          "name": "3rd M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "75666664304014",
-          "name": "4th M1",
-          "delay": 0.2,
-          "heavy": false
-        },
-        "m2": {
-          "id": "128921678079615",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "140439623648569": {
+      "style": "Taijutsu",
+      "name": "4th M1",
+      "delay": 0.2,
+      "heavy": false
     },
-    "hakari": {
-      "name": "Hakari",
-      "moves": {
-        "m1_first": {
-          "id": "123215666398014",
-          "name": "1st M1",
-          "delay": 0.24,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "100249628136368",
-          "name": "2nd M1",
-          "delay": 0.25,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "101160496635774",
-          "name": "3rd M1",
-          "delay": 0.21,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "76458394174684",
-          "name": "4th M1",
-          "delay": 0.26,
-          "heavy": false
-        },
-        "m2": {
-          "id": "78127273702521",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "momentumm2": {
-          "id": "137954350192006",
-          "name": "Momentum M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "70666956463595": {
+      "style": "Taijutsu",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
     },
-    "hakari_variant": {
-      "name": "Hakari (Variant)",
-      "moves": {
-        "m1_first": {
-          "id": "117925051452801",
-          "name": "1st M1",
-          "delay": 0.24,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "122040023429227",
-          "name": "2nd M1",
-          "delay": 0.25,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "126306184412990",
-          "name": "3rd M1",
-          "delay": 0.21,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "85805632651129",
-          "name": "4th M1",
-          "delay": 0.26,
-          "heavy": false
-        },
-        "m2": {
-          "id": "127394334888645",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "momentumm2": {
-          "id": "106589382211868",
-          "name": "Momentum M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "101667835774312": {
+      "style": "Aikido",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "capoeira": {
-      "name": "Capoeira",
-      "moves": {
-        "m1_first": {
-          "id": "91953931348325",
-          "name": "1st M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "127465095270110",
-          "name": "2nd M1",
-          "delay": 0.22,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "79017113400162",
-          "name": "3rd M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "98872276178039",
-          "name": "4th M1",
-          "delay": 0.14,
-          "heavy": false
-        },
-        "m2": {
-          "id": "101740002500802",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "72100016327641": {
+      "style": "Aikido",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "slugger": {
-      "name": "Slugger",
-      "moves": {
-        "m1_first": {
-          "id": "78852386182257",
-          "name": "1st M1",
-          "delay": 0.33,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "89706363973188",
-          "name": "2nd M1",
-          "delay": 0.3,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "127941398150401",
-          "name": "3rd M1",
-          "delay": 0.3,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "97696355281722",
-          "name": "4th M1",
-          "delay": 0.26,
-          "heavy": false
-        },
-        "m2": {
-          "id": "86882821333237",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "86622096544948": {
+      "style": "Aikido",
+      "name": "3rd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "kure": {
-      "name": "Kure",
-      "moves": {
-        "m1_first": {
-          "id": "89598700542051",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "84100769626105",
-          "name": "2nd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "75725487794798",
-          "name": "3rd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "103586798765773",
-          "name": "4th M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m2": {
-          "id": "128246407698779",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "crit_startup": {
-          "id": "83588777426626",
-          "name": "Crit Startup",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m2ehit": {
-          "id": "104060526539640",
-          "name": "M2 EHit",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "116579071175823": {
+      "style": "Aikido",
+      "name": "4th M1",
+      "delay": 0.2,
+      "heavy": false
     },
-    "ali": {
-      "name": "Ali",
-      "moves": {
-        "m1_first": {
-          "id": "103211517133243",
-          "name": "1st M1",
-          "delay": 0.2,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "88548871262625",
-          "name": "2nd M1",
-          "delay": 0.25,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "104356393941647",
-          "name": "3rd M1",
-          "delay": 0.27,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "109925400698635",
-          "name": "4th M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m2": {
-          "id": "92831721340116",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m2right": {
-          "id": "81488798354194",
-          "name": "M2 Right",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "113723231962801": {
+      "style": "Aikido",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
     },
-    "wing_chun": {
-      "name": "Wing Chun",
-      "moves": {
-        "m1_first": {
-          "id": "94976161225956",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "130903067566077",
-          "name": "2nd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "139503477666199",
-          "name": "3rd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "135699957281468",
-          "name": "4th M1",
-          "delay": 0.38,
-          "heavy": false
-        },
-        "m2": {
-          "id": "125237241325107",
-          "name": "M2",
-          "delay": [
-            0.42,
-            0.95
-          ],
-          "heavy": true
-        }
-      }
+    "107454499541345": {
+      "style": "Aikido",
+      "name": "M2 Success",
+      "delay": 0.3,
+      "heavy": true
     },
-    "kickboxing": {
-      "name": "Kickboxing",
-      "moves": {
-        "m2ehit": {
-          "id": "138270482936731",
-          "name": "M2 EHit",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m2success": {
-          "id": "140240091451745",
-          "name": "M2 Finisher",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m1_first": {
-          "id": "127679697578124",
-          "name": "1st M1",
-          "delay": 0.14,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "111648334200984",
-          "name": "2nd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "109134308246065",
-          "name": "3rd M1",
-          "delay": 0.23,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "123237866254734",
-          "name": "4th M1",
-          "delay": 0.29,
-          "heavy": false
-        },
-        "m2": {
-          "id": "119415047601579",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "130029540124933": {
+      "style": "Aikido",
+      "name": "M2 EHit",
+      "delay": 0.3,
+      "heavy": true
     },
-    "striker": {
-      "name": "Striker",
-      "moves": {
-        "m1_first": {
-          "id": "79224782278508",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "74337052553355",
-          "name": "2nd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "121264916189386",
-          "name": "3rd M1",
-          "delay": 0.11,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "125556631043249",
-          "name": "4th M1",
-          "delay": 0.05,
-          "heavy": false
-        },
-        "m2": {
-          "id": "128600830397859",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "109471728828625": {
+      "style": "Hikaken",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "kyokushin": {
-      "name": "Kyokushin",
-      "moves": {
-        "m1_first": {
-          "id": "108157433609067",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "139691512657916",
-          "name": "2nd M1",
-          "delay": 0.21,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "94267870513016",
-          "name": "3rd M1",
-          "delay": 0.21,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "107365196082362",
-          "name": "4th M1",
-          "delay": 0.33,
-          "heavy": false
-        },
-        "m2": {
-          "id": "80822959210741",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "92152402802393": {
+      "style": "Hikaken",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "cqc": {
-      "name": "CQC",
-      "moves": {
-        "m1_first": {
-          "id": "80051878176163",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "112809686330315",
-          "name": "2nd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "96690751054332",
-          "name": "3rd M1",
-          "delay": 0.12,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "75394567475187",
-          "name": "4th M1",
-          "delay": 0.22,
-          "heavy": false
-        },
-        "m2": {
-          "id": "136636440521127",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "139736320509560": {
+      "style": "Hikaken",
+      "name": "3rd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "mishima": {
-      "name": "Mishima",
-      "moves": {
-        "m1_first": {
-          "id": "122564675454774",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "124288660244802",
-          "name": "2nd M1",
-          "delay": 0.16,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "116344736444569",
-          "name": "3rd M1",
-          "delay": 0.23,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "109354190051977",
-          "name": "4th M1",
-          "delay": 0.24,
-          "heavy": false
-        },
-        "m2": {
-          "id": "113531813891302",
-          "name": "M2",
-          "delay": [
-            0.42,
-            0.95
-          ],
-          "heavy": true
-        }
-      }
+    "80033824766939": {
+      "style": "Hikaken",
+      "name": "4th M1",
+      "delay": 0.2,
+      "heavy": false
     },
-    "lethwei": {
-      "name": "Lethwei",
-      "moves": {
-        "m1_first": {
-          "id": "126845586831338",
-          "name": "1st M1",
-          "delay": 0.23,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "111506889308405",
-          "name": "2nd M1",
-          "delay": 0.23,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "93862547414782",
-          "name": "3rd M1",
-          "delay": 0.2,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "81747456615347",
-          "name": "4th M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m2": {
-          "id": "98256190530845",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "94916233438251": {
+      "style": "Hikaken",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
     },
-    "copycat": {
-      "name": "CopyCat",
-      "moves": {
-        "m1_first": {
-          "id": "84055640813946",
-          "name": "1st M1",
-          "delay": 0.19,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "95173956739250",
-          "name": "2nd M1",
-          "delay": 0.15,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "70530995058811",
-          "name": "3rd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "82940625976948",
-          "name": "4th M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m2": {
-          "id": "134804100456499",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "135716459366783": {
+      "style": "Giovanna",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "taekwondo": {
-      "name": "Taekwondo",
-      "moves": {
-        "m1_first": {
-          "id": "127162724647231",
-          "name": "1st M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "74741725976396",
-          "name": "2nd M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "120810373659991",
-          "name": "3rd M1",
-          "delay": 0.11,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "88180036756573",
-          "name": "4th M1",
-          "delay": 0.27,
-          "heavy": false
-        },
-        "m2": {
-          "id": "116055164693814",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "128178940723536": {
+      "style": "Giovanna",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "judo": {
-      "name": "Judo",
-      "moves": {
-        "m1_first": {
-          "id": "131676325229431",
-          "name": "1st M1",
-          "delay": 0.25,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "102601773653434",
-          "name": "2nd M1",
-          "delay": 0.33,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "107243109261247",
-          "name": "3rd M1",
-          "delay": 0.27,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "140395542309510",
-          "name": "4th M1",
-          "delay": 0.16,
-          "heavy": false
-        },
-        "m2": {
-          "id": "105631504597837",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m2ehit": {
-          "id": "111990692180770",
-          "name": "M2 EHit",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m2success": {
-          "id": "124483626693051",
-          "name": "M2 Success",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "133339208745195": {
+      "style": "Giovanna",
+      "name": "3rd M1",
+      "delay": 0.17,
+      "heavy": false
     },
-    "dragon": {
-      "name": "Dragon",
-      "moves": {
-        "m1_first": {
-          "id": "90632031214738",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "129870265426519",
-          "name": "2nd M1",
-          "delay": 0.2,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "103119271372106",
-          "name": "3rd M1",
-          "delay": 0.14,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "81350056849630",
-          "name": "4th M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m2": {
-          "id": "101059515516534",
-          "name": "M2",
-          "delay": 0.3,
-          "heavy": true
-        },
-        "m2miss": {
-          "id": "101850612921423",
-          "name": "M2 Miss",
-          "delay": 0.3,
-          "heavy": true
-        }
-      }
+    "129619149164145": {
+      "style": "Giovanna",
+      "name": "4th M1",
+      "delay": 0.2,
+      "heavy": false
     },
-    "jin": {
-      "name": "Jin",
-      "moves": {
-        "m1_first": {
-          "id": "89404705737555",
-          "name": "1st M1",
-          "delay": 0.17,
-          "heavy": false
-        },
-        "m1_second": {
-          "id": "126407816250012",
-          "name": "2nd M1",
-          "delay": 0.3,
-          "heavy": false
-        },
-        "m1_third": {
-          "id": "111599179234006",
-          "name": "3rd M1",
-          "delay": 0.18,
-          "heavy": false
-        },
-        "m1_fourth": {
-          "id": "115508221180588",
-          "name": "4th M1",
-          "delay": 0.31,
-          "heavy": false
-        },
-        "m2": {
-          "id": "90986005545750",
-          "name": "M2",
-          "delay": [
-            0.28,
-            0.83
-          ],
-          "heavy": true
-        }
-      }
+    "84500842912133": {
+      "style": "Giovanna",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "89266206062347": {
+      "style": "Perfect Copy",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "118618177788645": {
+      "style": "Perfect Copy",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "92563642848078": {
+      "style": "Perfect Copy",
+      "name": "3rd M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "129685126037621": {
+      "style": "Perfect Copy",
+      "name": "4th M1",
+      "delay": 0.2,
+      "heavy": false
+    },
+    "84779382426562": {
+      "style": "Perfect Copy",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "123851034848865": {
+      "style": "Perfect Copy",
+      "name": "M2 Success",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "137225244692889": {
+      "style": "Perfect Copy",
+      "name": "M2 EHit",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "126358896579477": {
+      "style": "Senbonzakura",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "127267155580119": {
+      "style": "Senbonzakura",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "91120009064764": {
+      "style": "Senbonzakura",
+      "name": "3rd M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "93473540765727": {
+      "style": "Senbonzakura",
+      "name": "4th M1",
+      "delay": 0.2,
+      "heavy": false
+    },
+    "105229788987423": {
+      "style": "Senbonzakura",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "139206768214496": {
+      "style": "Hyoga",
+      "name": "1st M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "129020734841822": {
+      "style": "Hyoga",
+      "name": "2nd M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "138116754294271": {
+      "style": "Hyoga",
+      "name": "3rd M1",
+      "delay": 0.17,
+      "heavy": false
+    },
+    "114411300017160": {
+      "style": "Hyoga",
+      "name": "4th M1",
+      "delay": 0.2,
+      "heavy": false
+    },
+    "133838614198966": {
+      "style": "Hyoga",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "123886678066843": {
+      "style": "Grappling",
+      "name": "Attacker",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "127871355254284": {
+      "style": "Grappling",
+      "name": "Dirty Attacker",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "84606073717547": {
+      "style": "Awakened",
+      "name": "Karate M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "100495393065612": {
+      "style": "Awakened",
+      "name": "Lethwei M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "98093690066880": {
+      "style": "Awakened",
+      "name": "Lethwei M2 Part 2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "83352556099235": {
+      "style": "Awakened",
+      "name": "Wrestling M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "75242679689255": {
+      "style": "Awakened",
+      "name": "Wrestling M2 Success",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "96555514012404": {
+      "style": "Awakened",
+      "name": "Wrestling M2 EHit",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "85984892267786": {
+      "style": "Awakened",
+      "name": "Jin M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "132891856788045": {
+      "style": "Awakened",
+      "name": "Boxing M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "82076026376495": {
+      "style": "Awakened",
+      "name": "Hakari M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "139458993289546": {
+      "style": "Awakened",
+      "name": "Taijutsu M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "124394929276448": {
+      "style": "Awakened",
+      "name": "Muay Thai M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "121882498328395": {
+      "style": "Awakened",
+      "name": "Muay Thai M2 Success",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "110601508550096": {
+      "style": "Awakened",
+      "name": "Muay Thai M2 EHit",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "84849479349093": {
+      "style": "Striker",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "123745954146403": {
+      "style": "Kyokushin",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "114512282674579": {
+      "style": "Kyokushin",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "130425467895214": {
+      "style": "Kyokushin",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "103143860489962": {
+      "style": "Mishima",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "110185869183678": {
+      "style": "Mishima",
+      "name": "2nd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "117772381560003": {
+      "style": "Giovanna",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "78435737457559": {
+      "style": "PerfectCopy",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "135722461405541": {
+      "style": "Jason",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "82283056520077": {
+      "style": "Jason",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "123296684889576": {
+      "style": "Jason",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "84522026560534": {
+      "style": "Jason",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "90118089036149": {
+      "style": "Jason",
+      "name": "M2Success",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "75200474410240": {
+      "style": "Jason",
+      "name": "2nd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "128821858025718": {
+      "style": "Scarecrow",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "139246007357357": {
+      "style": "Scarecrow",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "95983866404215": {
+      "style": "Scarecrow",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "123471654597927": {
+      "style": "Scarecrow",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "76756133671287": {
+      "style": "Scarecrow",
+      "name": "M2Success",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "117642625192689": {
+      "style": "Scarecrow",
+      "name": "2nd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "89749221319778": {
+      "style": "Ryu",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "112331620334430": {
+      "style": "Ryu",
+      "name": "2nd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "81373523550212": {
+      "style": "Ryu",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "140443516062692": {
+      "style": "Ryu",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "107752287503360": {
+      "style": "Ryu",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "76045135315166": {
+      "style": "Systema",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "83610050585769": {
+      "style": "Systema",
+      "name": "2nd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "109017842170619": {
+      "style": "Systema",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "93070056502857": {
+      "style": "Systema",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "108186708485538": {
+      "style": "Systema",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "81612363053071": {
+      "style": "Taekwondo (Rework)",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "110426908435012": {
+      "style": "Taekwondo (Rework)",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "127510427843488": {
+      "style": "Taekwondo (Rework)",
+      "name": "2nd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "139008725129787": {
+      "style": "Taekwondo (Rework)",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "114488544822098": {
+      "style": "Taekwondo (Rework)",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "99380833762687": {
+      "style": "Capoeira (Rework)",
+      "name": "4th M1",
+      "delay": 0.22,
+      "heavy": false
+    },
+    "71582570861439": {
+      "style": "Capoeira (Rework)",
+      "name": "1st M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "91757066701454": {
+      "style": "Capoeira (Rework)",
+      "name": "2nd M1",
+      "delay": 0.18,
+      "heavy": false
+    },
+    "74499278694296": {
+      "style": "Capoeira (Rework)",
+      "name": "M2",
+      "delay": 0.3,
+      "heavy": true
+    },
+    "114440706066705": {
+      "style": "Capoeira (Rework)",
+      "name": "3rd M1",
+      "delay": 0.18,
+      "heavy": false
     }
   }
 }
